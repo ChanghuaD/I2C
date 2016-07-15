@@ -182,12 +182,12 @@ begin
             clk_ena => clk_ena,
             SCL_in => scl_in_fast,
 			SCL_tick => scl_tick,	  
-			SCL_rising_point => open,
+			SCL_rising_point => rising_point,
 			SCL_stop_point => open,
 			SCL_sample_point => sampling_point,
 			SCL_start_point => open,
 			SCL_falling_point => falling_point,
-			SCL_write_point => open,
+			SCL_write_point => writing_point,
 			SCL_error_point => open);
 			
 	-- 5. 
