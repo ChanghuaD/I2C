@@ -1,2 +1,2 @@
 # I2C
-it contains i2c vhdl codes
+This repository contains i2c master vhdl codes
