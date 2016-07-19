@@ -24,8 +24,12 @@ entity shift_register_transmitter is
 		  sync_rst: in std_logic;
 		  TX: in std_logic_vector (7 downto 0);		-- To connect with TX register
 		  rising_point: in std_logic;
+		  sampling_point: in std_logic;
+		  falling_point: in std_logic;
 		  writing_point: in std_logic;
 		  scl_tick: in std_logic;
+		  sda_in: in std_logic;
+		  ACK_out: out std_logic;
 		  write_command: out std_logic;
 		  sda_out: out std_logic);			-- write_command = '1'  ==>  the buffer(byte_to_be_sent) could receive the new data from TX 
 											-- and Microcontroller could update TX register
@@ -39,7 +43,7 @@ architecture fsm of shift_register_transmitter is
 	signal go: std_logic;
 	signal byte_to_be_sent: std_logic_vector(7 downto 0);
 	signal data: std_logic_vector(7 downto 0);					-- ????????????????????????????
-	type state_type is(CLEAR, WRITE_DATA, S7, S6, S5, S4, S3, S2, S1, S0);
+	type state_type is(CLEAR, WRITE_DATA, S7, S6, S5, S4, S3, S2, S1, S0, S_WAIT, RECEIVE_ACK);
 	signal state: state_type := CLEAR;
 	
 begin
@@ -108,9 +112,19 @@ begin
 						end if;
 						
 					when S0 =>
-						if (rising_point = '1' and scl_tick = '1') then			-- rising_point
-							state <= CLEAR;
+						if (writing_point = '1' and scl_tick = '1') then			-- rising_point
+							state <= S_WAIT;
 						end if;
+						
+					when S_WAIT =>
+						if(sampling_point = '1' and scl_tick ='1') then
+							state <= RECEIVE_ACK;
+						end if;
+						
+					when RECEIVE_ACK => 
+						if(falling_point = '1' and scl_tick = '1') then
+							state <= CLEAR;
+						end if;	
 						
 					end case;
 					
@@ -185,7 +199,17 @@ begin
 			write_command <= '0';
 			reg_write <= '0';
 			sda_out <= data(0);
-		
+			
+		when S_WAIT =>
+			write_command <= '0';
+			reg_write <= '0';
+			sda_out <= '1';			-- To AND with others SDA
+			
+		when RECEIVE_ACK =>
+			write_command <= '0';
+			reg_write <= '0';
+			ACK_out <= sda_in;
+			
 			
 		end case;
 

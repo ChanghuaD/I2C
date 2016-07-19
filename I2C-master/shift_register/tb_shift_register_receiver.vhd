@@ -86,10 +86,14 @@ architecture behavioral of tb_shift_register_receiver is
 		  sync_rst: in std_logic;
 		  TX: in std_logic_vector (7 downto 0);		-- To connect with TX register
 		  rising_point: in std_logic;
+		  sampling_point: in std_logic;
+		  falling_point: in std_logic;
 		  writing_point: in std_logic;
 		  scl_tick: in std_logic;
-		  sda_out: out std_logic;
-		  write_command: out std_logic);			-- write_command = '1'  ==>  the buffer could receive the new data from TX 
+		  sda_in: in std_logic;
+		  ACK_out: out std_logic;
+		  write_command: out std_logic;
+		  sda_out: out std_logic);				-- write_command = '1'  ==>  the buffer could receive the new data from TX 
 													-- and Microcontroller could update TX register
 		  
 	end component shift_register_transmitter;
@@ -102,8 +106,11 @@ architecture behavioral of tb_shift_register_receiver is
 	 sync_rst: in std_logic;
 	 scl_tick: in std_logic;
 	 sda_in: in std_logic;
+	 sda_out: out std_logic;
 	 falling_point: in std_logic;
 	 sampling_point: in std_logic;
+	 writing_point: in std_logic;
+	 ACK_in: in std_logic;
 	 data_received: out std_logic;
 	 RX: out std_logic_vector (7 downto 0));
 	end component shift_register_receiver;
@@ -114,6 +121,8 @@ architecture behavioral of tb_shift_register_receiver is
 	-- general signals
 	signal clk_50MHz: std_logic;
 	signal rst_variable: std_logic;
+	signal sda_out: std_logic;
+	signal sda_in: std_logic;
 	-- Signals for cascadable_counter(always '1')
 	signal rst_1: std_logic;
 	signal ena_1: std_logic;
@@ -125,19 +134,21 @@ architecture behavioral of tb_shift_register_receiver is
 	signal scl_in_fast: std_logic;
 	signal scl_in_slow: std_logic;
 	signal scl_out: std_logic;
-	-- signals for shift_register_transmitter
-	signal TX: std_logic_vector(7 downto 0);
+	-- signals for SCL_detect
 	signal rising_point: std_logic;
 	signal writing_point: std_logic;
-	signal write_command: std_logic;
-	signal sda_out: std_logic;
-	-- signals for shift_register_receiver
-	signal sda_in: std_logic;
 	signal falling_point: std_logic;
 	signal sampling_point: std_logic;
+	-- signals for shift_register_transmitter
+	signal TX: std_logic_vector(7 downto 0);
+	signal write_command: std_logic;
+	signal ACK_out: std_logic;
+	signal sda_out_1: std_logic;
+	-- signals for shift_register_receiver
 	signal data_received: std_logic;
 	signal RX: std_logic_vector (7 downto 0);
-
+	signal ACK_in: std_logic;
+	signal sda_out_2: std_logic;
 
 
 begin
@@ -197,9 +208,13 @@ begin
 		  sync_rst => rst_variable,
 		  TX => TX,		-- To connect with TX register
 		  rising_point => rising_point,
+		  sampling_point => sampling_point,
+		  falling_point => falling_point,
 		  writing_point => writing_point,
 		  scl_tick => scl_tick,
-		  sda_out => sda_out,
+		  sda_out => sda_out_1,
+		  sda_in => sda_in,
+		  ACK_out => ACK_out,
 		  write_command => write_command);
 	
 	-- 6.
@@ -209,8 +224,11 @@ begin
 	 sync_rst => rst_variable,
 	 scl_tick => scl_tick,
 	 sda_in => sda_in,
+	 sda_out => sda_out_2, 				--sda_out,
 	 falling_point => falling_point,
 	 sampling_point => sampling_point,
+	 writing_point => writing_point,
+	 ACK_in => ACK_in,
 	 data_received => data_received,
 	 RX => RX);
 	
@@ -290,14 +308,21 @@ begin
 	end process P_TX;
 		
 	-- 7. SDA
-	P_SDA: process(sda_out) is
+	P_SDA: process(sda_out_1, sda_out_2) is
 	
 	begin
-		sda_in <= sda_out;
-	
-	
+		sda_out <= sda_out_1 and sda_out_2;
+		sda_in <= sda_out_1 and sda_out_2;
 	end process P_SDA;
-
-
+	
+	-- 8. ACK_in	-- To send the ACK bit
+	P_ACK: process(RX) is
+	
+	begin
+		
+		ACK_in <= '0';
+	
+	end process P_ACK;
+	
 
 end architecture behavioral;
