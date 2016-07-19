@@ -11,7 +11,8 @@ use ieee.std_logic_unsigned.all;
 
 entity scl_out_generator is 
 
-	generic(max_state: positive := 8);
+	generic(max_state: positive := 10;
+			critical_state: positive := 5);
 	
 	port(clk: in std_logic;
 		 rst: in std_logic;
@@ -25,7 +26,7 @@ end entity scl_out_generator;
 architecture fsm of scl_out_generator is
 
 	signal state: integer;
-	constant critical_state: positive := 4;   -- !!!!! at this constant, the scl_out change from 0 to 1 (rising_edge)
+	--constant critical_state: positive := 4;   -- !!!!! at this constant, the scl_out change from 0 to 1 (rising_edge)
 
 begin
 	P_transition_and_storage: process(clk) is			
