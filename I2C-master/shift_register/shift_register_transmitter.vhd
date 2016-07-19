@@ -4,10 +4,11 @@
 -- Inputs: clk, 
 -- 	go, 
 -- 	sync_rst,  
--- 	byte_to_be_sent, 
+-- 	TX, 
 -- 	rising_point, 
 -- 	writing_point, 
---  scl_tick
+--  scl_tick,
+-- 	
 -- Outputs: sda_out, write_command
 --
 -- 13/07/2016
