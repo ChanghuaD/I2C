@@ -28,7 +28,7 @@ end entity restart_generator;
 
 architecture fsm of restart_generator is
 	
-	type state_type is (INIT, L1, H, L2, ERROR, SET_CTL);
+	type state_type is (INIT, L1, H, L2, S_ERROR, SET_CTL);
 	signal state: state_type;
 
 begin
@@ -62,14 +62,14 @@ begin
 								if(sda_in = '0') then
 									state <= SET_CTL;
 								else
-									state <= ERROR;
+									state <= S_ERROR;
 								end if;
  							end if;
 						
 						when SET_CTL => 
 							state <= INIT;
 							
-						when ERROR =>
+						when S_ERROR =>
 							state <= INIT;
 							
 						end case;
@@ -115,7 +115,7 @@ begin
 			CTL_restart <= '0';
 			error_out <= '0';
 		
-		when ERROR =>
+		when S_ERROR =>
 			sda_out <= '1';
 			CTL_restart <= '1';
 			error_out <= '1';

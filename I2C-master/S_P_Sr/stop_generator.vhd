@@ -26,7 +26,7 @@ end entity stop_generator;
 
 architecture fsm of stop_generator is
 
-	type state_type is (INIT, L, H, ERROR, SET_CTL);
+	type state_type is (INIT, L, H, S_ERROR, SET_CTL);
 	signal state: state_type;
 
 begin
@@ -54,14 +54,14 @@ begin
 								if(sda_in = '1') then
 									state <= SET_CTL;
 								else
-									state <= ERROR;
+									state <= S_ERROR;
 								end if;
 							end if;
 							
 						when SET_CTL =>
 							state <= INIT;
 						
-						when ERROR =>
+						when S_ERROR =>
 							state <= INIT;
 							
 						end case;
@@ -102,7 +102,7 @@ begin
 			CTL_stop <= '0';
 			error_out <= '0';
 			
-		when ERROR =>
+		when S_ERROR =>
 			sda_out <= '1';
 			CTL_stop <= '1';
 			error_out <= '1';
