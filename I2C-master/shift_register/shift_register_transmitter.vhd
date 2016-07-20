@@ -31,9 +31,9 @@ entity shift_register_transmitter is
 		  scl_tick: in std_logic;
 		  sda_in: in std_logic;
 		  ACK_out: out std_logic;
-		  write_command: out std_logic;
-		  sda_out: out std_logic);			-- write_command = '1'  ==>  the buffer(byte_to_be_sent) could receive the new data from TX 
-											-- and Microcontroller could update TX register
+		  ACK_valued: out std_logic;		-- To inform ACK_out is newly valued
+		  TX_captured: out std_logic;		-- TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
+		  sda_out: out std_logic);			
 		  
 end entity shift_register_transmitter;
 
@@ -49,7 +49,7 @@ architecture fsm of shift_register_transmitter is
 	
 begin
 
-	--Moore Machine 
+	--Moore & Mealy Combined Machine 
 	
 	-- Transition and storage
 	P_transition_and_storage: process (clk) is
@@ -70,7 +70,7 @@ begin
 						if(go = '1') then
 							state <= WRITE_DATA;
 						end if;
-					
+						
 					when WRITE_DATA => 
 						
 						if (writing_point = '1' and scl_tick = '1') then
@@ -120,6 +120,7 @@ begin
 					when S_WAIT =>
 						if(sampling_point = '1' and scl_tick ='1') then
 							state <= RECEIVE_ACK;
+							ACK_out <= sda_in;								-- A Transit action ACK_out changes only once per cycle
 						end if;
 						
 					when RECEIVE_ACK => 
@@ -145,71 +146,76 @@ begin
 		
 		when CLEAR =>
 			data <= (others => '0');			-- Clear internal buffer to x0
-			write_command <= '0';
-			reg_write <= '0';
-		
-		when WRITE_DATA => 
-		
-			write_command <= '1';
 			reg_write <= '1';
+			sda_out <= '1';						-- to be kept at '1' in order to AND with others SDA
+			ACK_valued <= '0';
+			
+		when WRITE_DATA => 
+			
 			data <= byte_to_be_sent;
+			reg_write <= '0';
+			sda_out <= '1';						-- to be kept at '1' in order to AND with others SDA
+			ACK_valued <= '0';
 			
 		when S7 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(7);
-		
+			ACK_valued <= '0';
 	
 		when S6 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(6);
-			
+			ACK_valued <= '0';
 			
 		when S5 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(5);
-			
+			ACK_valued <= '0';
 		
 		when S4 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(4);
-		
+			ACK_valued <= '0';
 			
 		when S3 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(3);
-		
+			ACK_valued <= '0';
 		
 		when S2 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(2);
-		
+			ACK_valued <= '0';
 			
 		when S1 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(1);
-		
+			ACK_valued <= '0';
 			
 		when S0 => 
-			write_command <= '0';
+			
 			reg_write <= '0';
 			sda_out <= data(0);
+			ACK_valued <= '0';
 			
 		when S_WAIT =>
-			write_command <= '0';
+			
 			reg_write <= '0';
-			sda_out <= '1';			-- To AND with others SDA
+			sda_out <= '1';			-- to be kept at '1' in order to AND with others SDA
+			ACK_valued <= '0';
 			
 		when RECEIVE_ACK =>
-			write_command <= '0';
+			
 			reg_write <= '0';
-			ACK_out <= sda_in;
+			sda_out <= '1';			-- to be kept at '1' in order to AND with others SDA
+			ACK_valued <= '1';
 			
 			
 		end case;
@@ -221,15 +227,18 @@ begin
 	
 	begin
 		if(rising_edge(clk)) then
-		
 			if(clk_ena = '1') then
 				if(sync_rst = '1') then
-					go <= '0';
-					if(reg_write <= '1') then
-					
+				
+					if(reg_write = '1') then
 						byte_to_be_sent <= TX;
 						go <= '1';
-					end if;
+						TX_captured <= '1';
+					else	
+						go <= '0';
+						TX_captured <= '0';
+					end if;	
+				
 				else
 					-- nothing ???????
 				end if;  -- if(rst)

@@ -93,7 +93,8 @@ architecture behavioral of tb_shift_register_receiver is
 		  scl_tick: in std_logic;
 		  sda_in: in std_logic;
 		  ACK_out: out std_logic;
-		  write_command: out std_logic;
+		  ACK_valued: out std_logic;
+		  TX_captured: out std_logic;
 		  sda_out: out std_logic);				-- write_command = '1'  ==>  the buffer could receive the new data from TX 
 													-- and Microcontroller could update TX register
 		  
@@ -107,11 +108,11 @@ architecture behavioral of tb_shift_register_receiver is
 	 sync_rst: in std_logic;
 	 scl_tick: in std_logic;
 	 sda_in: in std_logic;
-	 sda_out: out std_logic;
 	 falling_point: in std_logic;
 	 sampling_point: in std_logic;
 	 writing_point: in std_logic;
 	 ACK_in: in std_logic;
+	 sda_out: out std_logic;
 	 data_received: out std_logic;
 	 RX: out std_logic_vector (7 downto 0));
 	end component shift_register_receiver;
@@ -145,8 +146,9 @@ architecture behavioral of tb_shift_register_receiver is
 	signal error_point: std_logic;
 	-- signals for shift_register_transmitter
 	signal TX: std_logic_vector(7 downto 0);
-	signal write_command: std_logic;
+	signal TX_captured: std_logic;
 	signal ACK_out: std_logic;
+	signal ACK_valued: std_logic;
 	signal sda_out_1: std_logic;
 	-- signals for shift_register_receiver
 	signal data_received: std_logic;
@@ -220,7 +222,8 @@ begin
 		  sda_out => sda_out_1,
 		  sda_in => sda_in,
 		  ACK_out => ACK_out,
-		  write_command => write_command);
+		  ACK_valued => ACK_valued,
+		  TX_captured => TX_captured);
 	
 	-- 6.
 	M_shift_register_receiver: shift_register_receiver
@@ -229,11 +232,11 @@ begin
 	 sync_rst => rst_variable,
 	 scl_tick => scl_tick,
 	 sda_in => sda_in,
-	 sda_out => sda_out_2, 				--sda_out,
 	 falling_point => falling_point,
 	 sampling_point => sampling_point,
 	 writing_point => writing_point,
 	 ACK_in => ACK_in,
+	 sda_out => sda_out_2, 				--sda_out,
 	 data_received => data_received,
 	 RX => RX);
 	
@@ -298,17 +301,18 @@ begin
 	end process P_fast_scl;
 	
 	-- 6. TX
-	P_TX: process(write_command) is
+	P_TX: process(TX_captured) is
 	variable number: unsigned (7 downto 0) := (1 downto 0 => '1', others => '0');
 	begin
-		if(write_command = '1') then
-			TX <= std_logic_vector(number) after 30*clk_period;
-			if(number = 255) then
-				number := (others => '0');
-			else
-				number := number + 1;
-			end if;
-		end if;
+		
+				if(TX_captured = '1') then
+					TX <= std_logic_vector(number) after 30*clk_period;
+					if(number = 255) then
+						number := (others => '0');
+					else
+						number := number + 1;
+					end if;
+				end if;
 		
 	end process P_TX;
 		
