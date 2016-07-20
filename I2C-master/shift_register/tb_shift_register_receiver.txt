@@ -1,3 +1,15 @@
 To use tb_shift_register_receiver
 
-import SCL-detect.vhd, cascadable_counter.vhd, scl_tick.vhd, scl_out_generator.vhd to the modelsim project
+import 
+
+SCL-detect.vhd, 
+cascadable_counter.vhd, 
+scl_tick.vhd, 
+scl_out_generator.vhd 
+shift_register_transmitter.vhd
+shift_register_receiver.vhd
+tb_shift_register_receiver.vhd
+
+to the modelsim project
+
+And load the wave_shift_register_receiver.do macro file to visualize the signal.
