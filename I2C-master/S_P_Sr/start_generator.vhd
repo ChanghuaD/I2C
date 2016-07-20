@@ -1,4 +1,4 @@
--- Generate a start condition on I2C Line
+-- Generate a start condition (S) on I2C Line
 -- 
 -- 19/07/2016
 
@@ -16,6 +16,8 @@ port(clk: in std_logic;
 	 falling_point: in std_logic;
 	 writing_point: in std_logic;
 	 command_start: in std_logic;
+	 sda_in: in std_logic;
+	 error_out: out std_logic;
 	 CTL_start: out std_logic;
 	 sda_out: out std_logic);
 
@@ -24,10 +26,12 @@ end entity start_generator;
 architecture fsm of start_generator is
 	
 	
-	type state_type is (Init, H, L);
+	type state_type is (Init, H, L, ERROR, SET_CTL);
 	signal state: state_type;
 begin
 	
+	
+	-- Moore & Mealy Combined State Machine
 	-- Transition and storage
 	P_transition_and_storages: process (clk) is
 	
@@ -37,7 +41,7 @@ begin
 				if(rst = '1') then
 						case state is 
 						
-						when Init => 
+						when INIT => 
 							if(writing_point = '1' and command_start = '1') then		-- command_start = '1'
 								state <= H;
 							end if;
@@ -46,14 +50,27 @@ begin
 							if(start_point = '1' ) then
 								state <= L;
 							end if;
+	
+							
 						when L => 
 							if(falling_point = '1') then
-								state <= Init;
+								if(sda_in = '0') then
+									state <= SET_CTL;
+								else
+									state <= ERROR;
+								end if;
 							end if;
+							
+						when SET_CTL =>
+							state <= INIT;
+						
+						when ERROR =>
+							state <= INIT;
+							
 						end case;
 					
 				else
-					state <= Init;
+					state <= INIT;
 				
 				end if;  -- if rst = '1'
 			end if;		-- if clk_ena
@@ -68,16 +85,32 @@ begin
 	
 		case state is
 		
-		when Init =>
+		when INIT =>
 			sda_out <= '1';
+			CTL_start <= '1';
+			error_out <= '0';
 			
 		when H =>
 			sda_out <= '1';
+			CTL_start <= '1';
+			error_out <= '0';
 			
 		when L =>
 			sda_out <= '0';
+			CTL_start <= '1';
+			error_out <= '0';
+			
+		when SET_CTL =>
+		
+			sda_out <= '1';
 			CTL_start <= '0';
-	
+			error_out <= '0';
+		
+		when ERROR =>
+			sda_out <= '1';
+			CTL_start <= '1';
+			error_out <= '1';
+
 		end case;
 		
 	end process P_statactions;

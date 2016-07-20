@@ -83,6 +83,8 @@ architecture behavioral of tb_S_P_Sr is
 	 falling_point: in std_logic;
 	 writing_point: in std_logic;
 	 command_start: in std_logic;
+	 sda_in: in std_logic;
+	 error_out: out std_logic;
 	 CTL_start: out std_logic;
 	 sda_out: out std_logic);
 
@@ -97,9 +99,12 @@ architecture behavioral of tb_S_P_Sr is
 		 rst: in std_logic;
 		 scl_tick: in std_logic;
 		 stop_point: in std_logic;
+		 start_point: in std_logic;
 		 writing_point: in std_logic;
 		 falling_point: in std_logic;
 		 command_stop: in std_logic;
+		 sda_in: in std_logic;
+		 error_out: out std_logic;
 		 CTL_stop: out std_logic;
 		 sda_out: out std_logic);
 
@@ -118,6 +123,8 @@ architecture behavioral of tb_S_P_Sr is
 		 writing_point: in std_logic;
 		 falling_point: in std_logic;
 		 command_restart: in std_logic;
+		 sda_in: in std_logic;
+		 error_out: out std_logic;
 		 CTL_restart: out std_logic;
 		 sda_out: out std_logic);
 
@@ -132,6 +139,7 @@ architecture behavioral of tb_S_P_Sr is
 	signal clk_50MHz: std_logic;
 	signal rst_variable: std_logic;
 	signal sda_out: std_logic;
+	signal sda_in: std_logic;
 	-- Signals for cascadable_counter(always '1')
 	signal rst_1: std_logic;
 	signal ena_1: std_logic;
@@ -155,14 +163,17 @@ architecture behavioral of tb_S_P_Sr is
 	signal command_start: std_logic;
 	signal CTL_start: std_logic;
 	signal sda_out_S: std_logic;
+	signal error_out_S: std_logic;
 	-- signals for stop_generator
 	signal command_stop: std_logic;
 	signal CTL_stop: std_logic;
 	signal sda_out_P: std_logic;
+	signal error_out_P: std_logic;
 	-- signals for restart_generator
 	signal command_restart: std_logic;
 	signal CTL_restart: std_logic;
 	signal sda_out_Sr: std_logic;
+	signal error_out_Sr: std_logic;
 	
 
 begin
@@ -227,6 +238,8 @@ begin
 			 falling_point => falling_point,
 			 writing_point => writing_point,
 			 command_start => command_start,
+			 sda_in => sda_in,
+			 error_out => error_out_S,
 			 CTL_start => CTL_start,
 			 sda_out => sda_out_S);
 			 
@@ -238,9 +251,12 @@ begin
 		 rst => rst_variable,
 		 scl_tick => scl_tick,
 		 stop_point => stop_point,
+		 start_point => start_point,
 		 writing_point => writing_point,
 		 falling_point => falling_point,
 		 command_stop => command_stop,
+		 sda_in => sda_in,
+		 error_out => error_out_P,
 		 CTL_stop => CTL_stop,
 		 sda_out => sda_out_P);
 		 
@@ -256,6 +272,8 @@ begin
 			 writing_point => writing_point,
 			 falling_point => falling_point,
 			 command_restart => command_restart,
+			 sda_in => sda_in,
+			 error_out => error_out_Sr,
 			 CTL_restart => CTL_restart,
 			 sda_out => sda_out_Sr);
 	
@@ -319,43 +337,43 @@ begin
 	
 	end process P_fast_scl;
 	
-	-- 6. P_command_start
-	P_command_start: process is
+	-- 6. P_commands
+	P_command: process is
 	
 	begin
-		
+	
 		command_start <= '0';
+		command_stop <= '0';
+		command_restart <= '0';
 		wait for 50 us;
 		command_start <= '1';
-		wait until(CTL_start = '0');			-- ?????????????
+		command_stop <= '0';
+		command_restart <= '0';
+		wait for 50 us;
 		command_start <= '0';
-		
-		
-	end process P_command_start;
-	
-	-- 7. P_command_stop
-	P_command_stop: process is
-	
-	begin
-		
-		command_stop <= '0';
-		wait for 50 us;
 		command_stop <= '1';
-		wait until(CTL_stop = '0');			-- ?????????????
-		command_stop <= '0';
-		
-		
-	end process P_command_stop;
-	
-	-- 8.
-	P_command_restart: process is
-	begin
 		command_restart <= '0';
 		wait for 50 us;
+		command_start <= '0';
+		command_stop <= '0';
 		command_restart <= '1';
-		wait until(CTL_restart = '0');			-- ?????????????
+		wait for 50 us;
+		command_start <= '0';
+		command_stop <= '0';
 		command_restart <= '0';
-	end process P_command_restart;
+		wait;
+	
+	end process P_command;
+	
+	-- 7. P_SDA
+	P_SDA: process(sda_out_S, sda_out_P, sda_out_Sr) is
+	
+	begin
+	
+		sda_out <= ((sda_out_S and sda_out_P) and sda_out_Sr);
+		sda_in <= ((sda_out_S and sda_out_P) and sda_out_Sr);
+	
+	end process P_SDA;
 
 	
 	

@@ -17,9 +17,13 @@ add wave -noupdate /tb_s_p_sr/sampling_point
 add wave -noupdate /tb_s_p_sr/stop_point
 add wave -noupdate /tb_s_p_sr/start_point
 add wave -noupdate /tb_s_p_sr/error_point
+add wave -noupdate -divider {I2C Line}
 add wave -noupdate /tb_s_p_sr/scl_out
+add wave -noupdate /tb_s_p_sr/sda_out
 add wave -noupdate -divider Start
 add wave -noupdate /tb_s_p_sr/command_start
+add wave -noupdate /tb_s_p_sr/M_start_generator/sda_in
+add wave -noupdate /tb_s_p_sr/M_start_generator/error_out
 add wave -noupdate /tb_s_p_sr/CTL_start
 add wave -noupdate /tb_s_p_sr/sda_out_S
 add wave -noupdate /tb_s_p_sr/M_start_generator/state
@@ -27,16 +31,20 @@ add wave -noupdate -divider Stop
 add wave -noupdate /tb_s_p_sr/command_stop
 add wave -noupdate /tb_s_p_sr/CTL_stop
 add wave -noupdate /tb_s_p_sr/sda_out_P
+add wave -noupdate /tb_s_p_sr/M_stop_generator/sda_in
+add wave -noupdate /tb_s_p_sr/M_stop_generator/error_out
 add wave -noupdate /tb_s_p_sr/M_stop_generator/state
 add wave -noupdate -divider Restart
 add wave -noupdate /tb_s_p_sr/command_restart
 add wave -noupdate /tb_s_p_sr/CTL_restart
 add wave -noupdate /tb_s_p_sr/sda_out_Sr
+add wave -noupdate /tb_s_p_sr/M_restart_generator/sda_in
+add wave -noupdate /tb_s_p_sr/M_restart_generator/error_out
 add wave -noupdate /tb_s_p_sr/M_restart_generator/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {59866 ns} 0}
+WaveRestoreCursors {{Cursor 1} {486838 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 236
+configure wave -namecolwidth 209
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -50,4 +58,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {41954 ns} {82896 ns}
+WaveRestoreZoom {479458 ns} {501082 ns}
