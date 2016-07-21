@@ -35,9 +35,9 @@ begin
 	-- Process ---------------------
 	
 	-- 
-	--! microcontroller Write Process
+	--! microcontroller Write and i2c clear Process
 	--! microcontroller's uc_write_command has higher priority level than i2c_clear_command
-	P_uc_write: process(clk) is
+	P_RW_RC: process(clk) is
 	
 	begin
 		
@@ -60,7 +60,7 @@ begin
 				end if;
 			end if;
 		end if;
-	end process P_uc_write;
+	end process P_RW_RC;
 	
 
 end architecture behavior;
