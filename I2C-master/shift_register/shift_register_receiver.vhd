@@ -1,23 +1,35 @@
--- This is the shift register receiver entity
--- To receive the sda bit and combine to an entire byte with double buffer
+-----------------------------------------------------------------
+--! @file shift_register_receiver.vhd
+--! @brief shift register to receive 8-bit data
+--! @details Updated 21/07/2016
+--! Changhua DING
+-----------------------------------------------------------------
 
+
+
+
+--! Use standard library
 library ieee;
+--! Use logic elements
 use ieee.std_logic_1164.all;
 
+--! This is the shift register receiver entity:
+--! to receive the sda bit and combine to an entire byte with double buffer mechanism
 entity shift_register_receiver is
 
-port(clk: in std_logic;
-	 clk_ena: in std_logic;
-	 sync_rst: in std_logic;
-	 scl_tick: in std_logic;
-	 sda_in: in std_logic;
-	 falling_point: in std_logic;
-	 sampling_point: in std_logic;
-	 writing_point: in std_logic;
-	 ACK_in: in std_logic;
-	 sda_out: out std_logic;
-	 data_received: out std_logic;
-	 RX: out std_logic_vector (7 downto 0));
+port(clk: in std_logic;				--! clock input
+	 clk_ena: in std_logic;			--! clock enable input
+	 sync_rst: in std_logic;		--! synchronous reset input
+	 scl_tick: in std_logic;		--! scl_tick input
+	 sda_in: in std_logic;			--! sda_in input 
+	 falling_point: in std_logic;	--! falling_point input
+	 sampling_point: in std_logic;	--! sampling_point input
+	 writing_point: in std_logic;	--! writing_point input
+	 ACK_in: in std_logic;			--! acknowledge bit input
+	 sda_out: out std_logic;		--! sda_out output
+	 data_received: out std_logic;	--! data_received bit output
+	 RX: out std_logic_vector (7 downto 0) --! RX received byte output
+	 );
 
 
 end entity shift_register_receiver;
