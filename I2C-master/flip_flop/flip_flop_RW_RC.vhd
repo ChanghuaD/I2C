@@ -34,8 +34,9 @@ begin
 	
 	-- Process ---------------------
 	
-	-- 1.
-	-- microcontroller Write Process
+	-- 
+	--! microcontroller Write Process
+	--! microcontroller's uc_write_command has higher priority level than i2c_clear_command
 	P_uc_write: process(clk) is
 	
 	begin
@@ -47,7 +48,11 @@ begin
 					if(uc_write_command = '1') then
 						data_out <= uc_data_in;
 					else
+						if(i2c_clear_command = '1') then
+							data_out <= '0';
+						else
 						-- Nothing
+						end if;
 					end if;
 					
 				else
@@ -57,30 +62,5 @@ begin
 		end if;
 	end process P_uc_write;
 	
-	
-	
-	
-	-- 2.
-	-- I2C Clear Process
-	P_i2c_clear: process (clk) is
-	
-	begin 
-		if(rising_edge(clk)) then
-			if(clk_ena = '1') then
-				if(sync_rst = '1') then
-				
-					if(i2c_clear_command = '1') then
-						data_out <= '0';
-					else
-						-- Nothing
-					end if;
-					
-				else
-					data <= '0';
-				end if;
-			end if;
-		end if;
-	
-	end process P_i2c_clear;
 
 end architecture behavior;
