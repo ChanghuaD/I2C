@@ -34,6 +34,8 @@ port(clk: in std_logic;				--! clock input
 
 end entity shift_register_receiver;
 
+
+--! Moore & Mealy Combined Machine
 architecture FSM of shift_register_receiver is
 
 signal reg_write: std_logic;
@@ -46,10 +48,8 @@ signal state: state_type := CLEAR;
 
 begin
 
-	-- Moore & Mealy Combined Machine
-	
-	-- 1. 
-	-- Transition and storage
+	-- 1.
+	--! Transition, storages and transit action
 	P_transition_and_storage: process(clk) is
 	
 	
@@ -153,7 +153,7 @@ begin
 	
 	
 	-- 2.
-	-- State actions
+	--! State actions
 	P_stataction: process(state) is
 	
 	begin
@@ -241,7 +241,7 @@ begin
 	end process P_stataction;
 	
 	-- 3.
-	-- Internal buffer
+	--! Internal buffer
 	P_internal_buffer: process(clk) is
 	
 	begin
