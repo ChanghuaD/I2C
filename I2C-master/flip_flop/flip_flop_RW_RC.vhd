@@ -14,7 +14,6 @@ use ieee.std_logic_1164.all;
 --! Read_Write & Read_Clear Flip Flop Entity
 entity flip_flop_RW_RC is
 
-begin
 	port(clk: in std_logic;					--! clock input
 		 clk_ena: in std_logic;				--! clock enable input
 		 sync_rst: in std_logic;			--! '0' active synchronous reset input
@@ -56,7 +55,7 @@ begin
 					end if;
 					
 				else
-					data <= '0';
+					data_out <= '0';
 				end if;
 			end if;
 		end if;
