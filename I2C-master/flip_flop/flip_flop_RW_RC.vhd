@@ -21,7 +21,7 @@ begin
 		 uc_data_in: in std_logic;			--! microcontroller data input
 		 uc_write_command: in std_logic;	--! '1' active microcontroller write command input
 		 i2c_clear_command: in std_logic;	--! '1' active I2C clear command input
-		 data_out: out std_logic;			--! data_out output
+		 data_out: out std_logic			--! data_out output
 	);
 	
 end entity flip_flop_RW_RC;
@@ -55,7 +55,7 @@ begin
 				end if;
 			end if;
 		end if;
-	end process P_uc_Write;
+	end process P_uc_write;
 	
 	
 	
