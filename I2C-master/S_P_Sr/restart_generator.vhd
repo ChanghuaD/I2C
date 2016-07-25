@@ -1,31 +1,39 @@
--- To generate a restart condition (Sr)
---
--- 19/07/2016
+---------------------------------------------
+--! @file 
+--! @brief Restart generator, to generate a restart condition (Sr)
+--!	Updated 21/07/2016
+--! Changhua DING
+---------------------------------------------
 
+--! Use standard library
 library ieee;
+--! Use logic elements
 use ieee.std_logic_1164.all;
 
 
+--! Restart generator entity
 entity restart_generator is
 
-port(clk: in std_logic;
-	 clk_ena: in std_logic;
-	 rst: in std_logic;
-	 scl_tick: in std_logic;
-	 stop_point: in std_logic;
-	 start_point: in std_logic;
-	 writing_point: in std_logic;
-	 falling_point: in std_logic;
-	 command_restart: in std_logic;
-	 sda_in: in std_logic;
-	 error_out: out std_logic;
-	 CTL_restart: out std_logic;
-	 sda_out: out std_logic);
+	port(clk: in std_logic;					--! clock input
+		 clk_ena: in std_logic;				--! cloc enable input
+		 rst: in std_logic;					--! synchronous reset input	
+		 scl_tick: in std_logic;			--! scl tick input
+		 stop_point: in std_logic;			--! stop point input
+		 start_point: in std_logic;			--! start point input
+		 writing_point: in std_logic;		--! writing point input
+		 falling_point: in std_logic;		--! falling point input
+		 command_restart: in std_logic;		--! command restart input
+		 sda_in: in std_logic;				--! SDA input
+		 error_out: out std_logic;			--! error output
+		 CTL_restart: out std_logic;		--! CTL_restart bit output
+		 sda_out: out std_logic				--! SDA output
+		 );	
 
 
 end entity restart_generator;
 
 
+--! Finite State Machine, behavioral architecture, Moore and Mealy combined state machine
 architecture fsm of restart_generator is
 	
 	type state_type is (INIT, L1, H, L2, S_ERROR, SET_CTL);

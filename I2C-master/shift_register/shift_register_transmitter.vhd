@@ -1,23 +1,19 @@
--- shift_register_transmitter
---	With an internal buffer
---
--- Inputs: clk, 
--- 	go, 
--- 	sync_rst,  
--- 	TX, 
--- 	rising_point, 
--- 	writing_point, 
---  scl_tick,
--- 	
--- Outputs: sda_out, write_command
---
--- 13/07/2016
+---------------------------------------------------------
+--! @file
+--! @brief Shift register for transmitter with internal buffer  
+--! Updated 21/07/2016
+--! Changhua DING
+----------------------------------------------------------
 
-
+--! Use standard library
 library ieee;
+--! Use logic element
 use ieee.std_logic_1164.all;
+--! Use unsigned 
 use ieee.std_logic_unsigned.all;	
 
+
+--! shift register transmitter entity
 entity shift_register_transmitter is
 
 	port(clk: in std_logic;
@@ -38,6 +34,8 @@ entity shift_register_transmitter is
 end entity shift_register_transmitter;
 
 
+
+--! Behavioral architecture, with shift register's state machine and an internal buffer
 architecture fsm of shift_register_transmitter is
 
 	signal reg_write: std_logic;						-- reg_write is the internal signal to inform the internal buffer to renew the data from byte_to_be_sent
