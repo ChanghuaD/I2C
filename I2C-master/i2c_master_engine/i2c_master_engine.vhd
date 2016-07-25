@@ -41,6 +41,7 @@ entity i2c_master_engine is
 		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write output     
 		 ST_RX_FULL_S: out std_logic;			--!	ST_RX_FULL bit Set output
 		 ST_TX_EMPTY_S: out std_logic;			--! ST_TX_EMPTY bit set output
+		 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
 		 
 	);
 
