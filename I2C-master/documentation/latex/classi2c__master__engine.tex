@@ -1,0 +1,261 @@
+\hypertarget{classi2c__master__engine}{}\section{i2c\+\_\+master\+\_\+engine Entity Reference}
+\label{classi2c__master__engine}\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+
+
+react from the register in the global i2c\+\_\+engine and output the register changes, S\+CL and S\+DA line.  
+
+
+\subsection*{Libraries}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classi2c__master__engine_a0a6af6eef40212dbaf130d57ce711256}{ieee} 
+\begin{DoxyCompactList}\small\item\em use standard library \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Use Clauses}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classi2c__master__engine_acd03516902501cd1c7296a98e22c6fcb}{std\+\_\+logic\+\_\+1164}   
+\begin{DoxyCompactList}\small\item\em use logic elements \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Ports}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classi2c__master__engine_a4a4609c199d30b3adebbeb3a01276ec5}{clk}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em clock input \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a373faa4fdd1aebdfb0b95d5d53da4434}{clk\+\_\+ena}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em clock enable input \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_acb5ff599d2768c125faacfd9361063eb}{sync\+\_\+rst}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em synchronous reset input \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a074411f95c6b7b20f917fc5793cff2c7}{C\+T\+L\+\_\+\+A\+CK}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+A\+CK bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_ae210ead9f1d4a08ff72ae0b525cea727}{C\+T\+L\+\_\+\+RW}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+RW bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_afd3b0f78afdb8a56021a75cc0f03c69f}{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a1f6f5c161032ed17eaabd45b23e13dfa}{C\+T\+L\+\_\+\+S\+T\+OP}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+S\+T\+OP bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a7109500384a30f28579c6b6e8ff76d2f}{C\+T\+L\+\_\+\+S\+T\+A\+RT}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+S\+T\+A\+RT bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_aa99e93d425b572e26ef2fb36b29d9c86}{C\+T\+L\+\_\+\+R\+E\+S\+ET}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+R\+E\+S\+ET bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a1548127b2c9f2b2fdee1c239d951a5a5}{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_aac728a86d700109f366b38560f6e3ada}{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY bit input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_ac6b0a7edf9c2b243032204db9d65f177}{T\+X\+\_\+\+D\+A\+TA}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em T\+X\+\_\+\+D\+A\+TA byte input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a82e79d6ce7e6595b82fd7bcfae4dce09}{B\+A\+U\+D\+\_\+\+R\+A\+TE}  {\bfseries {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em B\+A\+U\+D\+\_\+\+R\+A\+TE byte input. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a076711c9bf8c9e4ad38be7d4bde56ddf}{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT bit Clear output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a084ae287c960145f1995096b379711cd}{C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+S\+T\+OP bit Clear output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a17d9807fb319897541f2d6b1707dc714}{C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em C\+T\+L\+\_\+\+S\+T\+A\+RT bit Clear output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a555d445643d4a0c48d8963ea5e2d9dff}{S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+B\+U\+SY bit Write output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a35dfd0eb5f623ff4b3eaa92f1767968e}{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL bit Set output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_af80eb88536f1e2191fd9191e99d242a5}{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY bit set output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_ac0a3b517da19738dbbb4ec7a5f83612d}{S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+TC bit set output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a3204ed6ce253b4b911f2929d6c36c890}{S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+S\+T\+OP bit write output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a0ec71b35aa301ece71deb8c72d8dca5d}{S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+TC bit write output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_addd7ad0c235e85c4aa614edb71019430}{S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+EC bit write output. \end{DoxyCompactList}\item 
+\hyperlink{classi2c__master__engine_a82c1b89857b443652ea136d1ce7d95dd}{R\+X\+\_\+\+D\+A\+T\+A\+\_\+W}  {\bfseries {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }}} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} 
+\begin{DoxyCompactList}\small\item\em R\+X\+\_\+\+D\+A\+TA byte output. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+react from the register in the global i2c\+\_\+engine and output the register changes, S\+CL and S\+DA line. 
+
+\subsection{Member Data Documentation}
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!B\+A\+U\+D\+\_\+\+R\+A\+TE@{B\+A\+U\+D\+\_\+\+R\+A\+TE}}
+\index{B\+A\+U\+D\+\_\+\+R\+A\+TE@{B\+A\+U\+D\+\_\+\+R\+A\+TE}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{B\+A\+U\+D\+\_\+\+R\+A\+TE}{BAUD_RATE}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf B\+A\+U\+D\+\_\+\+R\+A\+TE} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a82e79d6ce7e6595b82fd7bcfae4dce09}{}\label{classi2c__master__engine_a82e79d6ce7e6595b82fd7bcfae4dce09}
+
+
+B\+A\+U\+D\+\_\+\+R\+A\+TE byte input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!clk@{clk}}
+\index{clk@{clk}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{clk}{clk}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf clk} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a4a4609c199d30b3adebbeb3a01276ec5}{}\label{classi2c__master__engine_a4a4609c199d30b3adebbeb3a01276ec5}
+
+
+clock input 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!clk\+\_\+ena@{clk\+\_\+ena}}
+\index{clk\+\_\+ena@{clk\+\_\+ena}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{clk\+\_\+ena}{clk_ena}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf clk\+\_\+ena} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a373faa4fdd1aebdfb0b95d5d53da4434}{}\label{classi2c__master__engine_a373faa4fdd1aebdfb0b95d5d53da4434}
+
+
+clock enable input 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+A\+CK@{C\+T\+L\+\_\+\+A\+CK}}
+\index{C\+T\+L\+\_\+\+A\+CK@{C\+T\+L\+\_\+\+A\+CK}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+A\+CK}{CTL_ACK}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+A\+CK} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a074411f95c6b7b20f917fc5793cff2c7}{}\label{classi2c__master__engine_a074411f95c6b7b20f917fc5793cff2c7}
+
+
+C\+T\+L\+\_\+\+A\+CK bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+R\+E\+S\+ET@{C\+T\+L\+\_\+\+R\+E\+S\+ET}}
+\index{C\+T\+L\+\_\+\+R\+E\+S\+ET@{C\+T\+L\+\_\+\+R\+E\+S\+ET}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+R\+E\+S\+ET}{CTL_RESET}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+R\+E\+S\+ET} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_aa99e93d425b572e26ef2fb36b29d9c86}{}\label{classi2c__master__engine_aa99e93d425b572e26ef2fb36b29d9c86}
+
+
+C\+T\+L\+\_\+\+R\+E\+S\+ET bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT@{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT}}
+\index{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT@{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT}{CTL_RESTART}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_afd3b0f78afdb8a56021a75cc0f03c69f}{}\label{classi2c__master__engine_afd3b0f78afdb8a56021a75cc0f03c69f}
+
+
+C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C@{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C}}
+\index{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C@{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C}{CTL_RESTART_C}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+C} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a076711c9bf8c9e4ad38be7d4bde56ddf}{}\label{classi2c__master__engine_a076711c9bf8c9e4ad38be7d4bde56ddf}
+
+
+C\+T\+L\+\_\+\+R\+E\+S\+T\+A\+RT bit Clear output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+RW@{C\+T\+L\+\_\+\+RW}}
+\index{C\+T\+L\+\_\+\+RW@{C\+T\+L\+\_\+\+RW}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+RW}{CTL_RW}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+RW} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_ae210ead9f1d4a08ff72ae0b525cea727}{}\label{classi2c__master__engine_ae210ead9f1d4a08ff72ae0b525cea727}
+
+
+C\+T\+L\+\_\+\+RW bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+S\+T\+A\+RT@{C\+T\+L\+\_\+\+S\+T\+A\+RT}}
+\index{C\+T\+L\+\_\+\+S\+T\+A\+RT@{C\+T\+L\+\_\+\+S\+T\+A\+RT}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+S\+T\+A\+RT}{CTL_START}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+S\+T\+A\+RT} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a7109500384a30f28579c6b6e8ff76d2f}{}\label{classi2c__master__engine_a7109500384a30f28579c6b6e8ff76d2f}
+
+
+C\+T\+L\+\_\+\+S\+T\+A\+RT bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C@{C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C}}
+\index{C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C@{C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C}{CTL_START_C}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+S\+T\+A\+R\+T\+\_\+C} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a17d9807fb319897541f2d6b1707dc714}{}\label{classi2c__master__engine_a17d9807fb319897541f2d6b1707dc714}
+
+
+C\+T\+L\+\_\+\+S\+T\+A\+RT bit Clear output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+S\+T\+OP@{C\+T\+L\+\_\+\+S\+T\+OP}}
+\index{C\+T\+L\+\_\+\+S\+T\+OP@{C\+T\+L\+\_\+\+S\+T\+OP}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+S\+T\+OP}{CTL_STOP}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+S\+T\+OP} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a1f6f5c161032ed17eaabd45b23e13dfa}{}\label{classi2c__master__engine_a1f6f5c161032ed17eaabd45b23e13dfa}
+
+
+C\+T\+L\+\_\+\+S\+T\+OP bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C@{C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C}}
+\index{C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C@{C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C}{CTL_STOP_C}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+\+S\+T\+O\+P\+\_\+C} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a084ae287c960145f1995096b379711cd}{}\label{classi2c__master__engine_a084ae287c960145f1995096b379711cd}
+
+
+C\+T\+L\+\_\+\+S\+T\+OP bit Clear output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!ieee@{ieee}}
+\index{ieee@{ieee}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{ieee}{ieee}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ieee}\hspace{0.3cm}{\ttfamily [Library]}}\hypertarget{classi2c__master__engine_a0a6af6eef40212dbaf130d57ce711256}{}\label{classi2c__master__engine_a0a6af6eef40212dbaf130d57ce711256}
+
+
+use standard library 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!R\+X\+\_\+\+D\+A\+T\+A\+\_\+W@{R\+X\+\_\+\+D\+A\+T\+A\+\_\+W}}
+\index{R\+X\+\_\+\+D\+A\+T\+A\+\_\+W@{R\+X\+\_\+\+D\+A\+T\+A\+\_\+W}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{R\+X\+\_\+\+D\+A\+T\+A\+\_\+W}{RX_DATA_W}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf R\+X\+\_\+\+D\+A\+T\+A\+\_\+W} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a82c1b89857b443652ea136d1ce7d95dd}{}\label{classi2c__master__engine_a82c1b89857b443652ea136d1ce7d95dd}
+
+
+R\+X\+\_\+\+D\+A\+TA byte output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S@{S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S}}
+\index{S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S@{S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S}{ST_ACK_REC_S}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+E\+C\+\_\+S} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_addd7ad0c235e85c4aa614edb71019430}{}\label{classi2c__master__engine_addd7ad0c235e85c4aa614edb71019430}
+
+
+S\+T\+\_\+\+A\+C\+K\+\_\+\+R\+EC bit write output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W@{S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W}}
+\index{S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W@{S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W}{ST_BUSY_W}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+B\+U\+S\+Y\+\_\+W} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a555d445643d4a0c48d8963ea5e2d9dff}{}\label{classi2c__master__engine_a555d445643d4a0c48d8963ea5e2d9dff}
+
+
+S\+T\+\_\+\+B\+U\+SY bit Write output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}}
+\index{S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}{ST_RESTART_DETC_W}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_ac0a3b517da19738dbbb4ec7a5f83612d}{}\label{classi2c__master__engine_ac0a3b517da19738dbbb4ec7a5f83612d}
+
+
+S\+T\+\_\+\+R\+E\+S\+T\+A\+R\+T\+\_\+\+D\+E\+TC bit set output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL@{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL}}
+\index{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL@{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL}{ST_RX_FULL}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a1548127b2c9f2b2fdee1c239d951a5a5}{}\label{classi2c__master__engine_a1548127b2c9f2b2fdee1c239d951a5a5}
+
+
+S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S@{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S}}
+\index{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S@{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S}{ST_RX_FULL_S}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+L\+L\+\_\+S} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a35dfd0eb5f623ff4b3eaa92f1767968e}{}\label{classi2c__master__engine_a35dfd0eb5f623ff4b3eaa92f1767968e}
+
+
+S\+T\+\_\+\+R\+X\+\_\+\+F\+U\+LL bit Set output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}}
+\index{S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W}{ST_START_DETC_W}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+T\+C\+\_\+W} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a0ec71b35aa301ece71deb8c72d8dca5d}{}\label{classi2c__master__engine_a0ec71b35aa301ece71deb8c72d8dca5d}
+
+
+S\+T\+\_\+\+S\+T\+A\+R\+T\+\_\+\+D\+E\+TC bit write output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W}}
+\index{S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W@{S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W}{ST_STOP_DETC_W}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+S\+T\+O\+P\+\_\+\+D\+E\+T\+C\+\_\+W} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_a3204ed6ce253b4b911f2929d6c36c890}{}\label{classi2c__master__engine_a3204ed6ce253b4b911f2929d6c36c890}
+
+
+S\+T\+\_\+\+S\+T\+OP bit write output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY@{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY}}
+\index{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY@{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY}{ST_TX_EMPTY}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_aac728a86d700109f366b38560f6e3ada}{}\label{classi2c__master__engine_aac728a86d700109f366b38560f6e3ada}
+
+
+S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY bit input. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S@{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S}}
+\index{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S@{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S}{ST_TX_EMPTY_S}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+T\+Y\+\_\+S} {\bfseries \textcolor{vhdlchar}{out}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_af80eb88536f1e2191fd9191e99d242a5}{}\label{classi2c__master__engine_af80eb88536f1e2191fd9191e99d242a5}
+
+
+S\+T\+\_\+\+T\+X\+\_\+\+E\+M\+P\+TY bit set output. 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!std\+\_\+logic\+\_\+1164@{std\+\_\+logic\+\_\+1164}}
+\index{std\+\_\+logic\+\_\+1164@{std\+\_\+logic\+\_\+1164}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{std\+\_\+logic\+\_\+1164}{std_logic_1164}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf std\+\_\+logic\+\_\+1164}\hspace{0.3cm}{\ttfamily [Package]}}\hypertarget{classi2c__master__engine_acd03516902501cd1c7296a98e22c6fcb}{}\label{classi2c__master__engine_acd03516902501cd1c7296a98e22c6fcb}
+
+
+use logic elements 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!sync\+\_\+rst@{sync\+\_\+rst}}
+\index{sync\+\_\+rst@{sync\+\_\+rst}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{sync\+\_\+rst}{sync_rst}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sync\+\_\+rst} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_acb5ff599d2768c125faacfd9361063eb}{}\label{classi2c__master__engine_acb5ff599d2768c125faacfd9361063eb}
+
+
+synchronous reset input 
+
+\index{i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}!T\+X\+\_\+\+D\+A\+TA@{T\+X\+\_\+\+D\+A\+TA}}
+\index{T\+X\+\_\+\+D\+A\+TA@{T\+X\+\_\+\+D\+A\+TA}!i2c\+\_\+master\+\_\+engine@{i2c\+\_\+master\+\_\+engine}}
+\subsubsection[{\texorpdfstring{T\+X\+\_\+\+D\+A\+TA}{TX_DATA}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf T\+X\+\_\+\+D\+A\+TA} {\bfseries \textcolor{vhdlchar}{in}\textcolor{vhdlchar}{ }} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic\+\_\+vector}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{(}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{7} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{downto}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{0} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{)}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Port]}}\hypertarget{classi2c__master__engine_ac6b0a7edf9c2b243032204db9d65f177}{}\label{classi2c__master__engine_ac6b0a7edf9c2b243032204db9d65f177}
+
+
+T\+X\+\_\+\+D\+A\+TA byte input. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Public/\+Documents/\+I2\+C\+\_\+\+V\+H\+D\+L/\+V\+H\+D\+L Codes/\+I2\+C/\+I2\+C-\/master/i2c\+\_\+master\+\_\+engine/\hyperlink{i2c__master__engine_8vhd}{i2c\+\_\+master\+\_\+engine.\+vhd}\end{DoxyCompactItemize}

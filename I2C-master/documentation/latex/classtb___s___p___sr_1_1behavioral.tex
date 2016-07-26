@@ -1,0 +1,311 @@
+\hypertarget{classtb___s___p___sr_1_1behavioral}{}\section{behavioral Architecture Reference}
+\label{classtb___s___p___sr_1_1behavioral}\index{behavioral@{behavioral}}
+\subsection*{Processes}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a4b6940703ffe261d728114b7c6c439e8}{P\+\_\+clk\+\_\+50\+M\+Hz}{\bfseries  (  )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ad9352d7195a550389abc45f562eae289}{P\+\_\+others\+\_\+signal}{\bfseries  (  )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a5db205d3a8eaa6843c25e75308a3ad44}{P\+\_\+syncrst\+\_\+signals}{\bfseries  (  )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a604353fd55bad277047edd8d997126c1}{P\+\_\+slow\+\_\+scl}{\bfseries  ( {\bfseries {\bfseries \hyperlink{classtb___s___p___sr_1_1behavioral_a30234227a8ae73dda5f4181fa05043ed}{scl\+\_\+out}} \textcolor{vhdlchar}{ }} )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a39912d980eb609d27877afa8f7e7e1f2}{P\+\_\+fast\+\_\+scl}{\bfseries  ( {\bfseries {\bfseries \hyperlink{classtb___s___p___sr_1_1behavioral_a30234227a8ae73dda5f4181fa05043ed}{scl\+\_\+out}} \textcolor{vhdlchar}{ }} )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a5e2498b01d0a28e123f30b5d92e44447}{P\+\_\+command}{\bfseries  (  )}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aa9fdf0ff9185eb362bd480fc1d62f1e1}{P\+\_\+\+S\+DA}{\bfseries  ( {\bfseries {\bfseries \hyperlink{classtb___s___p___sr_1_1behavioral_a051bd790d4ac3e218768535af81a3b00}{sda\+\_\+out\+\_\+S}} \textcolor{vhdlchar}{ }} , {\bfseries {\bfseries \hyperlink{classtb___s___p___sr_1_1behavioral_ab30cd8215588e5e70fda5ebeda888f94}{sda\+\_\+out\+\_\+P}} \textcolor{vhdlchar}{ }} , {\bfseries {\bfseries \hyperlink{classtb___s___p___sr_1_1behavioral_a0bfb74db8c40311a304a886f63009859}{sda\+\_\+out\+\_\+\+Sr}} \textcolor{vhdlchar}{ }} )}
+\end{DoxyCompactItemize}
+\subsection*{Components}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a43b32943cff2ea9c75d864730f7a4f8e}{cascadable\+\_\+counter}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ad15332f3450dcfdd8b69d4dc7006f72c}{scl\+\_\+tick\+\_\+generator}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a2e4722e32567a27d294c176f4f8603c5}{scl\+\_\+out\+\_\+generator}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ac7f4cd134c0e83e439609642b47df7d2}{S\+C\+L\+\_\+detect}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a455446c75a95cb11c113b7509a08bc5a}{start\+\_\+generator}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ad7831417f03bd84c318e1dd9bd53c0bf}{stop\+\_\+generator}  {\bfseries }  
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a75a9bef9f515880dd0a2b91dca6ca827}{restart\+\_\+generator}  {\bfseries }  
+\end{DoxyCompactItemize}
+\subsection*{Constants}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a608ca2ccf8923ddf0eee96f9c7d0e712}{clk\+\_\+period} {\bfseries \textcolor{vhdlchar}{time}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{\+:}\textcolor{vhdlchar}{=}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{20} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ns}\textcolor{vhdlchar}{ }} 
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aa754743a6b1100cdc70b2fa0e77bbc12}{clk\+\_\+50\+M\+Hz} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ae54dd7074d45e37f77b1b1f40f177769}{rst\+\_\+variable} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aceb09551c0f5cccb6cbb79f924a4286d}{sda\+\_\+out} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ae710a0817599ea81df4bfc7279b7b30b}{sda\+\_\+in} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a51c8392febe2f54bfc0e599a761cd7ef}{rst\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ac6071972616da6d9113dc4dae108544a}{ena\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aaed2f21c33b2ae2013e88e57ddb091d9}{casc\+\_\+in\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ad2068163a678090a907c39fc195ed473}{clk\+\_\+ena} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a4d66cff92615956cf384779c103ecb56}{scl\+\_\+tick} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a8e38d9b726ce4a0f9a01e9199788c675}{scl\+\_\+in\+\_\+fast} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a4a9f48b658f17e2d3309e7154346e605}{scl\+\_\+in\+\_\+slow} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a30234227a8ae73dda5f4181fa05043ed}{scl\+\_\+out} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a0edfba99131f5922f2b1d9406dee2d09}{rising\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ac7b5210640dbfa1943d314abf5bd97f7}{writing\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_af2220ef3b65a584870a263d172939524}{falling\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_abd4b10cf61e5d0371f51056af53493d0}{sampling\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_abfe2b31e1914cd8da7dd38be3abb344f}{stop\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a9a49dd75722f07dca78d9c3069a7ea74}{start\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ad878492cf369811f532a7244604083c3}{error\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_abdf1259cef3acec01983efae78ec3d09}{command\+\_\+start} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a2203d3b0ff9b27b1d80a3398b7e88af7}{C\+T\+L\+\_\+start} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a051bd790d4ac3e218768535af81a3b00}{sda\+\_\+out\+\_\+S} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_acc2763019282ed0029e0c12324d20b95}{error\+\_\+out\+\_\+S} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aa1fe1b0cc18290067764ede6c6228fc7}{command\+\_\+stop} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ac2ed55ecd9a8458bd082ae26e8b9af2a}{C\+T\+L\+\_\+stop} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ab30cd8215588e5e70fda5ebeda888f94}{sda\+\_\+out\+\_\+P} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a12a7298f065765e34fecc23cd93c28fd}{error\+\_\+out\+\_\+P} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_aa3b923e863633fb4d1969ad33da6b058}{command\+\_\+restart} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a20c8f77610736fc8a950b7b027df23f8}{C\+T\+L\+\_\+restart} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a0bfb74db8c40311a304a886f63009859}{sda\+\_\+out\+\_\+\+Sr} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a9d1bef50f0e52a1862c3621f6b45c348}{error\+\_\+out\+\_\+\+Sr} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} 
+\end{DoxyCompactItemize}
+\subsection*{Instantiations}
+ \begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a75009583c066055e4a11094601dd457b}{m\+\_\+clk\+\_\+ena}  {\bfseries cascadable\+\_\+counter}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a2bd0fba2eb906e2c6a4133aaab97ce34}{m\+\_\+scl\+\_\+tick}  {\bfseries scl\+\_\+tick\+\_\+generator}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a08edeff8a42fae2cc3c69f92b7051a61}{m\+\_\+scl\+\_\+out}  {\bfseries scl\+\_\+out\+\_\+generator}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ab7a8acca32f7536b16add759f52b07c7}{m\+\_\+scl\+\_\+detect}  {\bfseries scl\+\_\+detect}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a51769e3861f504370155240c6cf59748}{m\+\_\+start\+\_\+generator}  {\bfseries start\+\_\+generator}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_ac82b97dbd9b99ec1130e7e5138fa4b1d}{m\+\_\+stop\+\_\+generator}  {\bfseries stop\+\_\+generator}   
+\item 
+\hyperlink{classtb___s___p___sr_1_1behavioral_a632871609fb12ecc617e3099ffee2d03}{m\+\_\+restart\+\_\+generator}  {\bfseries restart\+\_\+generator}   
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+clk\+\_\+50\+M\+Hz@{P\+\_\+clk\+\_\+50\+M\+Hz}}
+\index{P\+\_\+clk\+\_\+50\+M\+Hz@{P\+\_\+clk\+\_\+50\+M\+Hz}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+clk\+\_\+50\+M\+Hz}{P_clk_50MHz}}]{\setlength{\rightskip}{0pt plus 5cm}P\+\_\+clk\+\_\+50\+M\+Hz (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classtb___s___p___sr_1_1behavioral_a4b6940703ffe261d728114b7c6c439e8}{}\label{classtb___s___p___sr_1_1behavioral_a4b6940703ffe261d728114b7c6c439e8}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+command@{P\+\_\+command}}
+\index{P\+\_\+command@{P\+\_\+command}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+command}{P_command}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+command ( ) \hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a5e2498b01d0a28e123f30b5d92e44447}{}\label{classtb___s___p___sr_1_1behavioral_a5e2498b01d0a28e123f30b5d92e44447}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+fast\+\_\+scl@{P\+\_\+fast\+\_\+scl}}
+\index{P\+\_\+fast\+\_\+scl@{P\+\_\+fast\+\_\+scl}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+fast\+\_\+sclscl\+\_\+out}{P_fast_sclscl_out}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+fast\+\_\+scl(
+\begin{DoxyParamCaption}
+\item[{}]{{\bfseries {\bfseries {\bf scl\+\_\+out}} \textcolor{vhdlchar}{ }} {\em }}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a39912d980eb609d27877afa8f7e7e1f2}{}\label{classtb___s___p___sr_1_1behavioral_a39912d980eb609d27877afa8f7e7e1f2}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+others\+\_\+signal@{P\+\_\+others\+\_\+signal}}
+\index{P\+\_\+others\+\_\+signal@{P\+\_\+others\+\_\+signal}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+others\+\_\+signal}{P_others_signal}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+others\+\_\+signal ( ) \hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ad9352d7195a550389abc45f562eae289}{}\label{classtb___s___p___sr_1_1behavioral_ad9352d7195a550389abc45f562eae289}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+\+S\+DA@{P\+\_\+\+S\+DA}}
+\index{P\+\_\+\+S\+DA@{P\+\_\+\+S\+DA}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+\+S\+D\+Asda\+\_\+out\+\_\+\+S,sda\+\_\+out\+\_\+\+P,sda\+\_\+out\+\_\+\+Sr}{P_SDAsda_out_S,sda_out_P,sda_out_Sr}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+\+S\+DA(
+\begin{DoxyParamCaption}
+\item[{}]{{\bfseries {\bfseries {\bf sda\+\_\+out\+\_\+S}} \textcolor{vhdlchar}{ }} {\em } , }
+\item[{}]{{\bfseries {\bfseries {\bf sda\+\_\+out\+\_\+P}} \textcolor{vhdlchar}{ }} {\em } , }
+\item[{}]{{\bfseries {\bfseries {\bf sda\+\_\+out\+\_\+\+Sr}} \textcolor{vhdlchar}{ }} {\em }}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aa9fdf0ff9185eb362bd480fc1d62f1e1}{}\label{classtb___s___p___sr_1_1behavioral_aa9fdf0ff9185eb362bd480fc1d62f1e1}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+slow\+\_\+scl@{P\+\_\+slow\+\_\+scl}}
+\index{P\+\_\+slow\+\_\+scl@{P\+\_\+slow\+\_\+scl}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+slow\+\_\+sclscl\+\_\+out}{P_slow_sclscl_out}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+slow\+\_\+scl(
+\begin{DoxyParamCaption}
+\item[{}]{{\bfseries {\bfseries {\bf scl\+\_\+out}} \textcolor{vhdlchar}{ }} {\em }}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a604353fd55bad277047edd8d997126c1}{}\label{classtb___s___p___sr_1_1behavioral_a604353fd55bad277047edd8d997126c1}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!P\+\_\+syncrst\+\_\+signals@{P\+\_\+syncrst\+\_\+signals}}
+\index{P\+\_\+syncrst\+\_\+signals@{P\+\_\+syncrst\+\_\+signals}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{P\+\_\+syncrst\+\_\+signals}{P_syncrst_signals}}]{\setlength{\rightskip}{0pt plus 5cm} {\bfseries \textcolor{vhdlchar}{ }} P\+\_\+syncrst\+\_\+signals ( ) \hspace{0.3cm}{\ttfamily [Process]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a5db205d3a8eaa6843c25e75308a3ad44}{}\label{classtb___s___p___sr_1_1behavioral_a5db205d3a8eaa6843c25e75308a3ad44}
+
+
+\subsection{Member Data Documentation}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!casc\+\_\+in\+\_\+1@{casc\+\_\+in\+\_\+1}}
+\index{casc\+\_\+in\+\_\+1@{casc\+\_\+in\+\_\+1}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{casc\+\_\+in\+\_\+1}{casc_in_1}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf casc\+\_\+in\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aaed2f21c33b2ae2013e88e57ddb091d9}{}\label{classtb___s___p___sr_1_1behavioral_aaed2f21c33b2ae2013e88e57ddb091d9}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!cascadable\+\_\+counter@{cascadable\+\_\+counter}}
+\index{cascadable\+\_\+counter@{cascadable\+\_\+counter}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{cascadable\+\_\+counter}{cascadable_counter}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf cascadable\+\_\+counter} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a43b32943cff2ea9c75d864730f7a4f8e}{}\label{classtb___s___p___sr_1_1behavioral_a43b32943cff2ea9c75d864730f7a4f8e}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!clk\+\_\+50\+M\+Hz@{clk\+\_\+50\+M\+Hz}}
+\index{clk\+\_\+50\+M\+Hz@{clk\+\_\+50\+M\+Hz}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{clk\+\_\+50\+M\+Hz}{clk_50MHz}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf clk\+\_\+50\+M\+Hz} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aa754743a6b1100cdc70b2fa0e77bbc12}{}\label{classtb___s___p___sr_1_1behavioral_aa754743a6b1100cdc70b2fa0e77bbc12}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!clk\+\_\+ena@{clk\+\_\+ena}}
+\index{clk\+\_\+ena@{clk\+\_\+ena}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{clk\+\_\+ena}{clk_ena}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf clk\+\_\+ena} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ad2068163a678090a907c39fc195ed473}{}\label{classtb___s___p___sr_1_1behavioral_ad2068163a678090a907c39fc195ed473}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!clk\+\_\+period@{clk\+\_\+period}}
+\index{clk\+\_\+period@{clk\+\_\+period}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{clk\+\_\+period}{clk_period}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf clk\+\_\+period} {\bfseries \textcolor{vhdlchar}{time}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{\+:}\textcolor{vhdlchar}{=}\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ } \textcolor{vhdldigit}{20} \textcolor{vhdlchar}{ }\textcolor{vhdlchar}{ns}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Constant]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a608ca2ccf8923ddf0eee96f9c7d0e712}{}\label{classtb___s___p___sr_1_1behavioral_a608ca2ccf8923ddf0eee96f9c7d0e712}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!command\+\_\+restart@{command\+\_\+restart}}
+\index{command\+\_\+restart@{command\+\_\+restart}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{command\+\_\+restart}{command_restart}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf command\+\_\+restart} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aa3b923e863633fb4d1969ad33da6b058}{}\label{classtb___s___p___sr_1_1behavioral_aa3b923e863633fb4d1969ad33da6b058}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!command\+\_\+start@{command\+\_\+start}}
+\index{command\+\_\+start@{command\+\_\+start}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{command\+\_\+start}{command_start}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf command\+\_\+start} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_abdf1259cef3acec01983efae78ec3d09}{}\label{classtb___s___p___sr_1_1behavioral_abdf1259cef3acec01983efae78ec3d09}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!command\+\_\+stop@{command\+\_\+stop}}
+\index{command\+\_\+stop@{command\+\_\+stop}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{command\+\_\+stop}{command_stop}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf command\+\_\+stop} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aa1fe1b0cc18290067764ede6c6228fc7}{}\label{classtb___s___p___sr_1_1behavioral_aa1fe1b0cc18290067764ede6c6228fc7}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!C\+T\+L\+\_\+restart@{C\+T\+L\+\_\+restart}}
+\index{C\+T\+L\+\_\+restart@{C\+T\+L\+\_\+restart}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+restart}{CTL_restart}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+restart} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a20c8f77610736fc8a950b7b027df23f8}{}\label{classtb___s___p___sr_1_1behavioral_a20c8f77610736fc8a950b7b027df23f8}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!C\+T\+L\+\_\+start@{C\+T\+L\+\_\+start}}
+\index{C\+T\+L\+\_\+start@{C\+T\+L\+\_\+start}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+start}{CTL_start}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+start} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a2203d3b0ff9b27b1d80a3398b7e88af7}{}\label{classtb___s___p___sr_1_1behavioral_a2203d3b0ff9b27b1d80a3398b7e88af7}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!C\+T\+L\+\_\+stop@{C\+T\+L\+\_\+stop}}
+\index{C\+T\+L\+\_\+stop@{C\+T\+L\+\_\+stop}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{C\+T\+L\+\_\+stop}{CTL_stop}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\+T\+L\+\_\+stop} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ac2ed55ecd9a8458bd082ae26e8b9af2a}{}\label{classtb___s___p___sr_1_1behavioral_ac2ed55ecd9a8458bd082ae26e8b9af2a}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!ena\+\_\+1@{ena\+\_\+1}}
+\index{ena\+\_\+1@{ena\+\_\+1}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{ena\+\_\+1}{ena_1}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ena\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ac6071972616da6d9113dc4dae108544a}{}\label{classtb___s___p___sr_1_1behavioral_ac6071972616da6d9113dc4dae108544a}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!error\+\_\+out\+\_\+P@{error\+\_\+out\+\_\+P}}
+\index{error\+\_\+out\+\_\+P@{error\+\_\+out\+\_\+P}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{error\+\_\+out\+\_\+P}{error_out_P}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf error\+\_\+out\+\_\+P} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a12a7298f065765e34fecc23cd93c28fd}{}\label{classtb___s___p___sr_1_1behavioral_a12a7298f065765e34fecc23cd93c28fd}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!error\+\_\+out\+\_\+S@{error\+\_\+out\+\_\+S}}
+\index{error\+\_\+out\+\_\+S@{error\+\_\+out\+\_\+S}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{error\+\_\+out\+\_\+S}{error_out_S}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf error\+\_\+out\+\_\+S} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_acc2763019282ed0029e0c12324d20b95}{}\label{classtb___s___p___sr_1_1behavioral_acc2763019282ed0029e0c12324d20b95}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!error\+\_\+out\+\_\+\+Sr@{error\+\_\+out\+\_\+\+Sr}}
+\index{error\+\_\+out\+\_\+\+Sr@{error\+\_\+out\+\_\+\+Sr}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{error\+\_\+out\+\_\+\+Sr}{error_out_Sr}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf error\+\_\+out\+\_\+\+Sr} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a9d1bef50f0e52a1862c3621f6b45c348}{}\label{classtb___s___p___sr_1_1behavioral_a9d1bef50f0e52a1862c3621f6b45c348}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!error\+\_\+point@{error\+\_\+point}}
+\index{error\+\_\+point@{error\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{error\+\_\+point}{error_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf error\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ad878492cf369811f532a7244604083c3}{}\label{classtb___s___p___sr_1_1behavioral_ad878492cf369811f532a7244604083c3}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!falling\+\_\+point@{falling\+\_\+point}}
+\index{falling\+\_\+point@{falling\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{falling\+\_\+point}{falling_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf falling\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_af2220ef3b65a584870a263d172939524}{}\label{classtb___s___p___sr_1_1behavioral_af2220ef3b65a584870a263d172939524}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+clk\+\_\+ena@{m\+\_\+clk\+\_\+ena}}
+\index{m\+\_\+clk\+\_\+ena@{m\+\_\+clk\+\_\+ena}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+clk\+\_\+ena}{m_clk_ena}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+clk\+\_\+ena} {\bfseries \textcolor{vhdlchar}{cascadable\+\_\+counter}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a75009583c066055e4a11094601dd457b}{}\label{classtb___s___p___sr_1_1behavioral_a75009583c066055e4a11094601dd457b}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+restart\+\_\+generator@{m\+\_\+restart\+\_\+generator}}
+\index{m\+\_\+restart\+\_\+generator@{m\+\_\+restart\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+restart\+\_\+generator}{m_restart_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+restart\+\_\+generator} {\bfseries \textcolor{vhdlchar}{restart\+\_\+generator}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a632871609fb12ecc617e3099ffee2d03}{}\label{classtb___s___p___sr_1_1behavioral_a632871609fb12ecc617e3099ffee2d03}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+scl\+\_\+detect@{m\+\_\+scl\+\_\+detect}}
+\index{m\+\_\+scl\+\_\+detect@{m\+\_\+scl\+\_\+detect}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+scl\+\_\+detect}{m_scl_detect}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+scl\+\_\+detect} {\bfseries \textcolor{vhdlchar}{scl\+\_\+detect}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ab7a8acca32f7536b16add759f52b07c7}{}\label{classtb___s___p___sr_1_1behavioral_ab7a8acca32f7536b16add759f52b07c7}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+scl\+\_\+out@{m\+\_\+scl\+\_\+out}}
+\index{m\+\_\+scl\+\_\+out@{m\+\_\+scl\+\_\+out}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+scl\+\_\+out}{m_scl_out}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+scl\+\_\+out} {\bfseries \textcolor{vhdlchar}{scl\+\_\+out\+\_\+generator}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a08edeff8a42fae2cc3c69f92b7051a61}{}\label{classtb___s___p___sr_1_1behavioral_a08edeff8a42fae2cc3c69f92b7051a61}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+scl\+\_\+tick@{m\+\_\+scl\+\_\+tick}}
+\index{m\+\_\+scl\+\_\+tick@{m\+\_\+scl\+\_\+tick}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+scl\+\_\+tick}{m_scl_tick}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+scl\+\_\+tick} {\bfseries \textcolor{vhdlchar}{scl\+\_\+tick\+\_\+generator}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a2bd0fba2eb906e2c6a4133aaab97ce34}{}\label{classtb___s___p___sr_1_1behavioral_a2bd0fba2eb906e2c6a4133aaab97ce34}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+start\+\_\+generator@{m\+\_\+start\+\_\+generator}}
+\index{m\+\_\+start\+\_\+generator@{m\+\_\+start\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+start\+\_\+generator}{m_start_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+start\+\_\+generator} {\bfseries \textcolor{vhdlchar}{start\+\_\+generator}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a51769e3861f504370155240c6cf59748}{}\label{classtb___s___p___sr_1_1behavioral_a51769e3861f504370155240c6cf59748}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!m\+\_\+stop\+\_\+generator@{m\+\_\+stop\+\_\+generator}}
+\index{m\+\_\+stop\+\_\+generator@{m\+\_\+stop\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{m\+\_\+stop\+\_\+generator}{m_stop_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf m\+\_\+stop\+\_\+generator} {\bfseries \textcolor{vhdlchar}{stop\+\_\+generator}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Instantiation]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ac82b97dbd9b99ec1130e7e5138fa4b1d}{}\label{classtb___s___p___sr_1_1behavioral_ac82b97dbd9b99ec1130e7e5138fa4b1d}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!restart\+\_\+generator@{restart\+\_\+generator}}
+\index{restart\+\_\+generator@{restart\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{restart\+\_\+generator}{restart_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf restart\+\_\+generator} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a75a9bef9f515880dd0a2b91dca6ca827}{}\label{classtb___s___p___sr_1_1behavioral_a75a9bef9f515880dd0a2b91dca6ca827}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!rising\+\_\+point@{rising\+\_\+point}}
+\index{rising\+\_\+point@{rising\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{rising\+\_\+point}{rising_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rising\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a0edfba99131f5922f2b1d9406dee2d09}{}\label{classtb___s___p___sr_1_1behavioral_a0edfba99131f5922f2b1d9406dee2d09}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!rst\+\_\+1@{rst\+\_\+1}}
+\index{rst\+\_\+1@{rst\+\_\+1}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{rst\+\_\+1}{rst_1}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rst\+\_\+1} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a51c8392febe2f54bfc0e599a761cd7ef}{}\label{classtb___s___p___sr_1_1behavioral_a51c8392febe2f54bfc0e599a761cd7ef}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!rst\+\_\+variable@{rst\+\_\+variable}}
+\index{rst\+\_\+variable@{rst\+\_\+variable}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{rst\+\_\+variable}{rst_variable}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rst\+\_\+variable} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ae54dd7074d45e37f77b1b1f40f177769}{}\label{classtb___s___p___sr_1_1behavioral_ae54dd7074d45e37f77b1b1f40f177769}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sampling\+\_\+point@{sampling\+\_\+point}}
+\index{sampling\+\_\+point@{sampling\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sampling\+\_\+point}{sampling_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sampling\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_abd4b10cf61e5d0371f51056af53493d0}{}\label{classtb___s___p___sr_1_1behavioral_abd4b10cf61e5d0371f51056af53493d0}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!S\+C\+L\+\_\+detect@{S\+C\+L\+\_\+detect}}
+\index{S\+C\+L\+\_\+detect@{S\+C\+L\+\_\+detect}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{S\+C\+L\+\_\+detect}{SCL_detect}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+C\+L\+\_\+detect} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ac7f4cd134c0e83e439609642b47df7d2}{}\label{classtb___s___p___sr_1_1behavioral_ac7f4cd134c0e83e439609642b47df7d2}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+in\+\_\+fast@{scl\+\_\+in\+\_\+fast}}
+\index{scl\+\_\+in\+\_\+fast@{scl\+\_\+in\+\_\+fast}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+in\+\_\+fast}{scl_in_fast}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+in\+\_\+fast} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a8e38d9b726ce4a0f9a01e9199788c675}{}\label{classtb___s___p___sr_1_1behavioral_a8e38d9b726ce4a0f9a01e9199788c675}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+in\+\_\+slow@{scl\+\_\+in\+\_\+slow}}
+\index{scl\+\_\+in\+\_\+slow@{scl\+\_\+in\+\_\+slow}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+in\+\_\+slow}{scl_in_slow}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+in\+\_\+slow} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a4a9f48b658f17e2d3309e7154346e605}{}\label{classtb___s___p___sr_1_1behavioral_a4a9f48b658f17e2d3309e7154346e605}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+out@{scl\+\_\+out}}
+\index{scl\+\_\+out@{scl\+\_\+out}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+out}{scl_out}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+out} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a30234227a8ae73dda5f4181fa05043ed}{}\label{classtb___s___p___sr_1_1behavioral_a30234227a8ae73dda5f4181fa05043ed}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+out\+\_\+generator@{scl\+\_\+out\+\_\+generator}}
+\index{scl\+\_\+out\+\_\+generator@{scl\+\_\+out\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+out\+\_\+generator}{scl_out_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+out\+\_\+generator} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a2e4722e32567a27d294c176f4f8603c5}{}\label{classtb___s___p___sr_1_1behavioral_a2e4722e32567a27d294c176f4f8603c5}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+tick@{scl\+\_\+tick}}
+\index{scl\+\_\+tick@{scl\+\_\+tick}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+tick}{scl_tick}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+tick} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a4d66cff92615956cf384779c103ecb56}{}\label{classtb___s___p___sr_1_1behavioral_a4d66cff92615956cf384779c103ecb56}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!scl\+\_\+tick\+\_\+generator@{scl\+\_\+tick\+\_\+generator}}
+\index{scl\+\_\+tick\+\_\+generator@{scl\+\_\+tick\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{scl\+\_\+tick\+\_\+generator}{scl_tick_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf scl\+\_\+tick\+\_\+generator} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ad15332f3450dcfdd8b69d4dc7006f72c}{}\label{classtb___s___p___sr_1_1behavioral_ad15332f3450dcfdd8b69d4dc7006f72c}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sda\+\_\+in@{sda\+\_\+in}}
+\index{sda\+\_\+in@{sda\+\_\+in}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sda\+\_\+in}{sda_in}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sda\+\_\+in} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ae710a0817599ea81df4bfc7279b7b30b}{}\label{classtb___s___p___sr_1_1behavioral_ae710a0817599ea81df4bfc7279b7b30b}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sda\+\_\+out@{sda\+\_\+out}}
+\index{sda\+\_\+out@{sda\+\_\+out}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sda\+\_\+out}{sda_out}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sda\+\_\+out} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_aceb09551c0f5cccb6cbb79f924a4286d}{}\label{classtb___s___p___sr_1_1behavioral_aceb09551c0f5cccb6cbb79f924a4286d}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sda\+\_\+out\+\_\+P@{sda\+\_\+out\+\_\+P}}
+\index{sda\+\_\+out\+\_\+P@{sda\+\_\+out\+\_\+P}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sda\+\_\+out\+\_\+P}{sda_out_P}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sda\+\_\+out\+\_\+P} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ab30cd8215588e5e70fda5ebeda888f94}{}\label{classtb___s___p___sr_1_1behavioral_ab30cd8215588e5e70fda5ebeda888f94}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sda\+\_\+out\+\_\+S@{sda\+\_\+out\+\_\+S}}
+\index{sda\+\_\+out\+\_\+S@{sda\+\_\+out\+\_\+S}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sda\+\_\+out\+\_\+S}{sda_out_S}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sda\+\_\+out\+\_\+S} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a051bd790d4ac3e218768535af81a3b00}{}\label{classtb___s___p___sr_1_1behavioral_a051bd790d4ac3e218768535af81a3b00}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!sda\+\_\+out\+\_\+\+Sr@{sda\+\_\+out\+\_\+\+Sr}}
+\index{sda\+\_\+out\+\_\+\+Sr@{sda\+\_\+out\+\_\+\+Sr}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{sda\+\_\+out\+\_\+\+Sr}{sda_out_Sr}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sda\+\_\+out\+\_\+\+Sr} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a0bfb74db8c40311a304a886f63009859}{}\label{classtb___s___p___sr_1_1behavioral_a0bfb74db8c40311a304a886f63009859}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!start\+\_\+generator@{start\+\_\+generator}}
+\index{start\+\_\+generator@{start\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{start\+\_\+generator}{start_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf start\+\_\+generator} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a455446c75a95cb11c113b7509a08bc5a}{}\label{classtb___s___p___sr_1_1behavioral_a455446c75a95cb11c113b7509a08bc5a}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!start\+\_\+point@{start\+\_\+point}}
+\index{start\+\_\+point@{start\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{start\+\_\+point}{start_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf start\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_a9a49dd75722f07dca78d9c3069a7ea74}{}\label{classtb___s___p___sr_1_1behavioral_a9a49dd75722f07dca78d9c3069a7ea74}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!stop\+\_\+generator@{stop\+\_\+generator}}
+\index{stop\+\_\+generator@{stop\+\_\+generator}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{stop\+\_\+generator}{stop_generator}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf stop\+\_\+generator} {\bfseries \textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Component]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ad7831417f03bd84c318e1dd9bd53c0bf}{}\label{classtb___s___p___sr_1_1behavioral_ad7831417f03bd84c318e1dd9bd53c0bf}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!stop\+\_\+point@{stop\+\_\+point}}
+\index{stop\+\_\+point@{stop\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{stop\+\_\+point}{stop_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf stop\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_abfe2b31e1914cd8da7dd38be3abb344f}{}\label{classtb___s___p___sr_1_1behavioral_abfe2b31e1914cd8da7dd38be3abb344f}
+\index{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}!writing\+\_\+point@{writing\+\_\+point}}
+\index{writing\+\_\+point@{writing\+\_\+point}!tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral@{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr\+::behavioral}}
+\subsubsection[{\texorpdfstring{writing\+\_\+point}{writing_point}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf writing\+\_\+point} {\bfseries \textcolor{vhdlchar}{std\+\_\+logic}\textcolor{vhdlchar}{ }} \hspace{0.3cm}{\ttfamily [Signal]}}\hypertarget{classtb___s___p___sr_1_1behavioral_ac7b5210640dbfa1943d314abf5bd97f7}{}\label{classtb___s___p___sr_1_1behavioral_ac7b5210640dbfa1943d314abf5bd97f7}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{tb___s___p___sr_8vhd}{tb\+\_\+\+S\+\_\+\+P\+\_\+\+Sr.\+vhd}\end{DoxyCompactItemize}
