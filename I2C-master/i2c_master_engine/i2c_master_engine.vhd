@@ -186,12 +186,42 @@ architecture behavior of i2c_master_engine is
 	--! Shift Register Transmitter Components
 	component shift_register_transmitter is
 	
-	
-	
-	
-	
-	
+	port(clk: in std_logic;
+		  clk_ena: in std_logic;
+		  sync_rst: in std_logic;
+		  TX: in std_logic_vector (7 downto 0);		-- To connect with TX register
+		  rising_point: in std_logic;
+		  sampling_point: in std_logic;
+		  falling_point: in std_logic;
+		  writing_point: in std_logic;
+		  scl_tick: in std_logic;
+		  sda_in: in std_logic;
+		  ACK_out: out std_logic;
+		  ACK_valued: out std_logic;		-- To inform ACK_out is newly valued
+		  TX_captured: out std_logic;		-- TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
+		  sda_out: out std_logic);
+
 	end component shift_register_transmitter;
+	
+	-- 8.
+	--! Shift Register Receiver Components
+	component shift_register_receiver is
+	
+	port(clk: in std_logic;				--! clock input
+	 clk_ena: in std_logic;			--! clock enable input
+	 sync_rst: in std_logic;		--! synchronous reset input
+	 scl_tick: in std_logic;		--! scl_tick input
+	 sda_in: in std_logic;			--! sda_in input 
+	 falling_point: in std_logic;	--! falling_point input
+	 sampling_point: in std_logic;	--! sampling_point input
+	 writing_point: in std_logic;	--! writing_point input
+	 ACK_in: in std_logic;			--! acknowledge bit input
+	 sda_out: out std_logic;		--! sda_out output
+	 data_received: out std_logic;	--! data_received bit output
+	 RX: out std_logic_vector (7 downto 0) --! RX received byte output
+	 );
+	
+	end component shift_register_receiver;
 	
 	
 begin

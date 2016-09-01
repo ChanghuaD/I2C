@@ -1,0 +1,5 @@
+-- To do 
+
+1. Complete the registers (flip-flop)
+
+2. finish the master engine project
