@@ -24,7 +24,8 @@ entity i2c_master_engine is
 	
 	port(clk: in std_logic;				--! clock input
 		 clk_ena: in std_logic;			--! clock enable input
-		 sync_rst: in std_logic; 		--! synchronous reset input
+		 sync_rst: in std_logic; 		--! synchronous reset input, '0' active
+		 CTL_ROLE: in std_logic;		--! CTL_ROLE bit input, to activate the master engine
 		 CTL_ACK: in std_logic;			--! CTL_ACK bit input
 		 CTL_RW: in std_logic; 			--! CTL_RW bit input
 		 CTL_RESTART: in std_logic;		--! CTL_RESTART bit input
@@ -35,6 +36,7 @@ entity i2c_master_engine is
 		 ST_TX_EMPTY: in std_logic; 	--! ST_TX_EMPTY bit input
 		 TX_DATA: in std_logic_vector (7 downto 0);  	--! TX_DATA byte input
 		 BAUD_RATE: in std_logic_vector (7 downto 0);  	--! BAUD_RATE byte input
+		 SLAVE_ADDR: in std_logic_vector (6 downto 0);	--! SLAVE ADDRESS 7 bits input
 		 
 		 CTL_RESTART_C: out std_logic;			--! CTL_RESTART bit Clear output
 		 CTL_STOP_C: out std_logic;				--! CTL_STOP bit Clear output
@@ -186,20 +188,20 @@ architecture behavior of i2c_master_engine is
 	--! Shift Register Transmitter Components
 	component shift_register_transmitter is
 	
-	port(clk: in std_logic;
-		  clk_ena: in std_logic;
-		  sync_rst: in std_logic;
-		  TX: in std_logic_vector (7 downto 0);		-- To connect with TX register
-		  rising_point: in std_logic;
-		  sampling_point: in std_logic;
-		  falling_point: in std_logic;
-		  writing_point: in std_logic;
-		  scl_tick: in std_logic;
-		  sda_in: in std_logic;
-		  ACK_out: out std_logic;
-		  ACK_valued: out std_logic;		-- To inform ACK_out is newly valued
-		  TX_captured: out std_logic;		-- TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
-		  sda_out: out std_logic);
+	port(clk: in std_logic;					--! clock input
+		  clk_ena: in std_logic;			--! clock enable input
+		  sync_rst: in std_logic;			--! synchronous reset input
+		  TX: in std_logic_vector (7 downto 0);		--! TX register input
+		  rising_point: in std_logic;		--! rising_point input
+		  sampling_point: in std_logic;		--! sampling_point input
+		  falling_point: in std_logic;		--! falling_point input
+		  writing_point: in std_logic;		--! writing_point input
+		  scl_tick: in std_logic;			--! scl_tick input
+		  sda_in: in std_logic;				--! sda_in input
+		  ACK_out: out std_logic;			--! ACK_out output
+		  ACK_valued: out std_logic;		--! ACK_valued outpu To inform ACK_out is newly valued
+		  TX_captured: out std_logic;		--! TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
+		  sda_out: out std_logic);			--! sda_out output
 
 	end component shift_register_transmitter;
 	
@@ -224,7 +226,173 @@ architecture behavior of i2c_master_engine is
 	end component shift_register_receiver;
 	
 	
+	
+	----- Signals -----------------------------------------------------
+	type state_type is (RESET, INIT, READY_1, START, SEND_ADDR, READ_DATA, WRITE_DATA, STOP, ERROR, READY_2, RESTART);
+	signal state: state_type : = RESET;
+	signal is_ready: std_logic := '0';
+	
+	
 begin
+
+
+	--! Combine the 7 bits address and R/W bit
+	P_combine_ADDR_RW: process (clk) is
+		
+	begin
+	
+	
+	end process P_combine_ADDR_RW;
+	
+	-- Moore State Machine
+	
+	--! transition and storage process
+	P_transition_and_storage: process(clk) is
+	
+	begin
+	
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+			
+				if(sync_rst = '1') then
+				
+					case(state) is
+					
+					-- 1. RESET
+					when RESET => 
+							
+						if(CTL_ROLE = '1') then
+							state <= INIT;
+						end if;
+					
+					-- 2. INIT
+					when INIT =>
+						
+						if(CTL_ROLE = '1') then
+						
+							state <= READY_1;
+							
+						else	
+							state <= STOP;
+						end if;
+					
+					-- 3. READY_1
+					when READY_1 =>
+					
+						if(CTL_ROLE = '1') then
+							if(is_ready = '1' and CTL_START = '1') then
+								state <= START;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+					
+					-- 4. START
+					when START => 
+						if(CTL_ROLE = '1') then
+							if(CTL_START = '0') then
+								state <= SEND_ADDR;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+					
+					-- 5. SEND_ADDR
+					when SEND_ADDR =>
+						if(CTL_ROLE = '1') then
+							if(CTL_RW = '0') then
+								state <= READ_DATA;
+							else
+								state <= WRITE_DATA;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+						
+					-- 6. READ_DATA
+					when READ_DATA =>
+						if(CTL_ROLE = '1') then
+							if(CTL_STOP = '1') then
+								if(CTL_RESTART = '1' or CTL_START = '1') then
+									state <= ERROR;
+								else
+									state <= STOP;
+								end if;
+							else	
+								if(CTL_RESTART = '1' and CTL_START = '1') then
+									state <= ERROR;
+								else
+									if(CTL_RESTART = '1') then
+										state <= READY_2;
+									else
+										state <= ERROR;
+									end if;
+								end if;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+					-- 7. WRITE_DATA	
+					when WRITE_DATA =>
+						if(CTL_ROLE = '1') then
+							if(CTL_STOP = '1') then
+								if(CTL_RESTART = '1' or CTL_START = '1') then
+									state <= ERROR;
+								else
+									state <= STOP;
+								end if;
+							else	
+								if(CTL_RESTART = '1' and CTL_START = '1') then
+									state <= ERROR;
+								else
+									if(CTL_RESTART = '1') then
+										state <= READY_2;
+									else
+										state <= ERROR;
+									end if;
+								end if;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+						
+					-- 8. READY_2
+					when READY_2 =>
+						if(CTL_ROLE = '1') then
+						
+							if(is_ready = '1' and CTL_RESTART = '1') then
+								state <= RESTART;
+							end if;
+							
+						else	
+							state <= STOP;
+						end if;
+					
+					-- 9. RESTART
+					when RESTART =>
+						if(CTL_ROLE = '1') then
+							if(CTL_RESTART = '0') then
+								state <= SEND_ADDR;
+							end if;
+						else	
+							state <= STOP;
+						end if;
+						
+					when STOP =>
+						if(CTL_STOP = '0')
+							state <= RESET;
+						end if;
+					end case;
+				
+				else
+					state <= RESET;
+				end if;
+				
+			end if;		-- clk enable
+		end if;		-- clk
+	
+	end process P_transition_and_storage;
+	
 
 
 
