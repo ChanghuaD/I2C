@@ -38,7 +38,7 @@ entity i2c_master_engine is
 		 BAUD_RATE: in std_logic_vector (7 downto 0);  	--! BAUD_RATE byte input
 		 SLAVE_ADDR: in std_logic_vector (6 downto 0);	--! SLAVE ADDRESS 7 bits input
 		 SCL_IN: in std_logic;			--! SCL input
-		 SDA_OUT: in std_logic;			--! SDA input
+		 SDA_IN: in std_logic;			--! SDA input
 		 
 		 CTL_RESTART_C: out std_logic;			--! CTL_RESTART bit Clear output
 		 CTL_STOP_C: out std_logic;				--! CTL_STOP bit Clear output
@@ -237,16 +237,99 @@ architecture behavior of i2c_master_engine is
 	signal state: state_type : = RESET;
 	signal is_ready: std_logic := '0';
 	signal ADDR_RW: std_logic_vector (7 downto 0);
-	
+	-- Global siganl
+	signal error: std_logic;
+	-- SCL_TICK
+	signal scl_tick: std_logic;
+	-- SCL_detect
+	signal rising_point: std_logic;
+	signal writing_point: std_logic;
+	signal falling_point: std_logic;
+	signal sampling_point: std_logic;
+	signal stop_point: std_logic;
+	signal start_point: std_logic;
+	signal error_point: std_logic;
+	-- start_generator
+	signal command_start: std_logic;
 	
 begin
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
+	-- 1.
+	M_scl_tick: scl_tick_generator
+		generic map(max_count => 8)
+
+		port map(clk_50MHz => clk,	--! map to clock input
+				 sync_rst => sync_rst,		--! map to synchronous reset input
+				 ena => clk_ena,			--! map to clock enable input
+				 scl_tick => scl_tick		--! map to scl tick output
+				);
+	
+	-- 2.
+	M_scl_out_generator: scl_out_generator	
+		generic map(max_state => 10,		--! maximum number of states, that means the number of ticks per SCL cycle, it should be at least 10.
+					critical_state => 5)
+					
+		port map(clk => clk,				--! map to clock input
+				 rst => sync_rst,			--! map to '0' active synchronous reset input
+				 scl_tick => scl_tick,		--! map to scl ticks signal
+				 scl_in => SCL_IN,			--! map to SCL_IN input
+				 scl_out => SCL_OUT			--! map to SCL_OUT output
+				);
+	
+	-- 3.
+	M_SCL_detect: SCL_detect
+		port map(sync_rst => sync_rst,		--! map to synchronous reset input
+				  clk => clk,				--! map to clock input
+				  clk_ena => clk_ena,		--! map to clk enable input
+				  SCL_in => SCL_IN,			--! map to SCL_IN input
+				  SCL_tick => scl_tick,		--! map to scl_tick signal 
+				  
+				  SCL_rising_point => rising_point, 	--! map to rising_point signal
+				  SCL_stop_point => stop_point,			--! map to stop_point signal
+				  SCL_sample_point => sampling_point,	--! map to sampling_point signal
+				  SCL_start_point => start_point,		--! map to start point signal
+				  SCL_falling_point => falling_point,	--! map to falling point signal
+				  SCL_write_point => writing_point,		--! map to writing_point signal
+				  SCL_error_point => error_point		--! map to error_point signal
+				);
 	
 	
 	
+	-- 4.
+	M_start_generator: start_generator
+		port map(clk => clk,							--! map to clock input
+				 clk_ena => clk_ena,					--! map to clock enable input
+				 rst => sync_rst,  						--! map to synchronous reset input
+				 scl_tick => scl_tick,					--! map to scl tick signal
+				 start_point => start_point,			--! map to start point signal
+				 falling_point => falling_point,		--! map to falling point signal
+				 writing_point => writing_point,		--! map to writing point signal
+				 command_start => command_start,		--! map to command start signal
+				 sda_in => SDA_IN,						--! map to SDA_IN input
+				 error_out => error,					--! map to error siganl
+				 CTL_start => CTL_START_C,				--! map to CTL_START_C (Clear) output
+				 sda_out => SDA_OUT						--! map to SDA output
+				);
 	
+	
+	-- 5.
+	M_stop_generator: stop_generator
+		port map(clk: in std_logic;					--! clock input
+				 clk_ena: in std_logic;				--! clock enable input
+				 rst: in std_logic;					--! synchronous reset input
+				 scl_tick: in std_logic;			--! scl tick input
+				 stop_point: in std_logic;			--! stop point input
+				 start_point: in std_logic;			--! start point input
+				 writing_point: in std_logic;		--! writing point input
+				 falling_point: in std_logic;		--! falling point input
+				 command_stop: in std_logic;		--! command stop input
+				 sda_in: in std_logic;				--! SDA input	
+				 error_out: out std_logic;			--! error output
+				 CTL_stop: out std_logic;			--! CTL_stop bit output
+				 sda_out: out std_logic				--! SDA output
+				);
 	
 	
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -441,8 +524,11 @@ begin
 			SDA_OUT <= '1';
 			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
 			is_ready <= '1';
+			
+			-- .... Generate SCL according to BAUD_RATE ...................
 		
-		when
+		
+		
 		
 		
 		end case;
