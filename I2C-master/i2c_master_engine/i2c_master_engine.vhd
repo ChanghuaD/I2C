@@ -37,6 +37,8 @@ entity i2c_master_engine is
 		 TX_DATA: in std_logic_vector (7 downto 0);  	--! TX_DATA byte input
 		 BAUD_RATE: in std_logic_vector (7 downto 0);  	--! BAUD_RATE byte input
 		 SLAVE_ADDR: in std_logic_vector (6 downto 0);	--! SLAVE ADDRESS 7 bits input
+		 SCL_IN: in std_logic;			--! SCL input
+		 SDA_OUT: in std_logic;			--! SDA input
 		 
 		 CTL_RESTART_C: out std_logic;			--! CTL_RESTART bit Clear output
 		 CTL_STOP_C: out std_logic;				--! CTL_STOP bit Clear output
@@ -49,6 +51,9 @@ entity i2c_master_engine is
 		 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
 		 ST_ACK_REC_S: out std_logic;			--! ST_ACK_REC bit write output
 		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
+		 SCL_OUT: out std_logic;				--! SCL output
+		 SDA_OUT: out std_logic; 				--! SDA output
+		 
 		 
 	);
 
@@ -231,10 +236,20 @@ architecture behavior of i2c_master_engine is
 	type state_type is (RESET, INIT, READY_1, START, SEND_ADDR, READ_DATA, WRITE_DATA, STOP, ERROR, READY_2, RESTART);
 	signal state: state_type : = RESET;
 	signal is_ready: std_logic := '0';
+	signal ADDR_RW: std_logic_vector (7 downto 0);
 	
 	
 begin
 
+	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	
+	
+	
+	
+	
+	
+	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	--! Combine the 7 bits address and R/W bit
 	P_combine_ADDR_RW: process (clk) is
@@ -282,6 +297,7 @@ begin
 						if(CTL_ROLE = '1') then
 							if(is_ready = '1' and CTL_START = '1') then
 								state <= START;
+								is_ready <= '0';				-- reset the is_ready to '0'
 							end if;
 						else	
 							state <= STOP;
@@ -362,6 +378,7 @@ begin
 						
 							if(is_ready = '1' and CTL_RESTART = '1') then
 								state <= RESTART;
+								is_ready <= '0';				-- reset the is_ready to '0' (transit action)
 							end if;
 							
 						else	
@@ -394,6 +411,45 @@ begin
 	end process P_transition_and_storage;
 	
 
+	P_statactions: process (state) is
+	
+	begin
+	
+		case(state) is
+		
+		when RESET =>
+			ST_BUSY <= '0';
+			SCL_OUT <= '1';
+			SDA_OUT <= '1';
+			
+			
+		when INIT =>
+			ST_BUSY <= '1';
+			SCL_OUT <= '1';
+			SDA_OUT <= '1';
+			
+		when READY_1 =>
+			ST_BUSY <= '1';
+			SCL_OUT <= '1';
+			SDA_OUT <= '1';
+			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			is_ready <= '1';
+			
+		when READY_2 =>
+			ST_BUSY <= '1';
+			SCL_OUT <= '1';
+			SDA_OUT <= '1';
+			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			is_ready <= '1';
+		
+		when
+		
+		
+		end case;
+	
+	
+	
+	end process P_statactions;
 
 
 end architecture behavior;
