@@ -9,6 +9,7 @@
 -- Questions:
 --	1. Baud Rate ?
 --  2. Is ST_BUSY_W bit output necessary ?
+--  3. ACK_RENEWED bit ???????????????????????? To know the ACK bit is renewed or not
 -----************************------------
 
 
@@ -49,7 +50,7 @@ entity i2c_master_engine is
 		 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
 		 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
 		 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
-		 ST_ACK_REC_S: out std_logic;			--! ST_ACK_REC bit write output
+		 ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
 		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
 		 SCL_OUT: out std_logic;				--! SCL output
 		 SDA_OUT: out std_logic; 				--! SDA output
@@ -64,7 +65,7 @@ end entity i2c_master_engine;
 --! Behavioral architecture to describe the i2c master engine's fonction
 architecture behavior of i2c_master_engine is
 
-	----- Components -----------------------------------------------------
+	----- !!!!!!!!!!!!!!!!!!!!!! Components !!!!!!!!!!!!!!!!!!!!!!!! -----------------------------------------------------
 
 	-- 1. 
 	--! SCL ticks component, to generate SCL tick
@@ -204,7 +205,7 @@ architecture behavior of i2c_master_engine is
 		  scl_tick: in std_logic;			--! scl_tick input
 		  sda_in: in std_logic;				--! sda_in input
 		  ACK_out: out std_logic;			--! ACK_out output
-		  ACK_valued: out std_logic;		--! ACK_valued outpu To inform ACK_out is newly valued
+		  ACK_valued: out std_logic;		--! ACK_valued output '1', To inform ACK_out is newly valued
 		  TX_captured: out std_logic;		--! TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
 		  sda_out: out std_logic);			--! sda_out output
 
@@ -231,14 +232,29 @@ architecture behavior of i2c_master_engine is
 	end component shift_register_receiver;
 	
 	
+	-- 9.
+	--! 2 in 1 8-bit MUX
+	component mux_8_bits is
 	
-	----- Signals -----------------------------------------------------
+	port(SEL: in std_logic;								--! SELECT '0' or '1' 
+		 input_0: in  std_logic_vector(7 downto 0);  	--! input '0'
+		 input_1: in std_logic_vector(7 downto 0);   	--! input '1'
+		 output: out std_logic_vector(7 downto 0)	 	--! ouput
+		);
+	
+	end component mux_8_bits;
+	
+	
+	
+	
+	
+	----- !!!!!!!!!!!!!!!!!!!!! Signals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----------------------------------------------------
 	type state_type is (RESET, INIT, READY_1, START, SEND_ADDR, READ_DATA, WRITE_DATA, STOP, ERROR, READY_2, RESTART);
 	signal state: state_type : = RESET;
 	signal is_ready: std_logic := '0';
 	signal ADDR_RW: std_logic_vector (7 downto 0);
 	-- Global siganl
-	signal error: std_logic;
+	signal error: std_logic;    			-- The result of the all errors
 	-- SCL_TICK
 	signal scl_tick: std_logic;
 	-- SCL_detect
@@ -251,6 +267,24 @@ architecture behavior of i2c_master_engine is
 	signal error_point: std_logic;
 	-- start_generator
 	signal command_start: std_logic;
+	signal sda_out_start: std_logic;
+	signal error_start: std_logic;
+	-- stop_generator
+	signal command_stop: std_logic;
+	signal sda_out_stop: std_logic;
+	signal error_stop: std_logic;
+	-- restart_generator
+	signal command_restart: std_logic;
+	signal sda_out_restart: std_logic;
+	signal error_restart: std_logic;
+	-- TX 
+	signal data_to_be_sent: std_logic_vector (7 downto 0);		-- connect with the output of the 8-bit mux
+	signal sda_out_tx: std_logic;	
+	signal ACK_valued: std_logic;
+	-- RX
+	signal sda_out_rx: std_logic;
+	-- 8-bit MUX
+	signal SEL_TX: std_logic;
 	
 begin
 
@@ -263,7 +297,7 @@ begin
 		port map(clk_50MHz => clk,	--! map to clock input
 				 sync_rst => sync_rst,		--! map to synchronous reset input
 				 ena => clk_ena,			--! map to clock enable input
-				 scl_tick => scl_tick		--! map to scl tick output
+				 scl_tick => scl_tick		--! map to scl_tick output (signal)
 				);
 	
 	-- 2.
@@ -308,39 +342,109 @@ begin
 				 writing_point => writing_point,		--! map to writing point signal
 				 command_start => command_start,		--! map to command start signal
 				 sda_in => SDA_IN,						--! map to SDA_IN input
-				 error_out => error,					--! map to error siganl
+				 error_out => error_start,				--! map to error_start siganl
 				 CTL_start => CTL_START_C,				--! map to CTL_START_C (Clear) output
-				 sda_out => SDA_OUT						--! map to SDA output
+				 sda_out => sda_out_start				--! map to sda_out_start signal
 				);
 	
 	
 	-- 5.
 	M_stop_generator: stop_generator
-		port map(clk: in std_logic;					--! clock input
-				 clk_ena: in std_logic;				--! clock enable input
-				 rst: in std_logic;					--! synchronous reset input
-				 scl_tick: in std_logic;			--! scl tick input
-				 stop_point: in std_logic;			--! stop point input
-				 start_point: in std_logic;			--! start point input
-				 writing_point: in std_logic;		--! writing point input
-				 falling_point: in std_logic;		--! falling point input
-				 command_stop: in std_logic;		--! command stop input
-				 sda_in: in std_logic;				--! SDA input	
-				 error_out: out std_logic;			--! error output
-				 CTL_stop: out std_logic;			--! CTL_stop bit output
-				 sda_out: out std_logic				--! SDA output
+		port map(clk => clk,							--! map to clock input
+				 clk_ena => clk_ena,					--! map to clock enable input
+				 rst => sync_rst,						--! map to synchronous reset input
+				 scl_tick => scl_tick,					--! map to scl tick signal
+				 stop_point => stop_point,				--! map to stop_point signal
+				 start_point => start_point,			--! map to start_point signal
+				 writing_point => writing_point,		--! map to writing_point signal
+				 falling_point => falling_point,		--! map to falling_point signal
+				 command_stop => command_stop,			--! map command_stop signal
+				 sda_in => SDA_IN,						--! map to SDA_IN input	
+				 error_out => error_stop,				--! map to error_stop signal
+				 CTL_stop => CTL_STOP_C,				--! map to CTL_STOP_C (Clear) bit output
+				 sda_out => sda_out_stop				--! map to sda_out_stop signal
 				);
+	
+	-- 6. 
+	M_restart_generator: restart_generator
+		port map(clk => clk,							--! map to clock input
+				 clk_ena => clk_ena,					--! map to clk enable input
+				 rst => sync_rst,						--! map to synchronous reset input	
+				 scl_tick => scl_tick,					--! map to scl_tick signal
+				 stop_point=> stop_point,				--! map to stop_point signal
+				 start_point => start_point,			--! map to start_point signal
+				 writing_point => writing_point,		--! map to writing point signal
+				 falling_point => falling_point,		--! map to falling_point signal
+				 command_restart => command_restart, 	--! map to command_restart signal
+				 sda_in => SDA_IN,						--! map to SDA_IN input
+				 error_out => error_restart,			--! map to error_restart signal
+				 CTL_restart => CTL_RESTART_C,			--! CTL_RESTART_C (Clear) bit output
+				 sda_out => sda_out_restart				--! map to sda_out_restart signal
+				);
+				
+	-- 7. 
+	M_shift_register_transmitter: shift_register_transmitter
+		port map(clk => clk,							--! map to clock input
+				  clk_ena => clk_ena,					--! map to clock enable input
+				  sync_rst => sync_rst,					--! map to synchronous reset input
+				  TX => data_to_be_sent,				--! map to data_to_be_sent signal
+				  rising_point => rising_point,			--! map to rising_point signal
+				  sampling_point => sampling_point, 	--! map to sampling_point signal
+				  falling_point => falling_point, 		--! map to falling_point signal
+				  writing_point => writing_point, 		--! map to writing_point signal
+				  scl_tick => scl_tick, 				--! map to scl_tick signal
+				  sda_in => SDA_IN, 					--! map to SDA_IN input
+				  ACK_out => ST_ACK_REC_W, 				--! ACK_out output WRITE '0' or '1'
+				  ACK_valued => ACK_valued,				--! map to ACK_valued signal, signal equals '1' means to inform ACK_out is renewed
+				  TX_captured => ST_TX_EMPTY_S,			--! map to ST_TX_EMPTY_S output, TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
+				  sda_out => sda_out_tx  				--! map to sda_out_tx signal
+				);
+	
+	
+	
+	
+	-- 8.
+	M_shift_register_receiver: shift_register_receiver
+		port map(clk => clk,							--!map to clock input
+				 clk_ena => clk_ena,					--! map to clock enable input
+				 sync_rst => sync_rst,					--! map to synchronous reset input
+				 scl_tick => scl_tick,					--! map to scl_tick signal
+				 sda_in => SDA_IN,						--! map to SDA_IN input 
+				 falling_point => falling_point,		--! map to falling_point signal
+				 sampling_point => sampling_point, 		--! map to sampling_point signal
+				 writing_point => writing_point,		--! map to writing_point signal
+				 ACK_in => CTL_ACK,						--! map to acknowledge bit input
+				 sda_out => sda_out_rx,					--! map to SDA_OUT output
+				 data_received => ST_RX_FULL_S,			--! map to ST_RX_FULL_S bit output
+				 RX => RX_DATA_W 						--! map to RX received byte output
+				);
+	
+	
+	
+	
+	
+	-- 9.
+	M_mux_8_bits: mux_8_bits
+		port map(SEL => SEL_TX,						--! map to SEL_TX, SELECT '0' or '1' 
+				 input_0 => ADDR_RW,  				--! map to combined ADDR_RW, input '0'
+				 input_1 => TX_DATA,  				--! map to TX_DATA, input '1'
+				 output => data_to_be_sent	 		--! map to data_to_be_sent
+				);
+	
+	
 	
 	
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+	---------------------------------------------
 	--! Combine the 7 bits address and R/W bit
-	P_combine_ADDR_RW: process (clk) is
+	--P_combine_ADDR_RW: process (clk) is
 		
-	begin
+	--begin
 	
 	
-	end process P_combine_ADDR_RW;
+	--end process P_combine_ADDR_RW;
+	---------------------------------------------
 	
 	-- Moore State Machine
 	
@@ -508,19 +612,19 @@ begin
 			
 		when INIT =>
 			ST_BUSY <= '1';
-			SCL_OUT <= '1';
+		--	SCL_OUT <= '1';
 			SDA_OUT <= '1';
 			
 		when READY_1 =>
 			ST_BUSY <= '1';
-			SCL_OUT <= '1';
+		--	SCL_OUT <= '1';
 			SDA_OUT <= '1';
 			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
 			is_ready <= '1';
 			
 		when READY_2 =>
 			ST_BUSY <= '1';
-			SCL_OUT <= '1';
+		--	SCL_OUT <= '1';
 			SDA_OUT <= '1';
 			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
 			is_ready <= '1';
@@ -536,6 +640,15 @@ begin
 	
 	
 	end process P_statactions;
+	
+	
+	-- AND all sda_out output 
+	P_SDA_OUT: process(clk) is
+	
+	begin
+	
+	
+	end process P_SDA_OUT;
 
 
 end architecture behavior;

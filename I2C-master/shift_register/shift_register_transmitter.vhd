@@ -27,7 +27,7 @@ entity shift_register_transmitter is
 		  scl_tick: in std_logic;			--! scl_tick input
 		  sda_in: in std_logic;				--! sda_in input
 		  ACK_out: out std_logic;			--! ACK_out output
-		  ACK_valued: out std_logic;		--! ACK_valued outpu To inform ACK_out is newly valued
+		  ACK_valued: out std_logic;		--! ACK_valued output To inform ACK_out is newly valued
 		  TX_captured: out std_logic;		--! TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
 		  sda_out: out std_logic);			--! sda_out output
 		  
