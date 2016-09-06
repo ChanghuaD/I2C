@@ -438,12 +438,12 @@ begin
 
 	---------------------------------------------
 	--! Combine the 7 bits address and R/W bit
-	--P_combine_ADDR_RW: process (clk) is
+	P_combine_ADDR_RW: process (SLAVE_ADDR, R/W) is
 		
-	--begin
+	begin
+		ADDR_RW <= SLAVE_ADDR & R/W;
 	
-	
-	--end process P_combine_ADDR_RW;
+	end process P_combine_ADDR_RW;
 	---------------------------------------------
 	
 	-- Moore State Machine
@@ -619,18 +619,20 @@ begin
 			ST_BUSY <= '1';
 		--	SCL_OUT <= '1';
 			SDA_OUT <= '1';
-			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+	-- ???	--	ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			SEL_TX <= '0';
 			is_ready <= '1';
 			
 		when READY_2 =>
 			ST_BUSY <= '1';
 		--	SCL_OUT <= '1';
 			SDA_OUT <= '1';
-			ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+	-- ???	--		ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			SEL_TX <= '0';
 			is_ready <= '1';
 			
 			-- .... Generate SCL according to BAUD_RATE ...................
-		
+		when 
 		
 		
 		
@@ -643,10 +645,11 @@ begin
 	
 	
 	-- AND all sda_out output 
-	P_SDA_OUT: process(clk) is
+	P_SDA_OUT: process(sda_out_restart, sda_out_rx, sda_out_start, sda_out_stop, sda_out_tx) is
 	
 	begin
 	
+		SDA_OUT <= sda_out_restart AND sda_out_rx AND sda_out_start AND sda_out_stop AND sda_out_tx;
 	
 	end process P_SDA_OUT;
 
