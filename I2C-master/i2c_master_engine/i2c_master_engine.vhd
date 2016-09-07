@@ -53,9 +53,7 @@ entity i2c_master_engine is
 		 ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
 		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
 		 SCL_OUT: out std_logic;				--! SCL output
-		 SDA_OUT: out std_logic; 				--! SDA output
-		 
-		 
+		 SDA_OUT: out std_logic 				--! SDA output
 	);
 
 
@@ -239,7 +237,8 @@ architecture behavior of i2c_master_engine is
 	port(SEL: in std_logic;								--! SELECT '0' or '1' 
 		 input_0: in  std_logic_vector(7 downto 0);  	--! input '0'
 		 input_1: in std_logic_vector(7 downto 0);   	--! input '1'
-		 output: out std_logic_vector(7 downto 0)	 	--! ouput
+		 output: out std_logic_vector(7 downto 0);	 	--! ouput
+		 error: out std_logic							--! error
 		);
 	
 	end component mux_8_bits;
@@ -250,11 +249,14 @@ architecture behavior of i2c_master_engine is
 	
 	----- !!!!!!!!!!!!!!!!!!!!! Signals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----------------------------------------------------
 	type state_type is (RESET, INIT, READY_1, START, SEND_ADDR, READ_DATA, WRITE_DATA, STOP, ERROR, READY_2, RESTART);
-	signal state: state_type : = RESET;
-	signal is_ready: std_logic := '0';
+	signal state: state_type;
 	signal ADDR_RW: std_logic_vector (7 downto 0);
+	
+	
+	
+	
 	-- Global siganl
-	signal error: std_logic;    			-- The result of the all errors
+	signal signal_error: std_logic;    			-- The result of the all errors
 	-- SCL_TICK
 	signal scl_tick: std_logic;
 	-- SCL_detect
@@ -281,10 +283,13 @@ architecture behavior of i2c_master_engine is
 	signal data_to_be_sent: std_logic_vector (7 downto 0);		-- connect with the output of the 8-bit mux
 	signal sda_out_tx: std_logic;	
 	signal ACK_valued: std_logic;
+	signal rst_transmitter: std_logic;
 	-- RX
 	signal sda_out_rx: std_logic;
+	signal rst_receiver: std_logic;
 	-- 8-bit MUX
 	signal SEL_TX: std_logic;
+	signal error_MUX: std_logic;
 	
 begin
 
@@ -386,7 +391,7 @@ begin
 	M_shift_register_transmitter: shift_register_transmitter
 		port map(clk => clk,							--! map to clock input
 				  clk_ena => clk_ena,					--! map to clock enable input
-				  sync_rst => sync_rst,					--! map to synchronous reset input
+				  sync_rst => rst_transmitter,					--! map to synchronous reset input
 				  TX => data_to_be_sent,				--! map to data_to_be_sent signal
 				  rising_point => rising_point,			--! map to rising_point signal
 				  sampling_point => sampling_point, 	--! map to sampling_point signal
@@ -407,7 +412,7 @@ begin
 	M_shift_register_receiver: shift_register_receiver
 		port map(clk => clk,							--!map to clock input
 				 clk_ena => clk_ena,					--! map to clock enable input
-				 sync_rst => sync_rst,					--! map to synchronous reset input
+				 sync_rst => rst_receiver,				--! map to synchronous reset input
 				 scl_tick => scl_tick,					--! map to scl_tick signal
 				 sda_in => SDA_IN,						--! map to SDA_IN input 
 				 falling_point => falling_point,		--! map to falling_point signal
@@ -428,7 +433,8 @@ begin
 		port map(SEL => SEL_TX,						--! map to SEL_TX, SELECT '0' or '1' 
 				 input_0 => ADDR_RW,  				--! map to combined ADDR_RW, input '0'
 				 input_1 => TX_DATA,  				--! map to TX_DATA, input '1'
-				 output => data_to_be_sent	 		--! map to data_to_be_sent
+				 output => data_to_be_sent,	 		--! map to data_to_be_sent
+				 error => error_MUX							--! error
 				);
 	
 	
@@ -437,17 +443,12 @@ begin
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	---------------------------------------------
-	--! Combine the 7 bits address and R/W bit
-	P_combine_ADDR_RW: process (SLAVE_ADDR, R/W) is
-		
-	begin
-		ADDR_RW <= SLAVE_ADDR & R/W;
 	
-	end process P_combine_ADDR_RW;
 	---------------------------------------------
 	
 	-- Moore State Machine
 	
+	-- 1.
 	--! transition and storage process
 	P_transition_and_storage: process(clk) is
 	
@@ -471,7 +472,7 @@ begin
 					when INIT =>
 						
 						if(CTL_ROLE = '1') then
-						
+							
 							state <= READY_1;
 							
 						else	
@@ -482,9 +483,10 @@ begin
 					when READY_1 =>
 					
 						if(CTL_ROLE = '1') then
-							if(is_ready = '1' and CTL_START = '1') then
+							if(CTL_START = '1') then
+								ADDR_RW <= SLAVE_ADDR & CTL_RW;
 								state <= START;
-								is_ready <= '0';				-- reset the is_ready to '0'
+								command_start <= '1';
 							end if;
 						else	
 							state <= STOP;
@@ -494,7 +496,9 @@ begin
 					when START => 
 						if(CTL_ROLE = '1') then
 							if(CTL_START = '0') then
+								command_start <= '0';			-- Reset the command_start to '0'
 								state <= SEND_ADDR;
+								
 							end if;
 						else	
 							state <= STOP;
@@ -562,12 +566,10 @@ begin
 					-- 8. READY_2
 					when READY_2 =>
 						if(CTL_ROLE = '1') then
-						
-							if(is_ready = '1' and CTL_RESTART = '1') then
-								state <= RESTART;
-								is_ready <= '0';				-- reset the is_ready to '0' (transit action)
+							if(CTL_START = '1') then
+								ADDR_RW <= SLAVE_ADDR & CTL_RW;
+								state <= START;
 							end if;
-							
 						else	
 							state <= STOP;
 						end if;
@@ -576,16 +578,24 @@ begin
 					when RESTART =>
 						if(CTL_ROLE = '1') then
 							if(CTL_RESTART = '0') then
+								command_restart <= '0';
 								state <= SEND_ADDR;
+								
 							end if;
 						else	
 							state <= STOP;
 						end if;
 						
 					when STOP =>
-						if(CTL_STOP = '0')
+						if(CTL_STOP = '0') then
 							state <= RESET;
 						end if;
+						
+					when ERROR =>
+						state <= STOP;
+						----- !!!!!!!!
+						
+						
 					end case;
 				
 				else
@@ -597,7 +607,8 @@ begin
 	
 	end process P_transition_and_storage;
 	
-
+	
+	-- 2.
 	P_statactions: process (state) is
 	
 	begin
@@ -605,37 +616,66 @@ begin
 		case(state) is
 		
 		when RESET =>
-			ST_BUSY <= '0';
-			SCL_OUT <= '1';
-			SDA_OUT <= '1';
+			ST_BUSY_W <= '0';
+		--	SCL_OUT <= '1';
+		--	SDA_OUT <= '1';
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
 			
 			
 		when INIT =>
-			ST_BUSY <= '1';
-		--	SCL_OUT <= '1';
-			SDA_OUT <= '1';
+			ST_BUSY_W <= '1';
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			
 			
 		when READY_1 =>
-			ST_BUSY <= '1';
-		--	SCL_OUT <= '1';
-			SDA_OUT <= '1';
-	-- ???	--	ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			ST_BUSY_W <= '1';
 			SEL_TX <= '0';
-			is_ready <= '1';
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			
+		
 			
 		when READY_2 =>
-			ST_BUSY <= '1';
-		--	SCL_OUT <= '1';
-			SDA_OUT <= '1';
-	-- ???	--		ADDR_RW <= SLAVE_ADDR & R/W;		-- concanate the slave address and the read/write bit with R/W at the LSB 
+			ST_BUSY_W <= '1';
 			SEL_TX <= '0';
-			is_ready <= '1';
-			
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+
 			-- .... Generate SCL according to BAUD_RATE ...................
-		when 
+		
+		-- Generate the start condition on I2C BUS
+		when START =>  
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			SEL_TX <= '0';
+			
+		when SEND_ADDR =>
+			rst_receiver <= '0';
+			rst_transmitter <= '1';			-- SEND address and R/W 
+			
+			--	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			-- How to evite the ST_TX_EMPTY_S be modified when we send address&R/W
+			-- Another mux ???
+			-- add a signal ???
+					
+			if(ST_TX_EMPTY = '1') then
+				SEL_TX <= '1';
+			end if;
 		
 		
+		when READ_DATA =>
 		
+		when WRITE_DATA =>
+		
+		when STOP =>
+		
+		when RESTART =>
+		
+		when ERROR =>
+		
+			
 		
 		end case;
 	
@@ -644,6 +684,7 @@ begin
 	end process P_statactions;
 	
 	
+	-- 3.
 	-- AND all sda_out output 
 	P_SDA_OUT: process(sda_out_restart, sda_out_rx, sda_out_start, sda_out_stop, sda_out_tx) is
 	
