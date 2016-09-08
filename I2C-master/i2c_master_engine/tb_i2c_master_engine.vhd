@@ -13,8 +13,9 @@
 
 --! use standard library
 library ieee;
---! use logic elements
+--! use logic elements and numeric elements
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 --! test bench for i2c_master_engine
 entity tb_i2c_master_engine is
@@ -94,8 +95,8 @@ architecture Behavior of tb_i2c_master_engine is
 	signal CTL_ACK: std_logic;			--! CTL_ACK bit input
 	signal CTL_RW: std_logic; 			--! CTL_RW bit input
 	signal CTL_RESTART:  std_logic;		--! CTL_RESTART bit input
-	signal CTL_STOP:  std_logic; 		--! CTL_STOP bit input
-	signal CTL_START:  std_logic;		--! CTL_START bit input
+	signal CTL_STOP:  std_logic ; 		--! CTL_STOP bit input
+	signal CTL_START:  std_logic := '1';		--! CTL_START bit input
 	signal CTL_RESET:  std_logic; 		--! CTL_RESET bit input
 	signal ST_RX_FULL:  std_logic; 		--! ST_RX_FULL bit input
 	signal ST_TX_EMPTY:  std_logic; 	--! ST_TX_EMPTY bit input
@@ -162,8 +163,8 @@ begin
 			 SCL_IN => scl_in_fast,			--! SCL input					-- scl_in_fast 	!!!!!!!!!!!!!
 			 SDA_IN => SDA_IN,			--! SDA input
 			 
-			 CTL_RESTART_C => CTL_RESTART,			--! CTL_RESTART bit Clear output
-			 CTL_STOP_C => CTL_STOP,				--! CTL_STOP bit Clear output
+			 CTL_RESTART_C => CTL_RESTART_C,			--! CTL_RESTART bit Clear output
+			 CTL_STOP_C => CTL_STOP_C,				--! CTL_STOP bit Clear output
 			 CTL_START_C => CTL_START_C,			--! CTL_START bit Clear output
 			 ST_BUSY_W => ST_BUSY_W,				--! ST_BUSY bit Write output     
 			 ST_RX_FULL_S => ST_RX_FULL_S,			--!	ST_RX_FULL bit Set output
@@ -252,9 +253,10 @@ begin
 	
 	begin
 		CTL_ROLE <= '1';
-		
 		CTL_RESTART <= '0';
-		CTL_STOP <= '0';
+		
+		SLAVE_ADDR <= (2 downto 0 => '1', others => '0');
+		CTL_RW <= '0';		-- RW: '0' Write transmission, '1' READ request of DATA
 		wait for 2 us;
 		
 		
@@ -266,16 +268,46 @@ begin
 	P_CTL_START: process(CTL_START_C) is
 	
 	begin
+		
 		if(CTL_START_C = '0') then
 			CTL_START <= '0';
+		else	
+		end if;
+	end process P_CTL_START;
+	
+	-- 9. TX DATA   AND   CTL_STOP
+	P_TX_DATA: process(ST_TX_EMPTY_S) is
+	variable number: unsigned (7 downto 0) := (1 downto 0 => '1', others => '0');
+	begin
+		TX_DATA <= std_logic_vector(number);
+		
+		if(ST_TX_EMPTY_S = '1') then
+			ST_TX_EMPTY <= '1';
+		
+			if(number = 255) then
+				number := (others => '0');
+			else
+				number := number + 1;
+			end if;
+			
+			ST_TX_EMPTY <= '0';
+			
 		else
-			CTL_START <= '0', '1' after 2 us;
-			
-			
 		end if;
 		
+		-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		-- ???????????????????????????????????????????????????????????????????????????????????????????
+		-- The shift transmitter will only transmit untill number "8" but "9".
+		if(number >= 10) then
+			CTL_STOP <= '1';
+		else
+			CTL_STOP <= '0';
+		
+		end if;
 	
-	end process P_CTL_START;
+	
+	end process P_TX_DATA;
+	
 	
 
 end architecture Behavior;

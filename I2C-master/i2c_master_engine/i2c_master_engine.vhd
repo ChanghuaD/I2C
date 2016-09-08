@@ -144,7 +144,7 @@ architecture behavior of i2c_master_engine is
 
 	
 	-- 5.
-	--! Stop generator compoenent
+	--! Stop generator component
 	component stop_generator is
 	
 	port(clk: in std_logic;					--! clock input
@@ -244,6 +244,20 @@ architecture behavior of i2c_master_engine is
 	end component mux_8_bits;
 	
 	
+	-- 10.
+	--! 2 in 1 1-bit MUX
+	component demux_1_bit is
+
+	port(SEL: in std_logic;					--! SELECT '0' or '1' 
+		 input: in  std_logic;  			--! input '0'
+		 output_0: out std_logic;   			--! input '1'
+		 output_1: out std_logic;	 			--! ouput
+		 error: out std_logic				--! error
+	);
+
+	end component demux_1_bit;
+	
+	
 	
 	
 	
@@ -283,14 +297,16 @@ architecture behavior of i2c_master_engine is
 	signal data_to_be_sent: std_logic_vector (7 downto 0);		-- connect with the output of the 8-bit mux
 	signal sda_out_tx: std_logic;	
 	signal ACK_valued: std_logic;
+	signal TX_captured: std_logic;		-- !!!!!!!!!!!!!!
 	signal rst_transmitter: std_logic;
 	-- RX
 	signal sda_out_rx: std_logic;
 	signal rst_receiver: std_logic;
 	-- 8-bit MUX
 	signal SEL_TX: std_logic;
-	signal error_MUX: std_logic;
-	
+	signal error_8_bits_MUX: std_logic;
+	-- 1-bit MUX
+	signal error_1_bit_MUX: std_logic;
 begin
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -401,7 +417,7 @@ begin
 				  sda_in => SDA_IN, 					--! map to SDA_IN input
 				  ACK_out => ST_ACK_REC_W, 				--! ACK_out output WRITE '0' or '1'
 				  ACK_valued => ACK_valued,				--! map to ACK_valued signal, signal equals '1' means to inform ACK_out is renewed
-				  TX_captured => ST_TX_EMPTY_S,			--! map to ST_TX_EMPTY_S output, TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
+				  TX_captured => TX_captured,			--! map to TX_captured signal, (not ST_TX_EMPTY_S output), TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
 				  sda_out => sda_out_tx  				--! map to sda_out_tx signal
 				);
 	
@@ -429,14 +445,25 @@ begin
 	
 	
 	-- 9.
-	M_mux_8_bits: mux_8_bits
+	M_TX_ADDR_RW_mux_8_bits: mux_8_bits
 		port map(SEL => SEL_TX,						--! map to SEL_TX, SELECT '0' or '1' 
 				 input_0 => ADDR_RW,  				--! map to combined ADDR_RW, input '0'
 				 input_1 => TX_DATA,  				--! map to TX_DATA, input '1'
 				 output => data_to_be_sent,	 		--! map to data_to_be_sent
-				 error => error_MUX							--! error
+				 error => error_8_bits_MUX							--! error
 				);
 	
+	
+	-- 10.
+	M_TX_ADDR_RW_mux_1_bit: demux_1_bit
+		port map(SEL => SEL_TX,				--! SELECT '0' or '1' 
+			 input => TX_captured,		--! input 
+			 output_0 => open, 			--! output '0', when SEL_TX = '0', engine is sending SLAVE_ADDR&RW data, the TX_captured bit should not modify the ST_TX_EMPTY bit
+			 output_1 => ST_TX_EMPTY_S,	 		--! ouput '1', when SEL_TX = '1', connect the TX_captured with ST_TX_EMPTY_S output
+			 error => error_1_bit_MUX			--! error
+		);
+
+
 	
 	
 	
@@ -477,6 +504,7 @@ begin
 							
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 					
 					-- 3. READY_1
@@ -490,6 +518,7 @@ begin
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 					
 					-- 4. START
@@ -502,18 +531,23 @@ begin
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 					
 					-- 5. SEND_ADDR
 					when SEND_ADDR =>
 						if(CTL_ROLE = '1') then
-							if(CTL_RW = '0') then
-								state <= READ_DATA;
-							else
-								state <= WRITE_DATA;
+							if(ACK_valued = '1') then
+								if(CTL_RW = '1') then			-- CTL_RW '1' READ request data
+									state <= READ_DATA;
+								else
+									state <= WRITE_DATA;
+								--	SEL_TX <= '1';					-- switch MUX and DEMUX channel, activate TX 
+								end if;
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 						
 					-- 6. READ_DATA
@@ -524,6 +558,7 @@ begin
 									state <= ERROR;
 								else
 									state <= STOP;
+									command_stop <= '1';
 								end if;
 							else	
 								if(CTL_RESTART = '1' and CTL_START = '1') then
@@ -538,6 +573,7 @@ begin
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 					-- 7. WRITE_DATA	
 					when WRITE_DATA =>
@@ -547,20 +583,28 @@ begin
 									state <= ERROR;
 								else
 									state <= STOP;
+									command_stop <= '1';
 								end if;
 							else	
-								if(CTL_RESTART = '1' and CTL_START = '1') then
-									state <= ERROR;
-								else
-									if(CTL_RESTART = '1') then
-										state <= READY_2;
-									else
+								if(ACK_valued = '1') then				-- Wait for a complete 
+									if(CTL_RESTART = '1' and CTL_START = '1') then
 										state <= ERROR;
+									else
+										if(CTL_RESTART = '1') then
+											state <= READY_2;
+										elsif(CTL_START = '1') then
+											state <= ERROR;
+										else
+											state <= WRITE_DATA;				-- Stay at WRITE_DATA state
+										end if;
 									end if;
+								else
+								
 								end if;
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 						
 					-- 8. READY_2
@@ -572,6 +616,7 @@ begin
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 					
 					-- 9. RESTART
@@ -584,15 +629,18 @@ begin
 							end if;
 						else	
 							state <= STOP;
+							command_stop <= '1';
 						end if;
 						
 					when STOP =>
 						if(CTL_STOP = '0') then
 							state <= RESET;
+							command_stop <= '0';
 						end if;
 						
 					when ERROR =>
 						state <= STOP;
+						command_stop <= '1';
 						----- !!!!!!!!
 						
 						
@@ -654,26 +702,37 @@ begin
 		when SEND_ADDR =>
 			rst_receiver <= '0';
 			rst_transmitter <= '1';			-- SEND address and R/W 
-			
+			SEL_TX <= '0';
 			--	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			-- How to evite the ST_TX_EMPTY_S be modified when we send address&R/W
 			-- Another mux ???
 			-- add a signal ???
 					
-			if(ST_TX_EMPTY = '1') then
-				SEL_TX <= '1';
-			end if;
+			
 		
 		
 		when READ_DATA =>
 		
 		when WRITE_DATA =>
-		
+			rst_receiver <= '0';
+			rst_transmitter <= '1';			-- SEND address and R/W 
+			SEL_TX <= '1';
+			
 		when STOP =>
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			SEL_TX <= '0';
+			
 		
 		when RESTART =>
-		
-		when ERROR =>
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			SEL_TX <= '0';
+			
+		when ERROR =>	-- ??????????
+			rst_receiver <= '0';
+			rst_transmitter <= '0';
+			SEL_TX <= '0';
 		
 			
 		
@@ -685,7 +744,7 @@ begin
 	
 	
 	-- 3.
-	-- AND all sda_out output 
+	-- AND all sda_out outputs 
 	P_SDA_OUT: process(sda_out_restart, sda_out_rx, sda_out_start, sda_out_stop, sda_out_tx) is
 	
 	begin
@@ -693,6 +752,25 @@ begin
 		SDA_OUT <= sda_out_restart AND sda_out_rx AND sda_out_start AND sda_out_stop AND sda_out_tx;
 	
 	end process P_SDA_OUT;
+	
+	-- 4.
+	-- OR gate all error signals
+	P_SIGNAL_ERROR: process(clk) is
+	
+	begin
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+			
+				if(sync_rst = '1') then
+					signal_error <= error_1_bit_MUX OR error_8_bits_MUX OR error_start OR error_stop OR error_restart;   -- OR gate all error signals
+				else
+					signal_error <= '0';
+				end if;
+				
+			end if;
+		end if;
+	
+	end process;
 
 
 end architecture behavior;
