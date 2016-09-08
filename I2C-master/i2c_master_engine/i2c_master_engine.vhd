@@ -569,7 +569,7 @@ begin
 								end if;
 							else	
 								-- !!!!!!!!
-								
+								if(ACK_sent = '1') then
 									if(CTL_RESTART = '1' and CTL_START = '1') then
 										state <= ERROR;
 									else
@@ -581,6 +581,7 @@ begin
 											state <= READ_DATA;				-- Stay at READ_DATA state
 										end if;
 									end if;
+								end if;
 							end if;
 						else	
 							state <= STOP;
