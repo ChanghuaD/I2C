@@ -113,6 +113,7 @@ architecture behavioral of tb_shift_register_receiver is
 	 writing_point: in std_logic;
 	 ACK_in: in std_logic;
 	 sda_out: out std_logic;
+	 ACK_sent: out std_logic;		--! ACK_sent output, triger a '1' when ACK is sent
 	 data_received: out std_logic;
 	 RX: out std_logic_vector (7 downto 0));
 	end component shift_register_receiver;
@@ -154,6 +155,7 @@ architecture behavioral of tb_shift_register_receiver is
 	signal data_received: std_logic;
 	signal RX: std_logic_vector (7 downto 0);
 	signal ACK_in: std_logic;
+	signal ACK_sent: std_logic;
 	signal sda_out_2: std_logic;
 
 
@@ -237,6 +239,7 @@ begin
 	 writing_point => writing_point,
 	 ACK_in => ACK_in,
 	 sda_out => sda_out_2, 				--sda_out,
+	 ACK_sent => ACK_sent,		--! ACK_sent output, triger a '1' when ACK is sent
 	 data_received => data_received,
 	 RX => RX);
 	

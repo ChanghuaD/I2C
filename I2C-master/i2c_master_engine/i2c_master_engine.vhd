@@ -1,15 +1,19 @@
 ----------------------------------------------------------------
 --! @file
 --! @brief I2C Master's Engine: To act as an i2c master
---! Updated 25/07/2016
+--! Created 25/07/2016
+--! Updated 08/09/2016
 --! Changhua DING
 ----------------------------------------------------------------
 
 -----************************------------
--- Questions:
+--
 --	1. Baud Rate ?
 --  2. Is ST_BUSY_W bit output necessary ?
 --  3. ACK_RENEWED bit ???????????????????????? To know the ACK bit is renewed or not
+--	 08/09/2016
+--	READ_DATA state
+-- with a ACK_sent signal
 -----************************------------
 
 
@@ -47,9 +51,9 @@ entity i2c_master_engine is
 		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write output     
 		 ST_RX_FULL_S: out std_logic;			--!	ST_RX_FULL bit Set output
 		 ST_TX_EMPTY_S: out std_logic;			--! ST_TX_EMPTY bit set output
-		 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
-		 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
-		 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
+	--	 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
+	--	 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
+	--	 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
 		 ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
 		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
 		 SCL_OUT: out std_logic;				--! SCL output
@@ -223,6 +227,7 @@ architecture behavior of i2c_master_engine is
 	 writing_point: in std_logic;	--! writing_point input
 	 ACK_in: in std_logic;			--! acknowledge bit input
 	 sda_out: out std_logic;		--! sda_out output
+	 ACK_sent: out std_logic;		--! ACK_sent output, triger a '1' when ACK is sent
 	 data_received: out std_logic;	--! data_received bit output
 	 RX: out std_logic_vector (7 downto 0) --! RX received byte output
 	 );
@@ -302,6 +307,7 @@ architecture behavior of i2c_master_engine is
 	-- RX
 	signal sda_out_rx: std_logic;
 	signal rst_receiver: std_logic;
+	signal ACK_sent: std_logic;
 	-- 8-bit MUX
 	signal SEL_TX: std_logic;
 	signal error_8_bits_MUX: std_logic;
@@ -436,6 +442,7 @@ begin
 				 writing_point => writing_point,		--! map to writing_point signal
 				 ACK_in => CTL_ACK,						--! map to acknowledge bit input
 				 sda_out => sda_out_rx,					--! map to SDA_OUT output
+				 ACK_sent => ACK_sent,		--! ACK_sent output, triger a '1' when ACK is sent
 				 data_received => ST_RX_FULL_S,			--! map to ST_RX_FULL_S bit output
 				 RX => RX_DATA_W 						--! map to RX received byte output
 				);
@@ -561,20 +568,25 @@ begin
 									command_stop <= '1';
 								end if;
 							else	
-								if(CTL_RESTART = '1' and CTL_START = '1') then
-									state <= ERROR;
-								else
-									if(CTL_RESTART = '1') then
-										state <= READY_2;
-									else
+								-- !!!!!!!!
+								
+									if(CTL_RESTART = '1' and CTL_START = '1') then
 										state <= ERROR;
+									else
+										if(CTL_RESTART = '1') then
+											state <= READY_2;
+										elsif(CTL_START = '1') then
+											state <= ERROR;
+										else
+											state <= READ_DATA;				-- Stay at READ_DATA state
+										end if;
 									end if;
-								end if;
 							end if;
 						else	
 							state <= STOP;
 							command_stop <= '1';
 						end if;
+						
 					-- 7. WRITE_DATA	
 					when WRITE_DATA =>
 						if(CTL_ROLE = '1') then
@@ -610,9 +622,10 @@ begin
 					-- 8. READY_2
 					when READY_2 =>
 						if(CTL_ROLE = '1') then
-							if(CTL_START = '1') then
+							if(CTL_RESTART = '1') then
 								ADDR_RW <= SLAVE_ADDR & CTL_RW;
-								state <= START;
+								state <= RESTART;
+								command_restart <= '1';
 							end if;
 						else	
 							state <= STOP;
@@ -712,7 +725,10 @@ begin
 		
 		
 		when READ_DATA =>
-		
+			rst_receiver <= '1';
+			rst_transmitter <= '0';			-- SEND address and R/W 
+			SEL_TX <= '0';
+			
 		when WRITE_DATA =>
 			rst_receiver <= '0';
 			rst_transmitter <= '1';			-- SEND address and R/W 

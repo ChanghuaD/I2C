@@ -63,9 +63,9 @@ architecture Behavior of tb_i2c_master_engine is
 		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write output     
 		 ST_RX_FULL_S: out std_logic;			--!	ST_RX_FULL bit Set output
 		 ST_TX_EMPTY_S: out std_logic;			--! ST_TX_EMPTY bit set output
-		 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
-		 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
-		 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
+	--	 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
+	--	 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
+	--	 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
 		 ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
 		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
 		 SCL_OUT: out std_logic;				--! SCL output
@@ -169,9 +169,9 @@ begin
 			 ST_BUSY_W => ST_BUSY_W,				--! ST_BUSY bit Write output     
 			 ST_RX_FULL_S => ST_RX_FULL_S,			--!	ST_RX_FULL bit Set output
 			 ST_TX_EMPTY_S => ST_TX_EMPTY_S,			--! ST_TX_EMPTY bit set output
-			 ST_RESTART_DETC_W => ST_RESTART_DETC_W, 		--! ST_RESTART_DETC bit set output
-			 ST_STOP_DETC_W => ST_STOP_DETC_W,			--! ST_STOP bit write output
-			 ST_START_DETC_W => ST_START_DETC_W,		--! ST_START_DETC bit write output
+		--	 ST_RESTART_DETC_W => ST_RESTART_DETC_W, 		--! ST_RESTART_DETC bit set output
+		--	 ST_STOP_DETC_W => ST_STOP_DETC_W,			--! ST_STOP bit write output
+		--	 ST_START_DETC_W => ST_START_DETC_W,		--! ST_START_DETC bit write output
 			 ST_ACK_REC_W => ST_ACK_REC_W,			--! ST_ACK_REC bit write output
 			 RX_DATA_W => RX_DATA_W, 	--! RX_DATA byte output
 			 
@@ -253,7 +253,7 @@ begin
 	
 	begin
 		CTL_ROLE <= '1';
-		CTL_RESTART <= '0';
+		
 		
 		SLAVE_ADDR <= (2 downto 0 => '1', others => '0');
 		CTL_RW <= '0';		-- RW: '0' Write transmission, '1' READ request of DATA
@@ -275,7 +275,51 @@ begin
 		end if;
 	end process P_CTL_START;
 	
-	-- 9. TX DATA   AND   CTL_STOP
+	-- 9.
+	P_CTL_STOP: process(CTL_STOP_C, TX_DATA) is
+	variable var: unsigned (2 downto 0) := (others => '0');
+	begin
+		
+		if(CTL_STOP_C = '0') then
+			CTL_STOP <= '0';
+			var := var + 1;
+		else
+		
+			if((var = 0) AND (TX_DATA = "00010000")) then
+				
+				CTL_STOP <= '1';
+				
+			else
+				CTL_STOP <= '0';
+			end if;
+		end if;
+	
+	end process P_CTL_STOP;
+	
+	-- 10.
+	P_CTL_RESTART: process(CTL_RESTART_C, TX_DATA) is
+	variable var: unsigned (2 downto 0) := (others => '0');
+	begin
+		
+		if(CTL_RESTART_C = '0') then
+			CTL_RESTART	<= '0';
+			var := var + 1;
+		else
+		
+			if((var = 0) AND (TX_DATA ="00001000")) then
+				
+				CTL_RESTART <= '1';
+				
+			else
+				CTL_RESTART <= '0';
+			end if;
+		end if;
+	
+	end process P_CTL_RESTART;
+	
+	
+	
+	-- 11. TX DATA   AND   CTL_STOP
 	P_TX_DATA: process(ST_TX_EMPTY_S) is
 	variable number: unsigned (7 downto 0) := (1 downto 0 => '1', others => '0');
 	begin
@@ -297,13 +341,7 @@ begin
 		
 		-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		-- ???????????????????????????????????????????????????????????????????????????????????????????
-		-- The shift transmitter will only transmit untill number "8" but "9".
-		if(number >= 10) then
-			CTL_STOP <= '1';
-		else
-			CTL_STOP <= '0';
-		
-		end if;
+		-- The shift transmitter will only transmit untill number "8" but "9"
 	
 	
 	end process P_TX_DATA;
