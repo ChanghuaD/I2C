@@ -1,10 +1,14 @@
+--!@file register
+
+
+
 --! Use standard library
 library IEEE;
 --! Use logic elements
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity register_slave is
-end register_slave;
+entity i2c_register is
+end entity i2c_register;
 
 architecture Behavioral of register_slave is
 

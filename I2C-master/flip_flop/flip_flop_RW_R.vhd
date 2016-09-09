@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 --! @file
 --! @brief a microcontroller Read_Write and I2C engine Read_only flip flop
---! Updated at 21/07/2016
+--! Updated on 21/07/2016
 --! Changhua DING
 -----------------------------------------------------------------------------
 
