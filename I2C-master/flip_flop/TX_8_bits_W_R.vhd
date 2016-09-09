@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 --!@file TX 8-bit register, MicroController Write, I2C engine Read
---!@detail used for TX transmission
+--!@brief detail used for TX transmission
 --! Created on 09/09/2016 
 ----------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ entity TX_8_bits_W_R is
 		 sync_rst: in std_logic; 	--! synchronous reset input
 		 uc_data_input: in std_logic_vector(7 downto 0);		--! MicroController 8-bit input
 		 uc_data_input_command: in std_logic;				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
-		 data_output: out std_logic_vector(7 downto 0);		--! output 8-bit 
+		 data_output: out std_logic_vector(7 downto 0)		--! output 8-bit 
 		);
 
 end entity TX_8_bits_W_R;

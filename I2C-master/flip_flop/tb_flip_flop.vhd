@@ -73,7 +73,7 @@ architecture behavior of tb_flip_flop is
 		 sync_rst: in std_logic; 	--! synchronous reset input
 		 uc_data_input: in std_logic_vector(7 downto 0);		--! MicroController 8-bit input
 		 uc_data_input_command: in std_logic;				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
-		 data_output: out std_logic_vector(7 downto 0);		--! output 8-bit 
+		 data_output: out std_logic_vector(7 downto 0)		--! output 8-bit 
 		);
 
 	end component TX_8_bits_W_R;
@@ -87,7 +87,7 @@ architecture behavior of tb_flip_flop is
 		 sync_rst: in std_logic;		--! synchronous reset input
 		 i2c_data_input: in std_logic_vector(7 downto 0);	--! 
 		 i2c_data_input_command: in std_logic;				--! i2c renew command, '1' renew output, '0' don't change output
-		 data_output: out std_logic_vector(7 downto 0);		--! data_output;
+		 data_output: out std_logic_vector(7 downto 0)		--! data_output;
 		);	
 	
 	end component RX_8_bits_R_W;
@@ -119,12 +119,12 @@ architecture behavior of tb_flip_flop is
 	signal RW_R_data_out: std_logic;
 	-- TX
 	signal TX_uc_data_input:  std_logic_vector(7 downto 0);		--! MicroController 8-bit input
-	signal TX_uc_data_input_command: in std_logic;				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
-	signal TX_data_output: out std_logic_vector(7 downto 0);		--! output 8-bit  
+	signal TX_uc_data_input_command:  std_logic;				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+	signal TX_data_output:  std_logic_vector(7 downto 0);		--! output 8-bit  
 	-- RX
-	signal RX_i2c_data_input: in std_logic_vector(7 downto 0);	--! 
-	signal RX_i2c_data_input_command: in std_logic;				--! i2c renew command, '1' renew output, '0' don't change output
-	signal RX_data_output: out std_logic_vector(7 downto 0);		--! data_output;
+	signal RX_i2c_data_input:  std_logic_vector(7 downto 0);	--! 
+	signal RX_i2c_data_input_command: std_logic;				--! i2c renew command, '1' renew output, '0' don't change output
+	signal RX_data_output:  std_logic_vector(7 downto 0);		--! data_output;
 
 begin
 	
@@ -179,20 +179,20 @@ begin
 		 data_output => TX_data_output							--! output 8-bit 
 		);
 
-	end component TX_8_bits_W_R;
+	
 	
 	-- 5.
 	M_RX: RX_8_bits_R_W 
 	
 	port map(clk => clk_50MHz,	--! clk input
 		 clk_ena => clk_ena,		--! clk enable input
-		 sync_rst => sync_rst,		--! synchronous reset input
+		 sync_rst => rst_variable,		--! synchronous reset input
 		 i2c_data_input => RX_i2c_data_input,	--! 
 		 i2c_data_input_command => 	RX_i2c_data_input_command,			--! i2c renew command, '1' renew output, '0' don't change output
 		 data_output => RX_data_output		--! data_output;
 		);	
 	
-	end component RX_8_bits_R_W;
+	
 	
 	
 	
@@ -281,11 +281,28 @@ begin
 	-- 6. TX
 	P_TX: process is
 	begin
-		 
+		 TX_uc_data_input <= (3 downto 0 => '0', others => '1');
+		 TX_uc_data_input_command <= '0';
+		 wait for 50 us;
+		 TX_uc_data_input_command <= '1';
+		 wait for 1 us;
+		 TX_uc_data_input_command <= '0';
+		 wait;
 	
 	end process P_TX;
 	
+	-- 6. RX
+	P_RX: process is
+	begin
+		 RX_i2c_data_input <= (3 downto 0 => '0', others => '1');
+		 RX_i2c_data_input_command <= '0';
+		 wait for 50 us;
+		 RX_i2c_data_input_command <= '1';
+		 wait for 1 us;
+		 RX_i2c_data_input_command <= '0';
+		 wait;
 	
+	end process P_RX;
 
 end architecture behavior;
 

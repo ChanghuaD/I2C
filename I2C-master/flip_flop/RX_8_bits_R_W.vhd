@@ -1,5 +1,5 @@
 --!@file RX 8-bit register, MicroController Read, I2C engine Write
---!@detail used for RX request
+--!@brief detail used for RX request
 --! Created on 09/09/2016 
 ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ entity RX_8_bits_R_W is
 		 sync_rst: in std_logic;		--! synchronous reset input
 		 i2c_data_input: in std_logic_vector(7 downto 0);	--! 
 		 i2c_data_input_command: in std_logic;				--! i2c renew command, '1' renew output, '0' don't change output
-		 data_output: out std_logic_vector(7 downto 0);		--! data_output;
+		 data_output: out std_logic_vector(7 downto 0)		--! data_output;
 		);	
 	
 end entity RX_8_bits_R_W;
