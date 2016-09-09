@@ -399,15 +399,16 @@ begin
 			CTL_STOP <= '0';
 			var := var + 1;
 		else
-		
-			if((var = 0) AND (TX_DATA = "00010000")) then
-				
-				CTL_STOP <= '1';
-				
-			elsif(TX =  "00001000" ) then
-				CTL_STOP <= '1';
-			else
-				CTL_STOP <= '0';
+			if(var = 0) then
+				if( (TX_DATA = "00010000")) then
+					
+					CTL_STOP <= '1';
+					
+				elsif(TX =  "00001000" ) then
+					CTL_STOP <= '1';
+				else
+					CTL_STOP <= '0';
+				end if;
 			end if;
 		end if;
 	
