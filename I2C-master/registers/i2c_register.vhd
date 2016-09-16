@@ -5,9 +5,10 @@
 --------------------------------------------------------------
 
 --! Use standard library
-library IEEE;
+library ieee;
 --! Use logic elements
-use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;	
 
 entity i2c_register is
 
@@ -19,17 +20,36 @@ entity i2c_register is
 		 -- To accomplish with I2C's input ports
 		 --
 		 --
+		 I2C_CTL_START_C: in std_logic;
+		 I2C_CTL_STOP_C: in std_logic;
+		 I2C_CTL_RESTART_C: in std_logic;
 		 
+		 I2C_ST_ACK_REC_W: in std_logic;
+		 I2C_ST_START_DETC_S: in std_logic;
+		 I2C_ST_STOP_DETC_S: in std_logic;
+		 I2C_ST_ERROR_DETC_S: in std_logic;
+		 I2C_ST_TX_EMPTY_S: in std_logic;
+		 I2C_ST_RX_FULL_S: in std_logic;
+		 I2C_ST_ACK_REC: in std_logic;
+		 I2C_ST_RW: in std_logic;
+		 I2C_ST_RW_W: in std_logic;
+		 I2C_ST_BUSY_W: in std_logic;
 		 
 		 
 		 -- To accomplish with Microcontroller's input ports
-		 --
-		 --
+		 -- Avalon Slave Interface
+		 -- 1 word = 1 byte  --> byte address = word address, don't need address translation between Avalon's Master and Slave
 		 
+		 AVALON_chipselect: in std_logic;
+		 AVALON_address: in unsigned (3 downto 0);		--
+		 AVALON_read: in std_logic;
+		 AVALON_write: in std_logic;
+		 AVALON_writedata: in std_logic_vector (7 downto 0);
 		 
+		 -- Avalon Slave outputs
+		 AVALON_readdata: out std_logic_vector (7 downto);
 		 
-		 
-		 ------------------- Outputs Ports
+		 ------------------- I2C Outputs Ports 	-----------------------
 		 ---- CTL 0 to 7
 		 CTL_RESET: out std_logic;				--! CTL0 
 		 CTL_START: out std_logic;				--! CTL1
@@ -174,8 +194,8 @@ architecture Behavioral of register_slave is
 	--------------- signal ------------------------------
 	
 
-	
-
+	--signal CTL0_uc_data_in: std_logic;
+	signal ctl_command: std_logic;		-- Command the CTL register
 	
 	
 begin
@@ -183,11 +203,135 @@ begin
 
 
 	--------------- Map -----------------------------------
-	M_CTL_ROLE:	flip_flop_RW_R
+	--! CTL0: CTL_RESET
+	M_CTL0:	flip_flop_RW_R
 	port map(clk => clk,						--! clock input
 			 clk_ena => clk_ena,					--! clock enable input
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
-			 uc_data_in =>				--! microcontroller data input
-			 uc_write_command: in std_logic;		--! '1' active microcontroller write command input
+			 uc_data_in =>	writedata(0),			--! microcontroller data input
+			 uc_write_command = ctl_command,		--! '1' active microcontroller write command input
+			 data_out => CTL_RESET				--! data_out output
+			);
+	
+	
+	--! CTL1: CTL_START
+	M_CTL1: flip_flop_RW_RC 
+	port(clk => clk,						--! clock input
+		 clk_ena => clk_ena,				--! clock enable input
+		 sync_rst => sync_rst,				--! '0' active synchronous reset input
+		 uc_data_in => writedata(1),				--! microcontroller data input
+		 uc_write_command => ctl_command,			--! '1' active microcontroller write command input
+		 i2c_clear_command => I2C_CTL_START_C, 		--! '1' active I2C clear command input
+		 data_out => CTL_START					--! data_out output
+		);
+
+	--! CTL2: CTL_STOP
+	M_CTL2: flip_flop_RW_RC 
+
+		port(clk => clk,					--! clock input
+			 clk_ena => clk_ena,				--! clock enable input
+			 sync_rst => sync_rst,			--! '0' active synchronous reset input
+			 uc_data_in => writedata(2),			--! microcontroller data input
+			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
+			 i2c_clear_command => I2C_CTL_STOP_C,	--! '1' active I2C clear command input
+			 data_out => CTL_STOP			--! data_out output
+			);
+			
+			
+	--! CTL3: CTL_RESTART
+	M_CTL3: flip_flop_RW_RC 
+
+		port(clk => clk,				--! clock input
+			 clk_ena => clk_ena,				--! clock enable input
+			 sync_rst => sync_rst,			--! '0' active synchronous reset input
+			 uc_data_in => writedata(3),			--! microcontroller data input
+			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
+			 i2c_clear_command => I2C_CTL_RESTART_C,	--! '1' active I2C clear command input
+			 data_out => CTL_RESTART			--! data_out output
+			);
+			
+	--! CTL4: CTL_RW
+	M_CTL4: flip_flop_RW_R 
+		port(clk => clk,						--! clock input
+			 clk_ena => clk_ena,				--! clock enable input
+			 sync_rst => sync_rst,				--! '0' active synchronous reset input
+			 uc_data_in => writedata(4),				--! microcontroller data input
+			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
+			 data_out => CTL_RW				--! data_out output
+			);
+			
+	--! CTL5: CTL_ACK
+	M_CTL5: flip_flop_RW_R 
+		port(clk => clk,					--! clock input
+			 clk_ena => clk_ena,					--! clock enable input
+			 sync_rst => sync_rst,				--! '0' active synchronous reset input
+			 uc_data_in => writedata(5),				--! microcontroller data input
+			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
+			 data_out => CTL_ACK				--! data_out output
+			);
+			
+	--! CTL6: CTL_ROLE
+	M_CTL6: flip_flop_RW_R 
+		port(clk => clk,					--! clock input
+			 clk_ena => clk_ena,					--! clock enable input
+			 sync_rst => sync_rst,				--! '0' active synchronous reset input
+			 uc_data_in => writedata(6),				--! microcontroller data input
+			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
 			 data_out => CTL_ROLE				--! data_out output
 			);
+	
+	
+	--! CTL7: CTL_RESERVED
+	--	...
+	--	...
+	
+	--! STATUS0: ST_ACK_REC
+	M_STATUS0: Flip_flop_R_WR 
+		Port( 
+			clk 			 => clk,
+			clk_ena 		 => clk_ena,
+			sync_rst 		 => sync_rst,
+			i2c_write 		 => I2C_ST_ACK_REC_W,
+			i2c_data_in 	 => I2C_ST_ACK_REC,
+				  
+			data_out 		 => ST_ACK_REC
+			);
+	
+	--! STATUS1: ST_START_DETC
+	M_STATUS1: Flip_flop_RC_S 
+		Port( 
+			clk 			 => clk,
+			clk_ena 		 => clk_ena,
+			sync_rst 		 => sync_rst,
+			uc_clear 		 => writedata(1), 		-- Clear signal; '0': don't modify the content; '1': clear the bit content to '0' 
+			i2c_set 		 => I2C_ST_START_DETC_S,
+				  
+			data_out 		 => ST_START_DETC
+			);
+	
+	--! STATUS2: ST_STOP_DETC
+	M_STATUS2: Flip_flop_RC_S 
+		Port( 
+			clk 			 => clk,
+			clk_ena 		 => clk_ena,
+			sync_rst 		 => sync_rst,
+			uc_clear 		 => writedata(2),		-- Clear command
+			i2c_set 		 => I2C_ST_STOP_DETC_S,
+				  
+			data_out 		 => ST_STOP_DETC
+			);
+			
+	--! STATUS3: ST_ERROR_DETC
+	M_STATUS3: Flip_flop_RC_S 
+		Port( 
+			clk 			=> clk,
+			clk_ena 		=> clk_ena,
+			sync_rst 		=> sync_rst,
+			uc_clear 		=> writedata(3),		-- Clear command
+			i2c_set 		=> I2C_ST_ERROR_DETC_S,
+				  
+			data_out 		=> ST_ERROR_DETC
+			);
+			
+	--! STATUS4: ST_TX_EMPTY
+	

@@ -54,8 +54,10 @@ entity i2c_master_engine is
 	--	 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
 	--	 ST_STOP_DETC_W: out std_logic;			--! ST_STOP bit write output
 	--	 ST_START_DETC_W: out std_logic;		--! ST_START_DETC bit write output
+		 ST_ACK_REC: out std_logic;
 		 ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
-		 RX_DATA_W: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
+		 RX_DATA: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
+		 RX_DATA_W: out std_logic;				--! command RX register
 		 SCL_OUT: out std_logic;				--! SCL output
 		 SDA_OUT: out std_logic 				--! SDA output
 	);
@@ -421,7 +423,7 @@ begin
 				  writing_point => writing_point, 		--! map to writing_point signal
 				  scl_tick => scl_tick, 				--! map to scl_tick signal
 				  sda_in => SDA_IN, 					--! map to SDA_IN input
-				  ACK_out => ST_ACK_REC_W, 				--! ACK_out output WRITE '0' or '1'
+				  ACK_out => ST_ACK_REC, 				--! ACK_out output WRITE '0' or '1'
 				  ACK_valued => ACK_valued,				--! map to ACK_valued signal, signal equals '1' means to inform ACK_out is renewed
 				  TX_captured => TX_captured,			--! map to TX_captured signal, (not ST_TX_EMPTY_S output), TX_captured output, TX_captured = '1'  ==>  the buffer(byte_to_be_sent) captured the data from TX and Microcontroller could update TX register
 				  sda_out => sda_out_tx  				--! map to sda_out_tx signal
@@ -444,7 +446,7 @@ begin
 				 sda_out => sda_out_rx,					--! map to SDA_OUT output
 				 ACK_sent => ACK_sent,		--! ACK_sent output, triger a '1' when ACK is sent
 				 data_received => ST_RX_FULL_S,			--! map to ST_RX_FULL_S bit output
-				 RX => RX_DATA_W 						--! map to RX received byte output
+				 RX => RX_DATA 						--! map to RX received byte output
 				);
 	
 	
@@ -788,6 +790,30 @@ begin
 		end if;
 	
 	end process;
+	
+	-- 5.
+	-- ST_ACK_REC BIT
+	P_ST_ACK: process(clk) is
+	begin
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+			
+				ST_ACK_REC_W <= ACK_valued;
+			end if;
+		end if;
+	end process P_ST_ACK;
+	
+	-- 6.
+	-- RX BIT
+	P_RX: process(clk) is
+	begin
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+				RX_DATA_W <= data_received;
+			end if;
+		end if;
+	
+	end process P_RX;
 
 
 end architecture behavior;
