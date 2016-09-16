@@ -33,8 +33,11 @@ entity i2c_register is
 		 I2C_ST_ACK_REC: in std_logic;
 		 I2C_ST_RW: in std_logic;
 		 I2C_ST_RW_W: in std_logic;
+		 I2C_ST_BUSY: in std_logic;
 		 I2C_ST_BUSY_W: in std_logic;
 		 
+		 I2C_RX_DATA: in std_logic_vector(7 downto 0);
+		 I2C_RX_DATA_W: in std_logic;
 		 
 		 -- To accomplish with Microcontroller's input ports
 		 -- Avalon Slave Interface
@@ -47,7 +50,7 @@ entity i2c_register is
 		 AVALON_writedata: in std_logic_vector (7 downto 0);
 		 
 		 -- Avalon Slave outputs
-		 AVALON_readdata: out std_logic_vector (7 downto);
+		 AVALON_readdata: out std_logic_vector (7 downto 0);
 		 
 		 ------------------- I2C Outputs Ports 	-----------------------
 		 ---- CTL 0 to 7
@@ -88,7 +91,7 @@ entity i2c_register is
 	
 end entity i2c_register;
 
-architecture Behavioral of register_slave is
+architecture Behavioral of i2c_register is
 
 
 	------------ Component ----------------------------
@@ -116,6 +119,7 @@ architecture Behavioral of register_slave is
 			clk_ena 		: in  STD_LOGIC;
 			sync_rst 		: in  STD_LOGIC;
 			uc_clear 		: in  STD_LOGIC;
+			uc_clear_command: in  STD_LOGIC;
 			i2c_set 		: in  STD_LOGIC;
 				  
 			data_out 		: out  STD_LOGIC
@@ -195,7 +199,14 @@ architecture Behavioral of register_slave is
 	
 
 	--signal CTL0_uc_data_in: std_logic;
-	signal ctl_command: std_logic;		-- Command the CTL register
+	signal ctl_command: std_logic;		-- Command the CTL register (activate by avalon address & write)
+	signal st_command: std_logic;		-- Command the STATUS register (activate by avalon address & write)
+	signal tx_command: std_logic;		-- Command the TX_DATA register (activate by avalon master)
+	signal slv_addr_command: std_logic;
+	
+	alias slave_address: std_logic_vector (6 downto 0) is AVALON_writedata (6 downto 0);
+	alias CTL0: std_logic is CTL_RESET;
+	
 	
 	
 begin
@@ -203,23 +214,26 @@ begin
 
 
 	--------------- Map -----------------------------------
+	
+	------- CTL ------------------
+	
 	--! CTL0: CTL_RESET
 	M_CTL0:	flip_flop_RW_R
 	port map(clk => clk,						--! clock input
 			 clk_ena => clk_ena,					--! clock enable input
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
-			 uc_data_in =>	writedata(0),			--! microcontroller data input
-			 uc_write_command = ctl_command,		--! '1' active microcontroller write command input
+			 uc_data_in =>	AVALON_writedata(0),			--! microcontroller data input
+			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
 			 data_out => CTL_RESET				--! data_out output
 			);
 	
 	
 	--! CTL1: CTL_START
 	M_CTL1: flip_flop_RW_RC 
-	port(clk => clk,						--! clock input
+	port map(clk => clk,						--! clock input
 		 clk_ena => clk_ena,				--! clock enable input
 		 sync_rst => sync_rst,				--! '0' active synchronous reset input
-		 uc_data_in => writedata(1),				--! microcontroller data input
+		 uc_data_in => AVALON_writedata(1),				--! microcontroller data input
 		 uc_write_command => ctl_command,			--! '1' active microcontroller write command input
 		 i2c_clear_command => I2C_CTL_START_C, 		--! '1' active I2C clear command input
 		 data_out => CTL_START					--! data_out output
@@ -228,10 +242,10 @@ begin
 	--! CTL2: CTL_STOP
 	M_CTL2: flip_flop_RW_RC 
 
-		port(clk => clk,					--! clock input
+		port map(clk => clk,					--! clock input
 			 clk_ena => clk_ena,				--! clock enable input
 			 sync_rst => sync_rst,			--! '0' active synchronous reset input
-			 uc_data_in => writedata(2),			--! microcontroller data input
+			 uc_data_in => AVALON_writedata(2),			--! microcontroller data input
 			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
 			 i2c_clear_command => I2C_CTL_STOP_C,	--! '1' active I2C clear command input
 			 data_out => CTL_STOP			--! data_out output
@@ -241,10 +255,10 @@ begin
 	--! CTL3: CTL_RESTART
 	M_CTL3: flip_flop_RW_RC 
 
-		port(clk => clk,				--! clock input
+		port map(clk => clk,				--! clock input
 			 clk_ena => clk_ena,				--! clock enable input
 			 sync_rst => sync_rst,			--! '0' active synchronous reset input
-			 uc_data_in => writedata(3),			--! microcontroller data input
+			 uc_data_in => AVALON_writedata(3),			--! microcontroller data input
 			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
 			 i2c_clear_command => I2C_CTL_RESTART_C,	--! '1' active I2C clear command input
 			 data_out => CTL_RESTART			--! data_out output
@@ -252,30 +266,30 @@ begin
 			
 	--! CTL4: CTL_RW
 	M_CTL4: flip_flop_RW_R 
-		port(clk => clk,						--! clock input
+		port map(clk => clk,						--! clock input
 			 clk_ena => clk_ena,				--! clock enable input
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
-			 uc_data_in => writedata(4),				--! microcontroller data input
+			 uc_data_in => AVALON_writedata(4),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
 			 data_out => CTL_RW				--! data_out output
 			);
 			
 	--! CTL5: CTL_ACK
 	M_CTL5: flip_flop_RW_R 
-		port(clk => clk,					--! clock input
+		port map(clk => clk,					--! clock input
 			 clk_ena => clk_ena,					--! clock enable input
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
-			 uc_data_in => writedata(5),				--! microcontroller data input
+			 uc_data_in => AVALON_writedata(5),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
 			 data_out => CTL_ACK				--! data_out output
 			);
 			
 	--! CTL6: CTL_ROLE
 	M_CTL6: flip_flop_RW_R 
-		port(clk => clk,					--! clock input
+		port map(clk => clk,					--! clock input
 			 clk_ena => clk_ena,					--! clock enable input
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
-			 uc_data_in => writedata(6),				--! microcontroller data input
+			 uc_data_in => AVALON_writedata(6),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
 			 data_out => CTL_ROLE				--! data_out output
 			);
@@ -285,9 +299,11 @@ begin
 	--	...
 	--	...
 	
+	----- STATUS ----------------
+	
 	--! STATUS0: ST_ACK_REC
 	M_STATUS0: Flip_flop_R_WR 
-		Port( 
+		Port map( 
 			clk 			 => clk,
 			clk_ena 		 => clk_ena,
 			sync_rst 		 => sync_rst,
@@ -297,25 +313,29 @@ begin
 			data_out 		 => ST_ACK_REC
 			);
 	
+	--   !!!!!!!!!!!!!!!!!
 	--! STATUS1: ST_START_DETC
 	M_STATUS1: Flip_flop_RC_S 
-		Port( 
+		Port map( 
 			clk 			 => clk,
 			clk_ena 		 => clk_ena,
 			sync_rst 		 => sync_rst,
-			uc_clear 		 => writedata(1), 		-- Clear signal; '0': don't modify the content; '1': clear the bit content to '0' 
+			uc_clear 		 => AVALON_writedata(1), 		-- Clear signal; '0': don't modify the content; '1': clear the bit content to '0' 
+			uc_clear_command => st_command,
 			i2c_set 		 => I2C_ST_START_DETC_S,
 				  
 			data_out 		 => ST_START_DETC
 			);
 	
+	--   !!!!!!!!!!!!!!!!!
 	--! STATUS2: ST_STOP_DETC
 	M_STATUS2: Flip_flop_RC_S 
-		Port( 
+		Port map( 
 			clk 			 => clk,
 			clk_ena 		 => clk_ena,
 			sync_rst 		 => sync_rst,
-			uc_clear 		 => writedata(2),		-- Clear command
+			uc_clear 		 => AVALON_writedata(2),		-- Clear command
+			uc_clear_command => st_command,
 			i2c_set 		 => I2C_ST_STOP_DETC_S,
 				  
 			data_out 		 => ST_STOP_DETC
@@ -323,15 +343,124 @@ begin
 			
 	--! STATUS3: ST_ERROR_DETC
 	M_STATUS3: Flip_flop_RC_S 
-		Port( 
+		Port map( 
 			clk 			=> clk,
 			clk_ena 		=> clk_ena,
 			sync_rst 		=> sync_rst,
-			uc_clear 		=> writedata(3),		-- Clear command
+			uc_clear 		=> AVALON_writedata(3),		-- Clear command
+			uc_clear_command => st_command,
 			i2c_set 		=> I2C_ST_ERROR_DETC_S,
 				  
 			data_out 		=> ST_ERROR_DETC
 			);
 			
 	--! STATUS4: ST_TX_EMPTY
+	M_STATUS4: Flip_flop_RC_S 
+		Port map( 
+			clk 			=> clk,
+			clk_ena 		=> clk_ena,
+			sync_rst 		=> sync_rst,
+			uc_clear 		=> AVALON_writedata(4),		-- Clear command
+			uc_clear_command => st_command,
+			i2c_set 		=> I2C_ST_TX_EMPTY_S,
+				  
+			data_out 		=> ST_TX_EMPTY
+			);
+		
+		
+	--! STATUS5: ST_RX_FULL
+	M_STATUS5: Flip_flop_RC_S 
+
+		Port map( 
+			clk 			=> clk,
+			clk_ena 		=> clk_ena,
+			sync_rst 		=> sync_rst,
+			uc_clear 		=> AVALON_writedata(5),
+			uc_clear_command => st_command,
+			i2c_set 		=> I2C_ST_RX_FULL_S,
+				  
+			data_out 		=> ST_RX_FULL
+			);
+			
+			
+	--! STATUS6: ST_RW
+	M_STATUS6: Flip_flop_R_WR 
+		Port map( 
+			clk 			=> clk,
+			clk_ena 		=> clk_ena,
+			sync_rst 		=> sync_rst,
+			i2c_write 		=> I2C_ST_RW_W,			-- Write command
+			i2c_data_in 	=> I2C_ST_RW,
+				  
+			data_out 		=> ST_RW
+			);
+			
+	--! STATUS7: ST_BUSY
+	M_STATUS7: Flip_flop_R_WR 
+		Port map( 
+			clk 			=> clk,
+			clk_ena 		=> clk_ena,
+			sync_rst 		=> sync_rst,
+			i2c_write 		=> I2C_ST_BUSY_W,		-- Write command
+			i2c_data_in 	=> I2C_ST_BUSY,
+				  
+			data_out 		=> ST_BUSY
+			);
+			
+			
+	-------- TX 8-bit -----------
+	M_TX: TX_8_bits_W_R 
+		port map(clk => clk,		--! clk input
+			 clk_ena => clk_ena,	--! clk enable input
+			 sync_rst => sync_rst, 	--! synchronous reset input
+			 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+			 uc_data_input_command => tx_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+			 data_output => TX_DATA		--! output 8-bit 
+			);
+			
+			
+	------- RX 8-bit --------------
+	M_RX: RX_8_bits_R_W
+		port map(clk => clk,	--! clk input
+			 clk_ena => clk_ena,		--! clk enable input
+			 sync_rst => sync_rst,		--! synchronous reset input
+			 i2c_data_input => I2C_RX_DATA,	--! 
+			 i2c_data_input_command => I2C_RX_DATA_W,			--! i2c renew command, '1' renew output, '0' don't change output
+			 data_output => RX_DATA		--! data_output;
+			);	
+		
+	-------- BAUDRATE	8-bit ---------
+	-- ...
+	-- ...
 	
+	
+	-------- SLAVE_ADDR 7-bit -----------
+	M_SLAVE_ADDR: ADDR_7_bits_W_R 
+
+	port map(clk => clk,		--! clk input
+		 clk_ena => clk_ena, 	--! clk enable input
+		 sync_rst => sync_rst, 	--! synchronous reset input
+		 uc_data_input => slave_address,		--! MicroController 7-bit input
+		 uc_data_input_command => slv_addr_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+		 data_output => SLAVE_ADDR		--! output 7-bit 
+		);
+	
+	
+	
+	
+	------------------------------- Process --------------------------------------------------
+	
+	-- 1.
+	-- Command Decoder
+	P_Decoder: process(clk) is
+	
+	begin
+		P_
+	
+	end process P_Decoder;
+	
+	
+	
+	
+	
+end architecture Behavioral;
