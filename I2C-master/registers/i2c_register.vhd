@@ -49,10 +49,44 @@ entity i2c_register is
 		 AVALON_write: in std_logic;
 		 AVALON_writedata: in std_logic_vector (7 downto 0);
 		 
-		 -- Avalon Slave outputs
-		 AVALON_readdata: out std_logic_vector (7 downto 0);
 		 
-		 ------------------- I2C Outputs Ports 	-----------------------
+		 
+		
+		 --------	Outputs	------------------------
+		 
+		 
+		 
+		 -- Avalon Slave outputs -----------------------
+		 
+		 AVALON_readdata: out std_logic_vector (7 downto 0);
+		 AVALON_waitrequest: out std_logic;
+		 AVALON_readvalid: out std_logic;
+		 
+		 
+		 --------- AVALON Interrupt output	------------------
+		 
+		 -- Control
+		 AVALON_irq_ctl_0: out std_logic;
+		 AVALON_irq_ctl_1: out std_logic;
+		 AVALON_irq_ctl_2: out std_logic;
+		 AVALON_irq_ctl_3: out std_logic;
+		 AVALON_irq_ctl_4: out std_logic;
+		 AVALON_irq_ctl_5: out std_logic;
+		 AVALON_irq_ctl_6: out std_logic;
+		 AVALON_irq_ctl_7: out std_logic;
+		 
+		 
+		 -- Status
+		 AVALON_irq_st_0: out std_logic;
+		 AVALON_irq_st_1: out std_logic;
+		 AVALON_irq_st_2: out std_logic;
+		 AVALON_irq_st_3: out std_logic;
+		 AVALON_irq_st_4: out std_logic;
+		 AVALON_irq_st_5: out std_logic;
+		 AVALON_irq_st_6: out std_logic;
+		 AVALON_irq_st_7: out std_logic;
+		 
+		 ------------------- I2C Outputs Ports 	--------------
 		 ---- CTL 0 to 7
 		 CTL_RESET: out std_logic;				--! CTL0 
 		 CTL_START: out std_logic;				--! CTL1
@@ -199,10 +233,17 @@ architecture Behavioral of i2c_register is
 	
 
 	--signal CTL0_uc_data_in: std_logic;
-	signal ctl_command: std_logic;		-- Command the CTL register (activate by avalon address & write)
-	signal st_command: std_logic;		-- Command the STATUS register (activate by avalon address & write)
-	signal tx_command: std_logic;		-- Command the TX_DATA register (activate by avalon master)
-	signal slv_addr_command: std_logic;
+	signal ctl_command: std_logic;			-- Command the CTL register (activate by avalon address & write)
+	signal st_command: std_logic;			-- Command the STATUS register (activate by avalon address & write)
+	signal tx_command: std_logic;			-- Command the TX_DATA register (activate by avalon master)
+	signal slv_addr_command: std_logic;		-- Command the slave address word
+	signal baudrate_command: std_logic;		-- Command the baudrate register
+	signal interrupt_ctl_mask_command: std_logic;	-- Command the interrupt control mask register
+	signal interrupt_st_mask_command: std_logic;	-- Command the interrupt status mask register
+	
+	signal CTL_data: std_logic_vector(7 downto 0);
+	signal ST_data: std_logic_vector(7 downto 0);
+	
 	
 	alias slave_address: std_logic_vector (6 downto 0) is AVALON_writedata (6 downto 0);
 	alias CTL0: std_logic is CTL_RESET;
@@ -452,12 +493,108 @@ begin
 	
 	-- 1.
 	-- Command Decoder
-	P_Decoder: process(clk) is
+	-- activate the word correspond to the avalon address
+	P_Decoder_write: process(clk) is
 	
 	begin
-		P_
 	
-	end process P_Decoder;
+		if(rising_edge(clk)) then
+		
+		
+			ctl_command <= '0';
+			st_command <= '0';
+			tx_command <= '0';
+			slv_addr_command <= '0';
+			baudrate_command <= '0';
+			interrupt_ctl_mask_command <= '0';
+			interrupt_st_mask_command <= '0';
+			
+			if(AVALON_write = '1') then
+			
+				case(AVALON_address) is
+				
+				when 0 =>
+					ctl_command <= '1';
+				
+				when 1 => 
+					st_command <= '1';
+				
+				when 2 =>
+					tx_command <= '1';
+					
+				when 3 =>
+					-- nothing
+				
+				when 4 =>
+					baudrate_command <= '1';
+				
+				when 5 =>
+					slv_addr_command <= '1';
+					
+				when 6 =>
+					-- nothing
+				when 7 =>
+					interrupt_ctl_mask_command <= '1';
+					
+				when 8 =>
+					-- nothing
+				when 9 =>
+					interrupt_st_mask_command <= '1';
+				
+				when 10 => 
+					-- nothing
+				
+				when others => 
+					-- nothing
+				
+				end case;
+				
+			else
+				-- Nothing
+			end if;		-- AVALON write 
+			
+		end if;		-- clk
+	
+	end process P_Decoder_write;
+	
+	-- 2.
+	-- Read data
+	P_Decoder_read: process(clk) is
+	
+	begin
+	
+		
+		if(rising_edge(clk)) then
+		
+		CTL_data <= "0000000" & CTL0;
+		
+			if(AVALON_read = '1') then
+				
+				AVALON_readvalid <= '1';
+				
+				case(AVALON_address) is
+					
+				when 0 => 
+					AVALON_readdata <= CTL_data;
+				
+				when 1 =>
+					AVALON_readdata <= ST_data;
+				
+				when 2 =>
+					AVALON_readdata <= ST_data;
+					
+				end case;
+		
+			else
+				-- Nothing
+				AVALON_readvalid <= '0';
+			
+			end if;		-- AVALON_read 
+		
+		end if;
+	
+	end process P_Decoder_read;
+	
 	
 	
 	
