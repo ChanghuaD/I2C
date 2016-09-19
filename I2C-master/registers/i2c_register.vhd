@@ -83,7 +83,7 @@ entity i2c_register is
 		 AVALON_irq_st_3: out std_logic;
 		 AVALON_irq_st_4: out std_logic;
 		 AVALON_irq_st_5: out std_logic;
-		 AVALON_irq_st_6: out std_logic;
+		 AVALON_irq_st_6: out std_logic;		--! irq_st_6 = '1' --> Microcontroller must compare the SLAVE_ADDR and OWN_ADDR and write the correspond value into CTL_ACK BIT immediately. 
 		 AVALON_irq_st_7: out std_logic;
 		 
 		 ------------------- I2C Outputs Ports 	--------------
@@ -236,17 +236,93 @@ architecture Behavioral of i2c_register is
 	signal ctl_command: std_logic;			-- Command the CTL register (activate by avalon address & write)
 	signal st_command: std_logic;			-- Command the STATUS register (activate by avalon address & write)
 	signal tx_command: std_logic;			-- Command the TX_DATA register (activate by avalon master)
-	signal slv_addr_command: std_logic;		-- Command the slave address word
 	signal baudrate_command: std_logic;		-- Command the baudrate register
+	signal slv_addr_command: std_logic;		-- Command the slave address word
+	signal own_addr_command: std_logic;
 	signal interrupt_ctl_mask_command: std_logic;	-- Command the interrupt control mask register
 	signal interrupt_st_mask_command: std_logic;	-- Command the interrupt status mask register
 	
-	signal CTL_data: std_logic_vector(7 downto 0);
-	signal ST_data: std_logic_vector(7 downto 0);
+	signal signal_CTL_data: std_logic_vector(7 downto 0);
+	signal signal_ST_data: std_logic_vector(7 downto 0);
+	
+	--- Signals correspond to output
+	
+	---- CTL 0 to 7
+	signal	 signal_CTL_RESET:  std_logic;				--! CTL0 
+	signal	 signal_CTL_START:  std_logic;				--! CTL1
+	signal	 signal_CTL_STOP:  std_logic;				--! CTL2
+	signal	 signal_CTL_RESTART:  std_logic;			--! CTL3
+	signal	 signal_CTL_RW:  std_logic;				--! CTL4
+	signal	 signal_CTL_ACK: std_logic;				--! CTL5
+	signal	 signal_CTL_ROLE:  std_logic;				--! CTL6
+	signal	 signal_CTL_RESERVED:  std_logic;			--! CTL7
+		
+		 ---- STATUS 0 to 7
+	signal	 signal_ST_ACK_REC:  std_logic;			--! STATUS0
+	signal	 signal_ST_START_DETC:  std_logic;			--! STATUS1
+	signal	 signal_ST_STOP_DETC:  std_logic;			--! STATUS2
+	signal	 signal_ST_ERROR_DETC: std_logic;			--! STATUS3
+	signal	 signal_ST_TX_EMPTY:  std_logic;			--! STATUS4
+	signal	 signal_ST_RX_FULL:  std_logic;			--! STATUS5
+	signal	 signal_ST_RW:  std_logic;					--! STATUS6
+	signal	 signal_ST_BUSY:  std_logic;				--! STATUS7
+		
+		 ---- TX 8-bit
+	signal	 signal_TX_DATA:  std_logic_vector (7 downto 0);		--! TX 8-bit
+		
+		 ---- RX 8-bit
+	signal	 signal_RX_DATA:  std_logic_vector (7 downto 0); 		--! RX 8-bit
+		
+		 ---- Baud Rate
+	signal	 signal_BAUDRATE:  std_logic_vector (7 downto 0);		--! BAUDRATE 8-bit
+		
+		 ---- Slave Address 7-bit
+	signal	 signal_SLAVE_ADDR: std_logic_vector (6 downto 0);		--! SLAVE_ADDR 7-bit
+		
+		 ---- OWN Address 7-bit
+	signal	 signal_OWN_ADDR: std_logic_vector (6 downto 0);		--! Own Address, use for slave role
 	
 	
+		 ---- INTERRUPT CTL MASK
+	signal 	 signal_IRQ_CTL_MASK: std_logic_vector(7 downto 0);
+	
+		---- INTERRUPT CTL
+	signal   signal_IRQ_CTL: std_logic_vector(7 downto 0);
+	
+		---- INTERRUPT STATUS
+	signal 	 signal_IRQ_ST: std_logic_vector(7 downto 0);
+	
+		 ---- INTERRUPT ST MASK
+	signal 	 signal_IRQ_ST_MASK: std_logic_vector(7 downto 0);
+	
+	
+	
+	
+	--- alias
 	alias slave_address: std_logic_vector (6 downto 0) is AVALON_writedata (6 downto 0);
-	alias CTL0: std_logic is CTL_RESET;
+	alias own_address: std_logic_vector(6 downto 0) is AVALON_writedata (6 downto 0);
+	
+	alias CTL0: std_logic is signal_CTL_RESET;
+	alias CTL1: std_logic is signal_CTL_START;
+	alias CTL2: std_logic is signal_CTL_STOP;
+	alias CTL3: std_logic is signal_CTL_RESTART;
+	alias CTL4: std_logic is signal_CTL_RW;
+	alias CTL5: std_logic is signal_CTL_ACK;
+	alias CTL6: std_logic is signal_CTL_ROLE;
+	alias CTL7: std_logic is signal_CTL_RESERVED;
+	
+	alias ST0: std_logic is signal_ST_ACK_REC;
+	alias ST1: std_logic is signal_ST_START_DETC;
+	alias ST2: std_logic is signal_ST_STOP_DETC;
+	alias ST3: std_logic is signal_ST_ERROR_DETC;
+	alias ST4: std_logic is signal_ST_TX_EMPTY;
+	alias ST5: std_logic is signal_ST_RX_FULL;
+	alias ST6: std_logic is signal_ST_RW;
+	alias ST7: std_logic is signal_ST_BUSY;
+	
+	
+	
+	
 	
 	
 	
@@ -265,7 +341,7 @@ begin
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
 			 uc_data_in =>	AVALON_writedata(0),			--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
-			 data_out => CTL_RESET				--! data_out output
+			 data_out => signal_CTL_RESET				--! data_out output
 			);
 	
 	
@@ -277,7 +353,7 @@ begin
 		 uc_data_in => AVALON_writedata(1),				--! microcontroller data input
 		 uc_write_command => ctl_command,			--! '1' active microcontroller write command input
 		 i2c_clear_command => I2C_CTL_START_C, 		--! '1' active I2C clear command input
-		 data_out => CTL_START					--! data_out output
+		 data_out => signal_CTL_START					--! data_out output
 		);
 
 	--! CTL2: CTL_STOP
@@ -289,7 +365,7 @@ begin
 			 uc_data_in => AVALON_writedata(2),			--! microcontroller data input
 			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
 			 i2c_clear_command => I2C_CTL_STOP_C,	--! '1' active I2C clear command input
-			 data_out => CTL_STOP			--! data_out output
+			 data_out => signal_CTL_STOP			--! data_out output
 			);
 			
 			
@@ -302,7 +378,7 @@ begin
 			 uc_data_in => AVALON_writedata(3),			--! microcontroller data input
 			 uc_write_command => ctl_command,	--! '1' active microcontroller write command input
 			 i2c_clear_command => I2C_CTL_RESTART_C,	--! '1' active I2C clear command input
-			 data_out => CTL_RESTART			--! data_out output
+			 data_out => signal_CTL_RESTART			--! data_out output
 			);
 			
 	--! CTL4: CTL_RW
@@ -312,7 +388,7 @@ begin
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
 			 uc_data_in => AVALON_writedata(4),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
-			 data_out => CTL_RW				--! data_out output
+			 data_out => signal_CTL_RW				--! data_out output
 			);
 			
 	--! CTL5: CTL_ACK
@@ -322,7 +398,7 @@ begin
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
 			 uc_data_in => AVALON_writedata(5),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
-			 data_out => CTL_ACK				--! data_out output
+			 data_out => signal_CTL_ACK				--! data_out output
 			);
 			
 	--! CTL6: CTL_ROLE
@@ -332,7 +408,7 @@ begin
 			 sync_rst => sync_rst,				--! '0' active synchronous reset input
 			 uc_data_in => AVALON_writedata(6),				--! microcontroller data input
 			 uc_write_command => ctl_command,		--! '1' active microcontroller write command input
-			 data_out => CTL_ROLE				--! data_out output
+			 data_out => signal_CTL_ROLE				--! data_out output
 			);
 	
 	
@@ -351,7 +427,7 @@ begin
 			i2c_write 		 => I2C_ST_ACK_REC_W,
 			i2c_data_in 	 => I2C_ST_ACK_REC,
 				  
-			data_out 		 => ST_ACK_REC
+			data_out 		 => signal_ST_ACK_REC
 			);
 	
 	--   !!!!!!!!!!!!!!!!!
@@ -365,7 +441,7 @@ begin
 			uc_clear_command => st_command,
 			i2c_set 		 => I2C_ST_START_DETC_S,
 				  
-			data_out 		 => ST_START_DETC
+			data_out 		 => signal_ST_START_DETC
 			);
 	
 	--   !!!!!!!!!!!!!!!!!
@@ -379,7 +455,7 @@ begin
 			uc_clear_command => st_command,
 			i2c_set 		 => I2C_ST_STOP_DETC_S,
 				  
-			data_out 		 => ST_STOP_DETC
+			data_out 		 => signal_ST_STOP_DETC
 			);
 			
 	--! STATUS3: ST_ERROR_DETC
@@ -392,7 +468,7 @@ begin
 			uc_clear_command => st_command,
 			i2c_set 		=> I2C_ST_ERROR_DETC_S,
 				  
-			data_out 		=> ST_ERROR_DETC
+			data_out 		=> signal_ST_ERROR_DETC
 			);
 			
 	--! STATUS4: ST_TX_EMPTY
@@ -405,7 +481,7 @@ begin
 			uc_clear_command => st_command,
 			i2c_set 		=> I2C_ST_TX_EMPTY_S,
 				  
-			data_out 		=> ST_TX_EMPTY
+			data_out 		=> signal_ST_TX_EMPTY
 			);
 		
 		
@@ -420,7 +496,7 @@ begin
 			uc_clear_command => st_command,
 			i2c_set 		=> I2C_ST_RX_FULL_S,
 				  
-			data_out 		=> ST_RX_FULL
+			data_out 		=> signal_ST_RX_FULL
 			);
 			
 			
@@ -433,7 +509,7 @@ begin
 			i2c_write 		=> I2C_ST_RW_W,			-- Write command
 			i2c_data_in 	=> I2C_ST_RW,
 				  
-			data_out 		=> ST_RW
+			data_out 		=> signal_ST_RW
 			);
 			
 	--! STATUS7: ST_BUSY
@@ -445,7 +521,7 @@ begin
 			i2c_write 		=> I2C_ST_BUSY_W,		-- Write command
 			i2c_data_in 	=> I2C_ST_BUSY,
 				  
-			data_out 		=> ST_BUSY
+			data_out 		=> signal_ST_BUSY
 			);
 			
 			
@@ -456,7 +532,7 @@ begin
 			 sync_rst => sync_rst, 	--! synchronous reset input
 			 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
 			 uc_data_input_command => tx_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
-			 data_output => TX_DATA		--! output 8-bit 
+			 data_output => signal_TX_DATA		--! output 8-bit 
 			);
 			
 			
@@ -467,27 +543,78 @@ begin
 			 sync_rst => sync_rst,		--! synchronous reset input
 			 i2c_data_input => I2C_RX_DATA,	--! 
 			 i2c_data_input_command => I2C_RX_DATA_W,			--! i2c renew command, '1' renew output, '0' don't change output
-			 data_output => RX_DATA		--! data_output;
+			 data_output => signal_RX_DATA		--! data_output;
 			);	
 		
 	-------- BAUDRATE	8-bit ---------
 	-- ...
 	-- ...
-	
+	M_BAUDRATE: TX_8_bits_W_R
+		port map(clk => clk,		--! clk input
+				 clk_ena => clk_ena,	--! clk enable input
+				 sync_rst => sync_rst, 	--! synchronous reset input
+				 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+				 uc_data_input_command => baudrate_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+				 data_output => signal_BAUDRATE		--! output 8-bit 
+				);
 	
 	-------- SLAVE_ADDR 7-bit -----------
 	M_SLAVE_ADDR: ADDR_7_bits_W_R 
-
-	port map(clk => clk,		--! clk input
-		 clk_ena => clk_ena, 	--! clk enable input
-		 sync_rst => sync_rst, 	--! synchronous reset input
-		 uc_data_input => slave_address,		--! MicroController 7-bit input
-		 uc_data_input_command => slv_addr_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
-		 data_output => SLAVE_ADDR		--! output 7-bit 
-		);
+		port map(clk => clk,		--! clk input
+			 clk_ena => clk_ena, 	--! clk enable input
+			 sync_rst => sync_rst, 	--! synchronous reset input
+			 uc_data_input => slave_address,		--! (6 downto 0) of writedata; MicroController 7-bit input
+			 uc_data_input_command => slv_addr_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+			 
+			 data_output => signal_SLAVE_ADDR		--! output 7-bit 
+			);
+	
+	
+	-------- OWN ADDR 7-bit ---------------
+	M_OWN_ADDR: ADDR_7_bits_W_R
+		port map(clk => clk,		--! clk input
+			 clk_ena => clk_ena, 	--! clk enable input
+			 sync_rst => sync_rst, 	--! synchronous reset input
+			 uc_data_input => own_address,		--!  (6 downto 0) of writedata; MicroController 7-bit input
+			 uc_data_input_command => own_addr_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+			 data_output => signal_OWN_ADDR		--! output 7-bit 
+			);
+			
+			
+	-------- INTERRUPT CTL MASK	--------------
+	M_IRQ_CTL_MASK: TX_8_bits_W_R
+		port map(clk => clk,		--! clk input
+				 clk_ena => clk_ena,	--! clk enable input
+				 sync_rst => sync_rst, 	--! synchronous reset input
+				 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+				 uc_data_input_command => interrupt_ctl_mask_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+				 data_output => signal_IRQ_CTL_MASK	--! output 8-bit 
+				);
+				
+				
+	
+	--- !!!!!!
+	------- INTERRUPT CTL 
+	--	....
+	--  ....
 	
 	
 	
+	------ INTERRUPT ST MASK
+	M_IRQ_ST_MASK: TX_8_bits_W_R
+		port map(clk => clk,		--! clk input
+				 clk_ena => clk_ena,	--! clk enable input
+				 sync_rst => sync_rst, 	--! synchronous reset input
+				 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+				 uc_data_input_command => interrupt_st_mask_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+				 data_output => signal_IRQ_ST_MASK	--! output 8-bit 
+				);
+				
+				
+	-- !!!!!!!!!!!!		
+	------- INTERRUPT ST
+	--	....
+	--  ....
 	
 	------------------------------- Process --------------------------------------------------
 	
@@ -511,7 +638,7 @@ begin
 			
 			if(AVALON_write = '1') then
 			
-				case(AVALON_address) is
+				case (to_integer(AVALON_address)) is
 				
 				when 0 =>
 					ctl_command <= '1';
@@ -566,22 +693,53 @@ begin
 		
 		if(rising_edge(clk)) then
 		
-		CTL_data <= "0000000" & CTL0;
+		signal_CTL_data <= (CTL7 & CTL6 & CTL5 & CTL4 & CTL3 & CTL2 & CTL1 & CTL0);
+		signal_ST_data <= (ST7 & ST6 & ST5 & ST4 & ST3 & ST2 & ST1 & ST0);
 		
 			if(AVALON_read = '1') then
 				
 				AVALON_readvalid <= '1';
 				
-				case(AVALON_address) is
+				case (to_integer(AVALON_address)) is
 					
 				when 0 => 
-					AVALON_readdata <= CTL_data;
+					AVALON_readdata <= signal_CTL_data;
 				
 				when 1 =>
-					AVALON_readdata <= ST_data;
+					AVALON_readdata <= signal_ST_data;
 				
 				when 2 =>
-					AVALON_readdata <= ST_data;
+					AVALON_readdata <= signal_TX_DATA;
+					
+				when 3 =>
+					AVALON_readdata <= signal_RX_DATA;
+				
+				when 4 => 
+					AVALON_readdata <= signal_BAUDRATE;
+					
+				when 5 =>
+					AVALON_readdata <= '0' & signal_SLAVE_ADDR;			--- !!! signal_SLAVE_ADDR 7-bit, readdata 8-bit;
+					
+					
+				when 6 =>
+					AVALON_readdata <= '0' & signal_OWN_ADDR;
+					
+				when 7 =>
+					AVALON_readdata <= signal_IRQ_CTL_MASK;
+					
+				when 8 =>
+					----  ????
+					AVALON_readdata <= signal_IRQ_CTL;
+				
+				when 9 =>
+					AVALON_readdata <= signal_IRQ_ST_MASK;
+					
+				when 10 =>
+					---- ?????
+					AVALON_readdata <= signal_IRQ_ST;
+				
+				when others =>
+					----
 					
 				end case;
 		
@@ -595,7 +753,48 @@ begin
 	
 	end process P_Decoder_read;
 	
+	-- 3.
+	-- OUTPUTS
+	P_Outputs: process(clk) is
 	
+	begin
+	
+		 CTL_RESET <= signal_CTL_RESET;			--! CTL0 
+		 CTL_START <= signal_CTL_START;				--! CTL1
+		 CTL_STOP <= signal_CTL_STOP;				--! CTL2
+		 CTL_RESTART <= signal_CTL_RESTART;			--! CTL3
+		 CTL_RW <= signal_CTL_RW;					--! CTL4
+		 CTL_ACK <= signal_CTL_ACK;				--! CTL5
+		 CTL_ROLE <= signal_CTL_ROLE;				--! CTL6
+		 CTL_RESERVED <= signal_CTL_RESERVED;			--! CTL7
+		
+		 ---- STATUS 0 to 7
+		 ST_ACK_REC <= signal_ST_ACK_REC;				--! STATUS0
+		 ST_START_DETC <= signal_ST_START_DETC;			--! STATUS1
+		 ST_STOP_DETC <= signal_ST_STOP_DETC;			--! STATUS2
+		 ST_ERROR_DETC <= signal_ST_ERROR_DETC;			--! STATUS3
+		 ST_TX_EMPTY <= signal_ST_TX_EMPTY;			--! STATUS4
+		 ST_RX_FULL <= signal_ST_RX_FULL;				--! STATUS5
+		 ST_RW <= signal_ST_RW;					--! STATUS6
+		 ST_BUSY <= signal_ST_BUSY;				--! STATUS7
+		
+		 ---- TX 8-bit
+		 TX_DATA <= signal_TX_DATA;		--! TX 8-bit
+		
+		 ---- RX 8-bit
+		 RX_DATA <= signal_RX_DATA; 		--! RX 8-bit
+		
+		 ---- Baud Rate
+		 BAUDRATE <= signal_BAUDRATE;		--! BAUDRATE 8-bit
+		
+		 ---- Slave Address 7-bit
+		 SLAVE_ADDR <= signal_SLAVE_ADDR;		--! SLAVE_ADDR 7-bit
+		
+		 ---- OWN Address 7-bit
+		 OWN_ADDR <= signal_OWN_ADDR;		--! Own Address, use for slave role
+	
+		 
+	end process P_Outputs;
 	
 	
 	
