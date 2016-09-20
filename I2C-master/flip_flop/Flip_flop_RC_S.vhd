@@ -52,9 +52,9 @@ begin
 				if(uc_clear_command = '1') then		-- Activate uc_clear fonction
 					if( uc_clear = '1') then--! if uc_clear act, output equals to '0'
 					data_out <= '0';
-					elsif (i2c_set ='1' )then--! if i2c_set act, output equals to '1'
+					end if;
+				elsif (i2c_set ='1' )then--! if i2c_set act, output equals to '1'
 					data_out <= '1';
-					end if;	
 				end if;
 			else
 			data_out <= '0';--!if sync_rst equals to '0', that means reset, then output equals to '0'

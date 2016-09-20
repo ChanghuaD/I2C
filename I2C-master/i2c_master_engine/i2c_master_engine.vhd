@@ -48,7 +48,8 @@ entity i2c_master_engine is
 		 CTL_RESTART_C: out std_logic;			--! CTL_RESTART bit Clear output
 		 CTL_STOP_C: out std_logic;				--! CTL_STOP bit Clear output
 		 CTL_START_C: out std_logic;			--! CTL_START bit Clear output
-		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write output     
+		 ST_BUSY: out std_logic;				--! ST_BUSY bit data output
+		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write "command" output     
 		 ST_RX_FULL_S: out std_logic;			--!	ST_RX_FULL bit Set output
 		 ST_TX_EMPTY_S: out std_logic;			--! ST_TX_EMPTY bit set output
 	--	 ST_RESTART_DETC_W: out std_logic; 		--! ST_RESTART_DETC bit set output
@@ -677,24 +678,27 @@ begin
 	
 	begin
 	
+		ST_BUSY_W <= '1';
+		ST_BUSY <= '1';
+		
 		case(state) is
 		
 		when RESET =>
-			ST_BUSY_W <= '0';
+			ST_BUSY <= '0';
 		--	SCL_OUT <= '1';
 		--	SDA_OUT <= '1';
 			rst_receiver <= '0';
 			rst_transmitter <= '0';
-			
+			SEL_TX <= '0';
 			
 		when INIT =>
-			ST_BUSY_W <= '1';
+			SEL_TX <= '0';
 			rst_receiver <= '0';
 			rst_transmitter <= '0';
 			
 			
 		when READY_1 =>
-			ST_BUSY_W <= '1';
+			
 			SEL_TX <= '0';
 			rst_receiver <= '0';
 			rst_transmitter <= '0';
@@ -702,7 +706,7 @@ begin
 		
 			
 		when READY_2 =>
-			ST_BUSY_W <= '1';
+			
 			SEL_TX <= '0';
 			rst_receiver <= '0';
 			rst_transmitter <= '0';

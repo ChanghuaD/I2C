@@ -4,6 +4,11 @@
 --! Created on 09/09/2016
 --------------------------------------------------------------
 
+-----------
+-- Waitrequest signal
+--
+------------
+
 --! Use standard library
 library ieee;
 --! Use logic elements
@@ -62,32 +67,13 @@ entity i2c_register is
 		 -- Avalon Slave outputs -----------------------
 		 
 		 AVALON_readdata: out std_logic_vector (7 downto 0);
-		 AVALON_waitrequest: out std_logic;
+		 AVALON_waitrequest: out std_logic;				-- !!!!!!!!!!!!!!!!!
 		 AVALON_readvalid: out std_logic;
 		 
 		 
 		 --------- AVALON Interrupt output	------------------
 		 
-		 -- Control
-		 AVALON_irq_ctl_0: out std_logic;
-		 AVALON_irq_ctl_1: out std_logic;
-		 AVALON_irq_ctl_2: out std_logic;
-		 AVALON_irq_ctl_3: out std_logic;
-		 AVALON_irq_ctl_4: out std_logic;
-		 AVALON_irq_ctl_5: out std_logic;
-		 AVALON_irq_ctl_6: out std_logic;
-		-- AVALON_irq_ctl_7: out std_logic;			--reserved
-		 
-		 
-		 -- Status
-		 AVALON_irq_st_0: out std_logic;
-		 AVALON_irq_st_1: out std_logic;
-		 AVALON_irq_st_2: out std_logic;
-		 AVALON_irq_st_3: out std_logic;
-		 AVALON_irq_st_4: out std_logic;
-		 AVALON_irq_st_5: out std_logic;
-		 AVALON_irq_st_6: out std_logic;		--! irq_st_6 = '1' --> Microcontroller must compare the SLAVE_ADDR and OWN_ADDR and write the correspond value into CTL_ACK BIT immediately. 
-		 AVALON_irq_st_7: out std_logic;
+		 AVALON_irq: out std_logic;
 		 
 		 ------------------- I2C Outputs Ports 	--------------
 		 ---- CTL 0 to 7
@@ -247,9 +233,27 @@ architecture Behavioral of i2c_register is
 		);
 	
 	end component ADDR_7_bits_W_W;
+	
+	-- 9.
+	component Flip_flop_interrupt_RC_mask is
+
+    Port( 
+		clk 			: in  STD_LOGIC;
+        clk_ena 		: in  STD_LOGIC;
+		sync_rst 		: in  STD_LOGIC;
+        clear_in 			: in  STD_LOGIC;
+		mask_in 		: in  STD_LOGIC;
+		set_in			: in  STD_LOGIC;	
+			  
+		data_out 		: out  STD_LOGIC
+		);
+          
+	end component Flip_flop_interrupt_RC_mask;
 
 
 	--------------- signal ------------------------------
+	signal: avalon_irq_st: std_logic;
+	signal: avalon_irq_ctl: std_logic;
 	
 
 	--signal CTL0_uc_data_in: std_logic;
@@ -260,7 +264,11 @@ architecture Behavioral of i2c_register is
 	signal slv_addr_command: std_logic;		-- Command the slave address word
 	signal own_addr_command: std_logic;
 	signal interrupt_ctl_mask_command: std_logic;	-- Command the interrupt control mask register
+	signal interrupt_ctl_clear_command: std_logic;	-- Command the interrupt control clear register
+	signal interrupt_ctl_command: std_logic;
 	signal interrupt_st_mask_command: std_logic;	-- Command the interrupt status mask register
+	signal interrupt_st_clear_command: std_logic;	-- Command the interrupt status clear register
+	signal interrupt_st_command: std_logic;
 	
 	signal signal_CTL_data: std_logic_vector(7 downto 0);
 	signal signal_ST_data: std_logic_vector(7 downto 0);
@@ -275,7 +283,7 @@ architecture Behavioral of i2c_register is
 	signal	 signal_CTL_RW:  std_logic;				--! CTL4
 	signal	 signal_CTL_ACK: std_logic;				--! CTL5
 	signal	 signal_CTL_ROLE:  std_logic;				--! CTL6
-	signal	 signal_CTL_RESERVED:  std_logic;			--! CTL7
+	signal	 signal_CTL_RESERVED:  std_logic := '0';			--! CTL7
 		
 		 ---- STATUS 0 to 7
 	signal	 signal_ST_ACK_REC:  std_logic;			--! STATUS0
@@ -306,16 +314,39 @@ architecture Behavioral of i2c_register is
 		 ---- INTERRUPT CTL MASK
 	signal 	 signal_IRQ_CTL_MASK: std_logic_vector(7 downto 0);
 	
+		 ---- INTERRUPT CTL MASK
+	signal 	 signal_IRQ_CTL_CLEAR: std_logic_vector(7 downto 0);
+	
 		---- INTERRUPT CTL
 	signal   signal_IRQ_CTL: std_logic_vector(7 downto 0);
+	signal 	 signal_IRQ_CTL0: std_logic;
+	signal 	 signal_IRQ_CTL1: std_logic;
+	signal 	 signal_IRQ_CTL2: std_logic;
+	signal 	 signal_IRQ_CTL3: std_logic;
+	signal 	 signal_IRQ_CTL4: std_logic;
+	signal 	 signal_IRQ_CTL5: std_logic;
+	signal 	 signal_IRQ_CTL6: std_logic;
+	signal 	 signal_IRQ_CTL7: std_logic;
 	
-		---- INTERRUPT STATUS
-	signal 	 signal_IRQ_ST: std_logic_vector(7 downto 0);
 	
+	
+		
 		 ---- INTERRUPT ST MASK
 	signal 	 signal_IRQ_ST_MASK: std_logic_vector(7 downto 0);
 	
+		 ---- INTERRUPT ST MASK
+	signal 	 signal_IRQ_ST_CLEAR: std_logic_vector(7 downto 0);
 	
+	---- INTERRUPT STATUS
+	signal 	 signal_IRQ_ST: std_logic_vector(7 downto 0);
+	signal	 signal_IRQ_ST0: std_logic;
+	signal	 signal_IRQ_ST1: std_logic;
+	signal	 signal_IRQ_ST2: std_logic;
+	signal	 signal_IRQ_ST3: std_logic;
+	signal	 signal_IRQ_ST4: std_logic;
+	signal	 signal_IRQ_ST5: std_logic;
+	signal	 signal_IRQ_ST6: std_logic;
+	signal	 signal_IRQ_ST7: std_logic;
 	
 	
 	--- alias
@@ -614,12 +645,135 @@ begin
 				);
 				
 				
+	-------- INTERRUPT CTL CLEAR --------------
+	M_IRQ_CTL_CLEAR: TX_8_bits_W_R
+		port map(clk => clk,
+				 clk_ena => clk_ena,
+				 sync_rst => sync_rst,
+				 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+				 uc_data_input_command => interrupt_ctl_clear_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+				 data_output => signal_IRQ_CTL_CLEAR	--! output 8-bit 
+		);
+	
 	
 	--- !!!!!!
 	------- INTERRUPT CTL 
 	--	....
-	--  ....
 	
+	--  IRQ_CTL0 
+	--  CTL_RESET
+	M_IRQ_CTL0:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(0),
+				 mask_in 		=> signal_IRQ_CTL_MASK(0),
+				 set_in		=> CTL0,  		-- CTL0 = '1' --> IRQ_CTL0 = '1'	
+					  
+				 data_out 		=> signal_IRQ_CTL0
+				 );
+				 
+	--  IRQ_CTL1 
+	--  CTL_START
+	M_IRQ_CTL1:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(1),				 
+				 mask_in 		=> signal_IRQ_CTL_MASK(1),
+				 set_in		=> CTL1,  			
+					  
+				 data_out 		=> signal_IRQ_CTL1
+				 );
+          
+	--  IRQ_CTL2 
+	--  CTL_STOP
+	M_IRQ_CTL2:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(2),				 
+				 mask_in 		=> signal_IRQ_CTL_MASK(2),
+				 set_in		=> CTL2,  			
+					  
+				 data_out 		=> signal_IRQ_CTL2
+				 );
+	
+	--  IRQ_CTL3 
+	--  CTL_RESTART
+	M_IRQ_CTL3:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(3),				 
+				 mask_in 		=> signal_IRQ_CTL_MASK(3),
+				 set_in		=> CTL3,  			
+					  
+				 data_out 		=> signal_IRQ_CTL3
+				 );
+	
+	
+	--  IRQ_CTL4 
+	--  CTL_RW
+	M_IRQ_CTL4:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(4),				 
+				 mask_in 		=> signal_IRQ_CTL_MASK(4),
+				 set_in		=> CTL4,  			
+					  
+				 data_out 		=> signal_IRQ_CTL4
+				 );
+				 
+	--  IRQ_CTL5 
+	--  CTL_ACK
+	M_IRQ_CTL5:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(5),
+				 mask_in 		=> signal_IRQ_CTL_MASK(5),
+				 set_in		=> CTL5,  			
+					  
+				 data_out 		=> signal_IRQ_CTL5
+				 );
+				 
+				 
+	--  IRQ_CTL6 
+	--  CTL_ROLE
+	M_IRQ_CTL6:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(6),
+				 mask_in 		=> signal_IRQ_CTL_MASK(6),
+				 set_in		=> CTL6,  			
+					  
+				 data_out 		=> signal_IRQ_CTL6
+				 );
+				 
+				 
+	--  IRQ_CTL7 
+	--  CTL_RESERVED
+	M_IRQ_CTL7:  Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_CTL_CLEAR(7),
+				 mask_in 		=> signal_IRQ_CTL_MASK(7),
+				 set_in		=> CTL7,  			-- initialized at '0'
+					  
+				 data_out 		=> signal_IRQ_CTL7
+				 );
 	
 	
 	------ INTERRUPT ST MASK
@@ -631,13 +785,137 @@ begin
 				 uc_data_input_command => interrupt_st_mask_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
 				 data_output => signal_IRQ_ST_MASK	--! output 8-bit 
 				);
-				
+	
+	------ INTERRUPT ST CLEAR		
+	M_IRQ_ST_CLEAR: TX_8_bits_W_R
+		port map(clk => clk,		--! clk input
+				 clk_ena => clk_ena,	--! clk enable input
+				 sync_rst => sync_rst, 	--! synchronous reset input
+				 uc_data_input => AVALON_writedata,		--! MicroController 8-bit input
+				 uc_data_input_command => interrupt_st_clear_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+				 data_output => signal_IRQ_ST_CLEAR	--! output 8-bit 
+				);
 				
 	-- !!!!!!!!!!!!		
 	------- INTERRUPT ST
 	--	....
-	--  ....
 	
+	-- IRQ_ST0
+	-- ST_ACK_REC
+	M_IRQ_ST0: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(0),
+				 mask_in 		=> signal_IRQ_ST_MASK(0),
+				 set_in		=> I2C_ST_ACK_REC_W,  			-- write command for ST_ACK_REC, we use that input signal to determine the irq value
+					  
+				 data_out 		=> signal_IRQ_ST0
+				 );
+	
+	-- IRQ_ST1	
+	-- ST_START_DETC
+	M_IRQ_ST1: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(1),
+				 mask_in 		=> signal_IRQ_ST_MASK(1),
+				 set_in		=> ST1,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST1
+				 );
+				 
+	-- IRQ_ST2	
+	-- ST_STOP_DETC
+	M_IRQ_ST2: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(2),
+				 mask_in 		=> signal_IRQ_ST_MASK(2),
+				 set_in		=> ST2,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST2
+				 );
+				 
+	-- IRQ_ST3
+	-- ST_ERROR_DETC
+	M_IRQ_ST3: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(3),
+				 mask_in 		=> signal_IRQ_ST_MASK(3),
+				 set_in		=> ST3,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST3
+				 );
+				 
+	
+	-- IRQ_ST4
+	-- ST_TX_EMPTY
+	M_IRQ_ST4: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(4),
+				 mask_in 		=> signal_IRQ_ST_MASK(4),
+				 set_in		=> ST4,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST4
+				 );
+				 
+				 
+	-- IRQ_ST5
+	-- ST_RX_FULL
+	M_IRQ_ST5: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(5),
+				 mask_in 		=> signal_IRQ_ST_MASK(5),
+				 set_in		=> ST5,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST5
+				 );			 
+				 
+				 
+	-- IRQ_ST6
+	-- ST_RW
+	M_IRQ_ST6: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(6),
+				 mask_in 		=> signal_IRQ_ST_MASK(6),
+				 set_in		=> I2C_ST_RW_W,  			-- value in the ST1 register
+					  
+				 data_out 		=> signal_IRQ_ST6
+				 );
+				 
+				 
+	-- IRQ_ST7
+	-- ST_BUSY
+	M_IRQ_ST6: Flip_flop_interrupt_RC_mask 
+
+		port map(clk 			=> clk,
+				 clk_ena 		=> clk_ena,
+				 sync_rst 	    => sync_rst,
+				 clear_in 		=> signal_IRQ_ST_CLEAR(7),
+				 mask_in 		=> signal_IRQ_ST_MASK(7),
+				 set_in		=> ST7,  			-- ST_BUSY BIT, normally the mask of that bit should keep at '0'
+					  
+				 data_out 		=> signal_IRQ_ST7
+				 );			 
+				 
 	------------------------------- Process --------------------------------------------------
 	
 	-- 1.
@@ -656,7 +934,11 @@ begin
 			slv_addr_command <= '0';
 			baudrate_command <= '0';
 			interrupt_ctl_mask_command <= '0';
+			interrupt_ctl_clear_command <= '0';
+			interrupt_ctl_command <= '0';
 			interrupt_st_mask_command <= '0';
+			interrupt_st_clear_command <= '0';
+			interrupt_st_command <= '0';
 			
 			if(AVALON_write = '1') then
 			
@@ -682,20 +964,29 @@ begin
 					
 				when 6 =>
 					-- nothing
+					
 				when 7 =>
 					interrupt_ctl_mask_command <= '1';
 					
 				when 8 =>
-					-- nothing
+					interrupt_ctl_clear_command <= '1';
+					
 				when 9 =>
+					-- Microcontroller can't modify directly the irq_ctl register
+					
+				when 10 =>
 					interrupt_st_mask_command <= '1';
 				
-				when 10 => 
-					-- nothing
+				when 11 => 
+					interrupt_st_clear_command <= '1';
+					
+				when 12 => 
+					-- Microcontroller can't modify directly the irq_st register
 				
 				when others => 
-					-- nothing
-				
+					-- Nothing
+					-- ....
+					
 				end case;
 				
 			else
@@ -717,6 +1008,8 @@ begin
 		
 		signal_CTL_data <= (CTL7 & CTL6 & CTL5 & CTL4 & CTL3 & CTL2 & CTL1 & CTL0);
 		signal_ST_data <= (ST7 & ST6 & ST5 & ST4 & ST3 & ST2 & ST1 & ST0);
+		signal_IRQ_CTL <= (signal_IRQ_CTL7 & signal_IRQ_CTL6 & signal_IRQ_CTL5 & signal_IRQ_CTL4 & signal_IRQ_CTL3 & signal_IRQ_CTL2 & signal_IRQ_CTL1 & signal_IRQ_CTL0);
+		signal_IRQ_ST <= (signal_IRQ_ST7 & signal_IRQ_ST6 & signal_IRQ_ST5 & signal_IRQ_ST4 & signal_IRQ_ST3 & signal_IRQ_ST2 & signal_IRQ_ST1 & signal_IRQ_ST0);
 		
 			if(AVALON_read = '1') then
 				
@@ -750,18 +1043,24 @@ begin
 					AVALON_readdata <= signal_IRQ_CTL_MASK;
 					
 				when 8 =>
+					AVALON_readdata <= signal_IRQ_CTL_CLEAR;
+					
+				when 9 =>
 					----  ????
 					AVALON_readdata <= signal_IRQ_CTL;
 				
-				when 9 =>
+				when 10 =>
 					AVALON_readdata <= signal_IRQ_ST_MASK;
 					
-				when 10 =>
+				when 11 =>
 					---- ?????
+					AVALON_readdata <= signal_IRQ_ST_CLEAR;
+					
+				when 12 => 
 					AVALON_readdata <= signal_IRQ_ST;
 				
 				when others =>
-					----
+					---- Nothing
 					
 				end case;
 		
@@ -819,122 +1118,31 @@ begin
 	end process P_Outputs;
 	
 	
-	-- 4.
-	-- IRQ process
-	P_IRQ: process(clk) is
-	
-	begin
-		if(rising_edge(clk)) then
-		
-			if(clk_ena = '1') then
-			
-			 -- CTL
-			 AVALON_irq_ctl_0 <= '0';
-			 AVALON_irq_ctl_1 <= '0';
-			 AVALON_irq_ctl_2 <= '0';
-			 AVALON_irq_ctl_3 <= '0';
-			 AVALON_irq_ctl_4 <= '0';
-			 AVALON_irq_ctl_5 <= '0';
-			 AVALON_irq_ctl_6 <= '0';
-			 
-			 -- Status
-			 AVALON_irq_st_0 <= '0';
-			 AVALON_irq_st_1 <= '0';
-			 AVALON_irq_st_2 <= '0';
-			 AVALON_irq_st_3 <= '0';
-			 AVALON_irq_st_4 <= '0';
-			 AVALON_irq_st_5 <= '0';
-			 AVALON_irq_st_6 <= '0';		--! irq_st_6 = '1' --> Microcontroller must compare the SLAVE_ADDR and OWN_ADDR and write the correspond value into CTL_ACK BIT immediately. 
-			 AVALON_irq_st_7 <= '0';
-			
-				if(sync_rst = '1') then
-				
-					-- avalon_irq_ctl_0
-					if((CTL0 = '1') AND (signal_IRQ_CTL_MASK(0) = '1')) then
-						AVALON_irq_ctl_0 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_1
-					if((CTL1 = '1') AND (signal_IRQ_CTL_MASK(1) = '1')) then
-						AVALON_irq_ctl_1 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_2
-					if((CTL2 = '1') AND (signal_IRQ_CTL_MASK(2) = '1')) then
-						AVALON_irq_ctl_2 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_3
-					if((CTL3 = '1') AND (signal_IRQ_CTL_MASK(3) = '1')) then
-						AVALON_irq_ctl_3 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_4
-					if((CTL4 = '1') AND (signal_IRQ_CTL_MASK(4) = '1')) then
-						AVALON_irq_ctl_4 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_5
-					if((CTL5 = '1') AND (signal_IRQ_CTL_MASK(5) = '1')) then
-						AVALON_irq_ctl_5 <= '1';
-					end if;
-					
-					-- avalon_irq_ctl_6
-					if((CTL6 = '1') AND (signal_IRQ_CTL_MASK(6) = '1')) then
-						AVALON_irq_ctl_6 <= '1';
-					end if;
-					
-					
-					-- avalon_irq_st_0
-					if((I2C_ST_ACK_REC_W = '1') AND(signal_IRQ_ST_MASK(0) = '1') ) then
-						AVALON_irq_st_0 <= '1';
-					end if;
-					
-					-- avalon_irq_st_1
-					if((ST1 = '1') AND(signal_IRQ_ST_MASK(1) = '1') ) then
-						AVALON_irq_st_1 <= '1';
-					end if;
-					
-					-- avalon_irq_st_2
-					if((ST2 = '1') AND(signal_IRQ_ST_MASK(2) = '1') ) then
-						AVALON_irq_st_2 <= '1';
-					end if;
-					
-					-- avalon_irq_st_3
-					if((ST3 = '1') AND(signal_IRQ_ST_MASK(3) = '1') ) then
-						AVALON_irq_st_3 <= '1';
-					end if;
-					
-					-- avalon_irq_st_4
-					if((ST4 = '1') AND(signal_IRQ_ST_MASK(4) = '1') ) then
-						AVALON_irq_st_4 <= '1';
-					end if;
-					
-					-- avalon_irq_st_5
-					if((ST5 = '1') AND(signal_IRQ_ST_MASK(5) = '1') ) then
-						AVALON_irq_st_5 <= '1';
-					end if;
-					
-					-- avalon_irq_st_6
-					if((I2C_ST_RW_W = '1') AND(signal_IRQ_ST_MASK(6) = '1') ) then
-						AVALON_irq_st_6 <= '1';
-					end if;
-					
-					-- avalon_irq_st_7
-					if((I2C_ST_BUSY_W = '1') AND(signal_IRQ_ST_MASK(7) = '1') ) then
-						AVALON_irq_st_7 <= '1';
-					end if;
-			
-				end if;
-			end if;
-		end if;		-- clk
-		
-	end process P_IRQ;
+
 	
 	
 	-- 5. 
 	-- BAUDRATE
 	-- ....
 	
+	-- 6.
+	P_IRQ: process(clk) is
+	begin
 	
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+				if(sync_rst = '1') then
+					avalon_irq_ctl <= (signal_IRQ_CTL0 OR signal_IRQ_CTL1 OR signal_IRQ_CTL2 OR signal_IRQ_CTL3 OR signal_IRQ_CTL4 OR signal_IRQ_CTL5 OR signal_IRQ_CTL6 OR signal_IRQ_CTL7);
+					avalon_irq_st <= (signal_IRQ_ST0 OR signal_IRQ_ST1 OR signal_IRQ_ST2 OR signal_IRQ_ST3 OR signal_IRQ_ST4 OR signal_IRQ_ST5 OR signal_IRQ_ST6 OR signal_IRQ_ST7);
+					AVALON_irq <= avalon_irq_st OR avalon_irq_ctl;
+				else
+					avalon_irq_ctl <= '0';
+					avalon_irq_st <= '0';
+					AVALON_irq <= '0';		------ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				end if;
+				
+			end if;
+		end if;
+	
+	end process P_IRQ;
 end architecture Behavioral;
