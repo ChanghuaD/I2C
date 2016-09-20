@@ -24,13 +24,13 @@ entity i2c_register is
 		 I2C_CTL_STOP_C: in std_logic;
 		 I2C_CTL_RESTART_C: in std_logic;
 		 
-		 I2C_ST_ACK_REC_W: in std_logic;
+		 I2C_ST_ACK_REC: in std_logic;
+		 I2C_ST_ACK_REC_W: in std_logic; 
 		 I2C_ST_START_DETC_S: in std_logic;
 		 I2C_ST_STOP_DETC_S: in std_logic;
 		 I2C_ST_ERROR_DETC_S: in std_logic;
 		 I2C_ST_TX_EMPTY_S: in std_logic;
 		 I2C_ST_RX_FULL_S: in std_logic;
-		 I2C_ST_ACK_REC: in std_logic;
 		 I2C_ST_RW: in std_logic;
 		 I2C_ST_RW_W: in std_logic;
 		 I2C_ST_BUSY: in std_logic;
@@ -38,6 +38,9 @@ entity i2c_register is
 		 
 		 I2C_RX_DATA: in std_logic_vector(7 downto 0);
 		 I2C_RX_DATA_W: in std_logic;
+		 
+		 I2C_SLV_ADDR: in std_logic_vector(6 downto 0);
+		 I2C_SLV_ADDR_command: in std_logic;
 		 
 		 -- To accomplish with Microcontroller's input ports
 		 -- Avalon Slave Interface
@@ -73,7 +76,7 @@ entity i2c_register is
 		 AVALON_irq_ctl_4: out std_logic;
 		 AVALON_irq_ctl_5: out std_logic;
 		 AVALON_irq_ctl_6: out std_logic;
-		 AVALON_irq_ctl_7: out std_logic;
+		-- AVALON_irq_ctl_7: out std_logic;			--reserved
 		 
 		 
 		 -- Status
@@ -227,6 +230,23 @@ architecture Behavioral of i2c_register is
 		);
 
 	end component ADDR_7_bits_W_R;
+	
+	
+	-- 8.
+	component ADDR_7_bits_W_W is
+	
+	port(clk: in std_logic;			--! clk input
+		 clk_ena: in std_logic; 	--! clk enable input
+		 sync_rst: in std_logic; 	--! synchronous reset input
+		 uc_data_input: in std_logic_vector(6 downto 0);		--! MicroController 7-bit input
+		 uc_data_input_command: in std_logic;				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+		 i2c_data_input: in std_logic_vector(6 downto 0);
+		 i2c_data_input_command: in std_logic;
+		 
+		 data_output: out std_logic_vector(6 downto 0)		--! output 7-bit 
+		);
+	
+	end component ADDR_7_bits_W_W;
 
 
 	--------------- signal ------------------------------
@@ -559,12 +579,14 @@ begin
 				);
 	
 	-------- SLAVE_ADDR 7-bit -----------
-	M_SLAVE_ADDR: ADDR_7_bits_W_R 
+	M_SLAVE_ADDR: ADDR_7_bits_W_W 
 		port map(clk => clk,		--! clk input
 			 clk_ena => clk_ena, 	--! clk enable input
 			 sync_rst => sync_rst, 	--! synchronous reset input
 			 uc_data_input => slave_address,		--! (6 downto 0) of writedata; MicroController 7-bit input
 			 uc_data_input_command => slv_addr_command,				--! input command, '1' register renew data from uc_input, '0' register won't modify the content.
+			 i2c_data_input => I2C_SLV_ADDR,
+			 i2c_data_input_command => I2C_SLV_ADDR_command,
 			 
 			 data_output => signal_SLAVE_ADDR		--! output 7-bit 
 			);
@@ -754,7 +776,7 @@ begin
 	end process P_Decoder_read;
 	
 	-- 3.
-	-- OUTPUTS
+	-- OUTPUTS AND SIGNALS
 	P_Outputs: process(clk) is
 	
 	begin
@@ -797,6 +819,122 @@ begin
 	end process P_Outputs;
 	
 	
+	-- 4.
+	-- IRQ process
+	P_IRQ: process(clk) is
+	
+	begin
+		if(rising_edge(clk)) then
+		
+			if(clk_ena = '1') then
+			
+			 -- CTL
+			 AVALON_irq_ctl_0 <= '0';
+			 AVALON_irq_ctl_1 <= '0';
+			 AVALON_irq_ctl_2 <= '0';
+			 AVALON_irq_ctl_3 <= '0';
+			 AVALON_irq_ctl_4 <= '0';
+			 AVALON_irq_ctl_5 <= '0';
+			 AVALON_irq_ctl_6 <= '0';
+			 
+			 -- Status
+			 AVALON_irq_st_0 <= '0';
+			 AVALON_irq_st_1 <= '0';
+			 AVALON_irq_st_2 <= '0';
+			 AVALON_irq_st_3 <= '0';
+			 AVALON_irq_st_4 <= '0';
+			 AVALON_irq_st_5 <= '0';
+			 AVALON_irq_st_6 <= '0';		--! irq_st_6 = '1' --> Microcontroller must compare the SLAVE_ADDR and OWN_ADDR and write the correspond value into CTL_ACK BIT immediately. 
+			 AVALON_irq_st_7 <= '0';
+			
+				if(sync_rst = '1') then
+				
+					-- avalon_irq_ctl_0
+					if((CTL0 = '1') AND (signal_IRQ_CTL_MASK(0) = '1')) then
+						AVALON_irq_ctl_0 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_1
+					if((CTL1 = '1') AND (signal_IRQ_CTL_MASK(1) = '1')) then
+						AVALON_irq_ctl_1 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_2
+					if((CTL2 = '1') AND (signal_IRQ_CTL_MASK(2) = '1')) then
+						AVALON_irq_ctl_2 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_3
+					if((CTL3 = '1') AND (signal_IRQ_CTL_MASK(3) = '1')) then
+						AVALON_irq_ctl_3 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_4
+					if((CTL4 = '1') AND (signal_IRQ_CTL_MASK(4) = '1')) then
+						AVALON_irq_ctl_4 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_5
+					if((CTL5 = '1') AND (signal_IRQ_CTL_MASK(5) = '1')) then
+						AVALON_irq_ctl_5 <= '1';
+					end if;
+					
+					-- avalon_irq_ctl_6
+					if((CTL6 = '1') AND (signal_IRQ_CTL_MASK(6) = '1')) then
+						AVALON_irq_ctl_6 <= '1';
+					end if;
+					
+					
+					-- avalon_irq_st_0
+					if((I2C_ST_ACK_REC_W = '1') AND(signal_IRQ_ST_MASK(0) = '1' ) then
+						AVALON_irq_st_0 <= '1';
+					end if;
+					
+					-- avalon_irq_st_1
+					if((ST1 = '1') AND(signal_IRQ_ST_MASK(1) = '1' ) then
+						AVALON_irq_st_1 <= '1';
+					end if;
+					
+					-- avalon_irq_st_2
+					if((ST2 = '1') AND(signal_IRQ_ST_MASK(2) = '1' ) then
+						AVALON_irq_st_2 <= '1';
+					end if;
+					
+					-- avalon_irq_st_3
+					if((ST3 = '1') AND(signal_IRQ_ST_MASK(3) = '1' ) then
+						AVALON_irq_st_3 <= '1';
+					end if;
+					
+					-- avalon_irq_st_4
+					if((ST4 = '1') AND(signal_IRQ_ST_MASK(4) = '1' ) then
+						AVALON_irq_st_4 <= '1';
+					end if;
+					
+					-- avalon_irq_st_5
+					if((ST5 = '1') AND(signal_IRQ_ST_MASK(5) = '1' ) then
+						AVALON_irq_st_5 <= '1';
+					end if;
+					
+					-- avalon_irq_st_6
+					if((I2C_ST_RW_W = '1') AND(signal_IRQ_ST_MASK(6) = '1' ) then
+						AVALON_irq_st_6 <= '1';
+					end if;
+					
+					-- avalon_irq_st_7
+					if((I2C_ST_BUSY_W = '1') AND(signal_IRQ_ST_MASK(7) = '1' ) then
+						AVALON_irq_st_7 <= '1';
+					end if;
+			
+				end if;
+			end if;
+		end if;		-- clk
+		
+	end process P_IRQ;
+	
+	
+	-- 5. 
+	-- BAUDRATE
+	-- ....
 	
 	
 end architecture Behavioral;

@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------
 --!@file TX 8-bit register, MicroController Write, I2C engine Read
 --!@brief detail used for TX transmission
---! Created on 09/09/2016 
+--! Created on 20/09/2016 
 ----------------------------------------------------------------------
 
 
