@@ -46,7 +46,7 @@ entity i2c_register is
 		 -- Avalon Slave Interface
 		 -- 1 word = 1 byte  --> byte address = word address, don't need address translation between Avalon's Master and Slave
 		 
-		 AVALON_chipselect: in std_logic;
+	--	 AVALON_chipselect: in std_logic;
 		 AVALON_address: in unsigned (3 downto 0);		--
 		 AVALON_read: in std_logic;
 		 AVALON_write: in std_logic;
@@ -886,42 +886,42 @@ begin
 					
 					
 					-- avalon_irq_st_0
-					if((I2C_ST_ACK_REC_W = '1') AND(signal_IRQ_ST_MASK(0) = '1' ) then
+					if((I2C_ST_ACK_REC_W = '1') AND(signal_IRQ_ST_MASK(0) = '1') ) then
 						AVALON_irq_st_0 <= '1';
 					end if;
 					
 					-- avalon_irq_st_1
-					if((ST1 = '1') AND(signal_IRQ_ST_MASK(1) = '1' ) then
+					if((ST1 = '1') AND(signal_IRQ_ST_MASK(1) = '1') ) then
 						AVALON_irq_st_1 <= '1';
 					end if;
 					
 					-- avalon_irq_st_2
-					if((ST2 = '1') AND(signal_IRQ_ST_MASK(2) = '1' ) then
+					if((ST2 = '1') AND(signal_IRQ_ST_MASK(2) = '1') ) then
 						AVALON_irq_st_2 <= '1';
 					end if;
 					
 					-- avalon_irq_st_3
-					if((ST3 = '1') AND(signal_IRQ_ST_MASK(3) = '1' ) then
+					if((ST3 = '1') AND(signal_IRQ_ST_MASK(3) = '1') ) then
 						AVALON_irq_st_3 <= '1';
 					end if;
 					
 					-- avalon_irq_st_4
-					if((ST4 = '1') AND(signal_IRQ_ST_MASK(4) = '1' ) then
+					if((ST4 = '1') AND(signal_IRQ_ST_MASK(4) = '1') ) then
 						AVALON_irq_st_4 <= '1';
 					end if;
 					
 					-- avalon_irq_st_5
-					if((ST5 = '1') AND(signal_IRQ_ST_MASK(5) = '1' ) then
+					if((ST5 = '1') AND(signal_IRQ_ST_MASK(5) = '1') ) then
 						AVALON_irq_st_5 <= '1';
 					end if;
 					
 					-- avalon_irq_st_6
-					if((I2C_ST_RW_W = '1') AND(signal_IRQ_ST_MASK(6) = '1' ) then
+					if((I2C_ST_RW_W = '1') AND(signal_IRQ_ST_MASK(6) = '1') ) then
 						AVALON_irq_st_6 <= '1';
 					end if;
 					
 					-- avalon_irq_st_7
-					if((I2C_ST_BUSY_W = '1') AND(signal_IRQ_ST_MASK(7) = '1' ) then
+					if((I2C_ST_BUSY_W = '1') AND(signal_IRQ_ST_MASK(7) = '1') ) then
 						AVALON_irq_st_7 <= '1';
 					end if;
 			
