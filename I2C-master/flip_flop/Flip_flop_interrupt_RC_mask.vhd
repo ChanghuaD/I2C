@@ -47,7 +47,7 @@ begin
 			if(sync_rst = '1') then
 	
 			
-				if(uc_clear = '1') then
+				if(clear_in = '1') then
 					data_out <= '0';	
 				elsif(mask_in = '1') then
 					if(set_in = '1') then

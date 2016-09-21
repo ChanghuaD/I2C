@@ -123,7 +123,7 @@ architecture behavior of i2c_master_engine is
 		  SCL_start_point : out  STD_LOGIC;		--! start point output
 		  SCL_falling_point : out  STD_LOGIC;	--! falling point output
 		  SCL_write_point : out  STD_LOGIC;		--! write point output
-		  SCL_error_point : out  STD_LOGIC		--! error point output
+		  SCL_error_indication : out  STD_LOGIC		--! error point output
 		  );
 	
 	end component SCL_detect;
@@ -288,7 +288,7 @@ architecture behavior of i2c_master_engine is
 	signal sampling_point: std_logic;
 	signal stop_point: std_logic;
 	signal start_point: std_logic;
-	signal error_point: std_logic;
+	signal error_indication: std_logic;
 	-- start_generator
 	signal command_start: std_logic;
 	signal sda_out_start: std_logic;
@@ -357,7 +357,7 @@ begin
 				  SCL_start_point => start_point,		--! map to start point signal
 				  SCL_falling_point => falling_point,	--! map to falling point signal
 				  SCL_write_point => writing_point,		--! map to writing_point signal
-				  SCL_error_point => error_point		--! map to error_point signal
+				  SCL_error_indication => error_indication		--! map to error_indication signal
 				);
 	
 	

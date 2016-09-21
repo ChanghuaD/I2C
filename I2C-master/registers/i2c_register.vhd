@@ -205,7 +205,7 @@ architecture Behavioral of i2c_register is
 	end component RX_8_bits_R_W;
 
 	-- 7.
-	component ADDR_7_bits_W_R is
+	component ADDR_7_bits_RW_R is
 
 	port(clk: in std_logic;			--! clk input
 		 clk_ena: in std_logic; 	--! clk enable input
@@ -215,7 +215,7 @@ architecture Behavioral of i2c_register is
 		 data_output: out std_logic_vector(6 downto 0)		--! output 7-bit 
 		);
 
-	end component ADDR_7_bits_W_R;
+	end component ADDR_7_bits_RW_R;
 	
 	
 	-- 8.
@@ -629,7 +629,7 @@ begin
 	
 	
 	-------- OWN ADDR 7-bit ---------------
-	M_OWN_ADDR: ADDR_7_bits_W_R
+	M_OWN_ADDR: ADDR_7_bits_RW_R
 		port map(clk => clk,		--! clk input
 			 clk_ena => clk_ena, 	--! clk enable input
 			 sync_rst => sync_rst, 	--! synchronous reset input
@@ -1142,7 +1142,8 @@ begin
 				if(sync_rst = '1') then
 					avalon_irq_ctl <= (signal_IRQ_CTL0 OR signal_IRQ_CTL1 OR signal_IRQ_CTL2 OR signal_IRQ_CTL3 OR signal_IRQ_CTL4 OR signal_IRQ_CTL5 OR signal_IRQ_CTL6 OR signal_IRQ_CTL7);
 					avalon_irq_st <= (signal_IRQ_ST0 OR signal_IRQ_ST1 OR signal_IRQ_ST2 OR signal_IRQ_ST3 OR signal_IRQ_ST4 OR signal_IRQ_ST5 OR signal_IRQ_ST6 OR signal_IRQ_ST7);
-					AVALON_irq <= avalon_irq_st OR avalon_irq_ctl;
+					--AVALON_irq <= avalon_irq_st OR avalon_irq_ctl;
+					AVALON_irq <= (signal_IRQ_CTL0 OR signal_IRQ_CTL1 OR signal_IRQ_CTL2 OR signal_IRQ_CTL3 OR signal_IRQ_CTL4 OR signal_IRQ_CTL5 OR signal_IRQ_CTL6 OR signal_IRQ_CTL7) OR (signal_IRQ_ST0 OR signal_IRQ_ST1 OR signal_IRQ_ST2 OR signal_IRQ_ST3 OR signal_IRQ_ST4 OR signal_IRQ_ST5 OR signal_IRQ_ST6 OR signal_IRQ_ST7);
 				else
 					avalon_irq_ctl <= '0';
 					avalon_irq_st <= '0';

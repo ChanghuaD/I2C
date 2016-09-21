@@ -11,7 +11,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 --! ADDR_7_bits_W_R entity
-entity ADDR_7_bits_W_R is
+entity ADDR_7_bits_W_W is
 
 	port(clk: in std_logic;			--! clk input
 		 clk_ena: in std_logic; 	--! clk enable input
@@ -24,9 +24,9 @@ entity ADDR_7_bits_W_R is
 		 data_output: out std_logic_vector(6 downto 0)		--! output 7-bit 
 		);
 
-end entity ADDR_7_bits_W_R;
+end entity ADDR_7_bits_W_W;
 
-architecture Behavior of ADDR_7_bits_W_R is
+architecture Behavior of ADDR_7_bits_W_W is
 
 begin
 

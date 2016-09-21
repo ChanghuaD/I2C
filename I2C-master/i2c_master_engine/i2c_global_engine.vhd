@@ -12,7 +12,6 @@ entity i2c_global_engine is
 	generic (N: positive := 3);
 
 	port(AVALON_clk: in std_logic;						-- clk input
-		 --clk_ena: in std_logic;					-- clk_ena input
 		 sync_rst: in std_logic; 				-- synchronous reset input	
 		
 		 -- AVALON INPUT PORTS
@@ -669,6 +668,15 @@ begin
 		 error => open							--! error
 	);
 	
+
+	---- Process ------
+	
+	-- 1.
+	-- SDA 
+	P_SDA_OUT: process(master_SDA_OUT, slave_SDA_OUT) is
+	begin
+		SDA_OUT <= master_SDA_OUT AND slave_SDA_OUT;
+	end process P_SDA_OUT;
 	
 end architecture Behavioral;
 
