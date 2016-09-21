@@ -311,6 +311,7 @@ architecture behavior of i2c_master_engine is
 	signal sda_out_rx: std_logic;
 	signal rst_receiver: std_logic;
 	signal ACK_sent: std_logic;
+	signal data_received: std_logic;
 	-- 8-bit MUX
 	signal SEL_TX: std_logic;
 	signal error_8_bits_MUX: std_logic;
@@ -446,7 +447,7 @@ begin
 				 ACK_in => CTL_ACK,						--! map to acknowledge bit input
 				 sda_out => sda_out_rx,					--! map to SDA_OUT output
 				 ACK_sent => ACK_sent,		--! ACK_sent output, triger a '1' when ACK is sent
-				 data_received => ST_RX_FULL_S,			--! map to ST_RX_FULL_S bit output
+				 data_received => data_received,			--! map to ST_RX_FULL_S bit output
 				 RX => RX_DATA 						--! map to RX received byte output
 				);
 	
@@ -685,6 +686,7 @@ begin
 		
 		when RESET =>
 			ST_BUSY <= '0';
+			ST_BUSY_W <= '0';
 		--	SCL_OUT <= '1';
 		--	SDA_OUT <= '1';
 			rst_receiver <= '0';
@@ -814,6 +816,7 @@ begin
 		if(rising_edge(clk)) then
 			if(clk_ena = '1') then
 				RX_DATA_W <= data_received;
+				ST_RX_FULL_S <= data_received;
 			end if;
 		end if;
 	

@@ -4,9 +4,9 @@
 --! Created on 09/09/2016
 --------------------------------------------------------------
 
------------
--- Waitrequest signal
---
+------------
+-- Waitrequest signal is always '0' now.
+-- 
 ------------
 
 --! Use standard library
@@ -252,8 +252,8 @@ architecture Behavioral of i2c_register is
 
 
 	--------------- signal ------------------------------
-	signal: avalon_irq_st: std_logic;
-	signal: avalon_irq_ctl: std_logic;
+	signal avalon_irq_st: std_logic;
+	signal avalon_irq_ctl: std_logic;
 	
 
 	--signal CTL0_uc_data_in: std_logic;
@@ -309,6 +309,11 @@ architecture Behavioral of i2c_register is
 		
 		 ---- OWN Address 7-bit
 	signal	 signal_OWN_ADDR: std_logic_vector (6 downto 0);		--! Own Address, use for slave role
+	
+	
+		 ---- Waitrequest SIGNALS
+	signal 	 signal_waitrequest: std_logic:= '0';						--! waitrequest signal 
+	
 	
 	
 		 ---- INTERRUPT CTL MASK
@@ -904,7 +909,7 @@ begin
 				 
 	-- IRQ_ST7
 	-- ST_BUSY
-	M_IRQ_ST6: Flip_flop_interrupt_RC_mask 
+	M_IRQ_ST7: Flip_flop_interrupt_RC_mask 
 
 		port map(clk 			=> clk,
 				 clk_ena 		=> clk_ena,
@@ -921,11 +926,11 @@ begin
 	-- 1.
 	-- Command Decoder
 	-- activate the word correspond to the avalon address
-	P_Decoder_write: process(clk) is
+	P_Decoder_write: process(AVALON_address, AVALON_write) is
 	
 	begin
 	
-		if(rising_edge(clk)) then
+		
 		
 		
 			ctl_command <= '0';
@@ -993,18 +998,17 @@ begin
 				-- Nothing
 			end if;		-- AVALON write 
 			
-		end if;		-- clk
+	
 	
 	end process P_Decoder_write;
 	
 	-- 2.
 	-- Read data
-	P_Decoder_read: process(clk) is
+	P_Decoder_read: process(AVALON_address, AVALON_read) is
 	
 	begin
 	
 		
-		if(rising_edge(clk)) then
 		
 		signal_CTL_data <= (CTL7 & CTL6 & CTL5 & CTL4 & CTL3 & CTL2 & CTL1 & CTL0);
 		signal_ST_data <= (ST7 & ST6 & ST5 & ST4 & ST3 & ST2 & ST1 & ST0);
@@ -1070,50 +1074,54 @@ begin
 			
 			end if;		-- AVALON_read 
 		
-		end if;
 	
 	end process P_Decoder_read;
 	
 	-- 3.
-	-- OUTPUTS AND SIGNALS
+	-- I2C OUTPUTS AND SIGNALS
 	P_Outputs: process(clk) is
 	
 	begin
 	
-		 CTL_RESET <= signal_CTL_RESET;			--! CTL0 
-		 CTL_START <= signal_CTL_START;				--! CTL1
-		 CTL_STOP <= signal_CTL_STOP;				--! CTL2
-		 CTL_RESTART <= signal_CTL_RESTART;			--! CTL3
-		 CTL_RW <= signal_CTL_RW;					--! CTL4
-		 CTL_ACK <= signal_CTL_ACK;				--! CTL5
-		 CTL_ROLE <= signal_CTL_ROLE;				--! CTL6
-		 CTL_RESERVED <= signal_CTL_RESERVED;			--! CTL7
-		
-		 ---- STATUS 0 to 7
-		 ST_ACK_REC <= signal_ST_ACK_REC;				--! STATUS0
-		 ST_START_DETC <= signal_ST_START_DETC;			--! STATUS1
-		 ST_STOP_DETC <= signal_ST_STOP_DETC;			--! STATUS2
-		 ST_ERROR_DETC <= signal_ST_ERROR_DETC;			--! STATUS3
-		 ST_TX_EMPTY <= signal_ST_TX_EMPTY;			--! STATUS4
-		 ST_RX_FULL <= signal_ST_RX_FULL;				--! STATUS5
-		 ST_RW <= signal_ST_RW;					--! STATUS6
-		 ST_BUSY <= signal_ST_BUSY;				--! STATUS7
-		
-		 ---- TX 8-bit
-		 TX_DATA <= signal_TX_DATA;		--! TX 8-bit
-		
-		 ---- RX 8-bit
-		 RX_DATA <= signal_RX_DATA; 		--! RX 8-bit
-		
-		 ---- Baud Rate
-		 BAUDRATE <= signal_BAUDRATE;		--! BAUDRATE 8-bit
-		
-		 ---- Slave Address 7-bit
-		 SLAVE_ADDR <= signal_SLAVE_ADDR;		--! SLAVE_ADDR 7-bit
-		
-		 ---- OWN Address 7-bit
-		 OWN_ADDR <= signal_OWN_ADDR;		--! Own Address, use for slave role
+		if(rising_edge(clk)) then
+			if(clk_ena = '1') then
+				 CTL_RESET <= signal_CTL_RESET;			--! CTL0 
+				 CTL_START <= signal_CTL_START;				--! CTL1
+				 CTL_STOP <= signal_CTL_STOP;				--! CTL2
+				 CTL_RESTART <= signal_CTL_RESTART;			--! CTL3
+				 CTL_RW <= signal_CTL_RW;					--! CTL4
+				 CTL_ACK <= signal_CTL_ACK;				--! CTL5
+				 CTL_ROLE <= signal_CTL_ROLE;				--! CTL6
+				 CTL_RESERVED <= signal_CTL_RESERVED;			--! CTL7
+				
+				 ---- STATUS 0 to 7
+				 ST_ACK_REC <= signal_ST_ACK_REC;				--! STATUS0
+				 ST_START_DETC <= signal_ST_START_DETC;			--! STATUS1
+				 ST_STOP_DETC <= signal_ST_STOP_DETC;			--! STATUS2
+				 ST_ERROR_DETC <= signal_ST_ERROR_DETC;			--! STATUS3
+				 ST_TX_EMPTY <= signal_ST_TX_EMPTY;			--! STATUS4
+				 ST_RX_FULL <= signal_ST_RX_FULL;				--! STATUS5
+				 ST_RW <= signal_ST_RW;					--! STATUS6
+				 ST_BUSY <= signal_ST_BUSY;				--! STATUS7
+				
+				 ---- TX 8-bit
+				 TX_DATA <= signal_TX_DATA;		--! TX 8-bit
+				
+				 ---- RX 8-bit
+				 RX_DATA <= signal_RX_DATA; 		--! RX 8-bit
+				
+				 ---- Baud Rate
+				 BAUDRATE <= signal_BAUDRATE;		--! BAUDRATE 8-bit
+				
+				 ---- Slave Address 7-bit
+				 SLAVE_ADDR <= signal_SLAVE_ADDR;		--! SLAVE_ADDR 7-bit
+				
+				 ---- OWN Address 7-bit
+				 OWN_ADDR <= signal_OWN_ADDR;		--! Own Address, use for slave role
+				
+			end if;
 	
+		end if;
 		 
 	end process P_Outputs;
 	
@@ -1145,4 +1153,18 @@ begin
 		end if;
 	
 	end process P_IRQ;
+	
+	
+	-- 7.
+	-- Waitrequest
+	P_waitrequest: process(signal_waitrequest) is
+	
+	begin
+	
+		AVALON_waitrequest <= signal_waitrequest;
+	
+	end process P_waitrequest;
+	
+	
+	
 end architecture Behavioral;

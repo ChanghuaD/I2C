@@ -9,8 +9,10 @@ use ieee.numeric_std.all;
 
 entity i2c_global_engine is
 
-	port(clk: in std_logic;						-- clk input
-		 clk_ena: in std_logic;					-- clk_ena input
+	generic (N: positive := 3);
+
+	port(AVALON_clk: in std_logic;						-- clk input
+		 --clk_ena: in std_logic;					-- clk_ena input
 		 sync_rst: in std_logic; 				-- synchronous reset input	
 		
 		 -- AVALON INPUT PORTS
@@ -31,7 +33,7 @@ entity i2c_global_engine is
 		 AVALON_irq: out std_logic;
 		 
 		 -- readdata
-		 AVALON_readdata: out std_logic;
+		 AVALON_readdata: out std_logic_vector(7 downto 0);
 		 AVALON_readvalid: out std_logic;
 		 
 		 -- waitrequest
@@ -177,6 +179,7 @@ architecture Behavioral of i2c_global_engine is
 		 CTL_RESTART_C: out std_logic;			--! CTL_RESTART bit Clear output
 		 CTL_STOP_C: out std_logic;				--! CTL_STOP bit Clear output
 		 CTL_START_C: out std_logic;			--! CTL_START bit Clear output
+		 ST_BUSY: out std_logic;				--! ST_BUSY bit data output 
 		 ST_BUSY_W: out std_logic;				--! ST_BUSY bit Write output     
 		 ST_RX_FULL_S: out std_logic;			--!	ST_RX_FULL bit Set output
 		 ST_TX_EMPTY_S: out std_logic;			--! ST_TX_EMPTY bit set output
@@ -244,12 +247,50 @@ architecture Behavioral of i2c_global_engine is
 	end component I2c_slave_engine;
 	
 	
-	-- 4. MUX
-	-- ...
-	-- ...
+	-- 4. MUX 1-bit
+	-- 
+	component mux_1_bit is
+
+	port(SEL: in std_logic;								--! SELECT '0' or '1' 
+		 input_0: in  std_logic;  	--! input '0'
+		 input_1: in std_logic;   	--! input '1'
+		 output: out std_logic;	 	--! ouput
+		 error: out std_logic							--! error
+	);
+
+	end component mux_1_bit;
 	
+	
+	-- 5. MUX 8-bit
+	--
+	component mux_8_bits is
+
+	port(SEL: in std_logic;								--! SELECT '0' or '1' 
+		 input_0: in  std_logic_vector(7 downto 0);  	--! input '0'
+		 input_1: in std_logic_vector(7 downto 0);   	--! input '1'
+		 output: out std_logic_vector(7 downto 0);	 	--! ouput
+		 error: out std_logic							--! error
+	);
+
+	end component mux_8_bits;
+	
+	-- 6. Cascadable counter
+	component cascadable_counter is
+
+	generic(max_count: positive := 2);
+	port (clk: in std_logic;
+			ena: in std_logic;
+			sync_rst:in std_logic;
+			casc_in: in std_logic;
+			count: out integer range 0 to (max_count-1);
+			casc_out: out std_logic
+			);
+		
+	end component cascadable_counter;
 	
 	-------------------- SIGNALS -----------------------------------------
+	-- CLOCK ENABLE SIGNAL
+	signal clk_ena: std_logic;
 	
 	-------- Signals for Registers input ports ------------
 	-- I2C Master use only
@@ -309,30 +350,58 @@ architecture Behavioral of i2c_global_engine is
 	signal signal_SLAVE_ADDR:  std_logic_vector (6 downto 0);		--! SLAVE_ADDR 7-bit
 				
 	---- OWN Address 7-bit
-	signal signal_OWN_ADDR: std_logic_vector (6 downto 0)		--! Own Address, use for slave role
+	signal signal_OWN_ADDR: std_logic_vector (6 downto 0);		--! Own Address, use for slave role
 	
 	
 	
 	-------- Signals for i2c master engine input ports ------------
 	--  the master output signal, to connect with mux input
+	signal master_ST_BUSY: std_logic;
 	signal master_ST_BUSY_W:  std_logic;				--! ST_BUSY bit Write output     
 	signal master_ST_RX_FULL_S:  std_logic;			--!	ST_RX_FULL bit Set output
 	signal master_ST_TX_EMPTY_S:  std_logic;			--! ST_TX_EMPTY bit set output
-	signal master_ST_ACK_REC: out std_logic;
-	signal master_ST_ACK_REC_W: out std_logic;			--! ST_ACK_REC bit write output
-	signal master_RX_DATA: out std_logic_vector (7 downto 0); 	--! RX_DATA byte output
-	signal master_RX_DATA_W: out std_logic;				--! command RX register
-	signal master_SDA_OUT: out std_logic;
+	signal master_ST_ACK_REC:  std_logic;
+	signal master_ST_ACK_REC_W:  std_logic;			--! ST_ACK_REC bit write output
+	signal master_RX_DATA:  std_logic_vector (7 downto 0); 	--! RX_DATA byte output
+	signal master_RX_DATA_W:  std_logic;				--! command RX register
+	signal master_SDA_OUT:  std_logic;
+	
+	-- the slave output signals, to connect with mux
+	signal slave_SDA_OUT: std_logic;
+	signal slave_ST_BUSY_W: std_logic;
+	signal slave_ST_BUSY: std_logic;
+	signal slave_ST_RX_FULL_S: std_logic;
+	signal slave_ST_TX_EMPTY_S: std_logic;
+	signal slave_ST_ACK_REC: std_logic;
+	signal slave_ST_ACK_REC_W: std_logic;
+	signal slave_RX_DATA: std_logic_vector(7 downto 0);
+	
 	
 begin
 
+	
+
 	------------------------ Map ----------------------------------------
+	
+	-- 0.
+	-- Clock enable
+	u: cascadable_counter 
+	generic map(max_count => N)
+	port map(clk => AVALON_clk,
+			ena => '1',
+			sync_rst => sync_rst,
+			casc_in => '1',
+			count => open,
+			casc_out => clk_ena
+			);
+	
+	
 	-- 1.
 	-- Registers
 	M_registers: i2c_register 
 	
-		port map(clk => clk,					-- clk input
-				 clk_ena => clk_ena,				-- clk_ena input
+		port map(clk => AVALON_clk,					-- clk input
+				 clk_ena => '1',				-- clk_ena = '1', same frequency with AVALON_clk
 				 sync_rst => sync_rst, 				-- synchronous reset input			
 				 
 				 
@@ -400,7 +469,7 @@ begin
 				 CTL_RESERVED => open,					-- Reserved bit
 				
 				 ---- STATUS 0 to 7
-				 ST_ACK_REC => signal_ST_ACK_REC				--! STATUS0
+				 ST_ACK_REC => signal_ST_ACK_REC,				--! STATUS0
 				 ST_START_DETC => signal_ST_START_DETC,			--! STATUS1
 				 ST_STOP_DETC => signal_ST_STOP_DETC,			--! STATUS2
 				 ST_ERROR_DETC => signal_ST_ERROR_DETC,			--! STATUS3
@@ -430,7 +499,7 @@ begin
 	-- i2c master engine
 	M_i2c_master_engine: i2c_master_engine 
 	
-		port(clk => clk,				--! clock input
+		port map(clk => AVALON_clk,				--! clock input
 			 clk_ena => clk_ena,		--! clock enable input
 			 sync_rst => sync_rst, 		--! synchronous reset input, '0' active
 			 CTL_ROLE => signal_CTL_ROLE,		--! CTL_ROLE bit input, to activate the master engine
@@ -451,6 +520,7 @@ begin
 			 CTL_RESTART_C => signal_I2C_CTL_RESTART_C,			--! CTL_RESTART bit Clear output		MASTER USE ONLY
 			 CTL_STOP_C => signal_I2C_CTL_STOP_C,				--! CTL_STOP bit Clear output
 			 CTL_START_C => signal_I2C_CTL_STOP_C,			--! CTL_START bit Clear output
+			 ST_BUSY => master_ST_BUSY,				--! ST_BUSY bit data output  
 			 ST_BUSY_W => master_ST_BUSY_W,				--! ST_BUSY bit Write output     
 			 ST_RX_FULL_S => master_ST_RX_FULL_S,			--!	ST_RX_FULL bit Set output
 			 ST_TX_EMPTY_S => master_ST_TX_EMPTY_S,			--! ST_TX_EMPTY bit set output
@@ -470,8 +540,7 @@ begin
 	-- i2c slave engine
 	M_i2c_slave_engine: I2c_slave_engine
 
-	port(
-			clk								=> clk,								--! clock input			
+	port map(	clk								=> AVALON_clk,								--! clock input			
 			clk_ena							=> clk_ena,						--! clock_enable input		
 			sync_rst						=> sync_rst,						--! synchronization reset input	
 			SCL_in							=> SCL_IN,					--! I2C clock line input
@@ -493,22 +562,22 @@ begin
 			
 			--------- OUTPUTS -----------
 			
-			sda_out							: out STD_LOGIC;						--! means output from I2c_slave_engine to I2C data line 
+			sda_out							=> slave_SDA_OUT,						--! means output from I2c_slave_engine to I2C data line 
 
-			status_busy_w					: out std_logic;				--! indicate the command of busy state
-			status_busy						: out std_logic;				--! indicate the situation of busy state
-			status_rw						=> signal_I2C_ST_RW					--! indicate the situation of read or write state
+			status_busy_w					=> slave_ST_BUSY_W,				--! indicate the command of busy state
+			status_busy						=> slave_ST_BUSY,				--! indicate the situation of busy state
+			status_rw						=> signal_I2C_ST_RW,					--! indicate the situation of read or write state
 			interrupt_rw					=> signal_I2C_ST_RW_W,	
 			
 			status_stop_detected_s			=> signal_I2C_ST_STOP_DETC_S,				--! indicate the situation of stop state
 			status_start_detected_s			=> signal_I2C_ST_START_DETC_S,				--! indicate the situation of start state
 			status_error_detected_s			=> signal_I2C_ST_ERROR_DETC_S,					--! indicate the situation of error state
-			status_rxfull_s					: out std_logic;						--! indicate the situation of full RX
-			status_txempty_s				: out std_logic;						--! indicate the situation of empty TX
-			status_ackrec_w					: out std_logic;										--! means the command of ACK received
-			status_ackrec					: out std_logic;							--! means the situation of ACK received
+			status_rxfull_s					=> slave_ST_RX_FULL_S,						--! indicate the situation of full RX
+			status_txempty_s				=> slave_ST_TX_EMPTY_S,						--! indicate the situation of empty TX
+			status_ackrec_w					=> slave_ST_ACK_REC_W,										--! means the command of ACK received
+			status_ackrec					=> slave_ST_ACK_REC,							--! means the situation of ACK received
 			
-			rxdata							: out std_logic_vector (7 downto 0);											--!write data to byte RX
+			rxdata							=> slave_RX_DATA,											--!write data to byte RX
 			
 									--! indicate read/write received update
 			
@@ -516,5 +585,91 @@ begin
 			
 		  );
 
+			
+	-- 4.
+	-- MUX 1-bit
+	-- signal_ST_ACK_REC
+	M_mux_signal_ST_ACK_REC: mux_1_bit
+	
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_ACK_REC,  	--! input '0'
+		 input_1 => master_ST_ACK_REC,   	--! input '1'
+		 output => signal_I2C_ST_ACK_REC,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 5.
+	-- MUX 1-bit
+	M_mux_signal_ST_ACK_REC_W: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_ACK_REC_W,  	--! input '0'
+		 input_1 => master_ST_ACK_REC_W,   	--! input '1'
+		 output => signal_I2C_ST_ACK_REC_W,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 6. 
+	-- Mux 1-bit
+	M_mux_signal_I2C_ST_TX_EMPTY_S: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_TX_EMPTY_S,  	--! input '0'
+		 input_1 => master_ST_TX_EMPTY_S,   	--! input '1'
+		 output => signal_I2C_ST_TX_EMPTY_S,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	
+	-- 7. 
+	-- Mux 1-bit
+	M_mux_signal_I2C_ST_RX_FULL_S: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_RX_FULL_S,  	--! input '0'
+		 input_1 => master_ST_RX_FULL_S,   	--! input '1'
+		 output => signal_I2C_ST_RX_FULL_S,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 8.
+	-- mux 1-bit
+	M_mux_signal_I2C_ST_BUSY: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_BUSY,  	--! input '0'
+		 input_1 => master_ST_BUSY,   	--! input '1'
+		 output => signal_I2C_ST_BUSY,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 9.
+	-- mux 1-bit
+	M_mux_signal_I2C_ST_BUSY_W: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_BUSY_W,  	--! input '0'
+		 input_1 => master_ST_BUSY_W,   	--! input '1'
+		 output => signal_I2C_ST_BUSY_W,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 10.
+	-- mux 8-bit
+	M_mux_signal_RX_DATA: mux_8_bits
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_RX_DATA,  	--! input '0'
+		 input_1 => master_RX_DATA,   	--! input '1'
+		 output => signal_I2C_RX_DATA,	 	--! ouput
+		 error => open							--! error
+	);
+	
+	-- 11.
+	-- mux_1_bit
+	M_mux_signal_RX_DATA_W: mux_1_bit
+	port map(SEL => signal_CTL_ROLE,							--! SELECT '0' or '1' 
+		 input_0 => slave_ST_RX_FULL_S,  	--! input '0'
+		 input_1 => master_RX_DATA_W,   	--! input '1'
+		 output => signal_I2C_RX_DATA_W,	 	--! ouput
+		 error => open							--! error
+	);
+	
 	
 end architecture Behavioral;
+
+
