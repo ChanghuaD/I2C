@@ -518,7 +518,7 @@ begin
 			 
 			 CTL_RESTART_C => signal_I2C_CTL_RESTART_C,			--! CTL_RESTART bit Clear output		MASTER USE ONLY
 			 CTL_STOP_C => signal_I2C_CTL_STOP_C,				--! CTL_STOP bit Clear output
-			 CTL_START_C => signal_I2C_CTL_STOP_C,			--! CTL_START bit Clear output
+			 CTL_START_C => signal_I2C_CTL_START_C,			--! CTL_START bit Clear output
 			 ST_BUSY => master_ST_BUSY,				--! ST_BUSY bit data output  
 			 ST_BUSY_W => master_ST_BUSY_W,				--! ST_BUSY bit Write output     
 			 ST_RX_FULL_S => master_ST_RX_FULL_S,			--!	ST_RX_FULL bit Set output

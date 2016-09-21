@@ -24,7 +24,7 @@ entity stop_generator is
 		 command_stop: in std_logic;		--! command stop input
 		 sda_in: in std_logic;				--! SDA input	
 		 error_out: out std_logic;			--! error output
-		 CTL_stop: out std_logic;			--! CTL_stop bit output
+		 CTL_stop: out std_logic;			--! CTL_stop bit Clear command output
 		 sda_out: out std_logic				--! SDA output
 		 );
 
@@ -92,27 +92,27 @@ begin
 		
 		when INIT =>
 			sda_out <= '1';
-			CTL_stop <= '1';
+			CTL_stop <= '0';
 			error_out <= '0';
 			
 		when L =>
 			sda_out <= '0';
-			CTL_stop <= '1';
+			CTL_stop <= '0';
 			error_out <= '0';
 			
 		when H =>
 			sda_out <= '1';
-			CTL_stop <= '1';
+			CTL_stop <= '0';
 			error_out <= '0';
 			
 		when SET_CTL =>
 			sda_out <= '1';
-			CTL_stop <= '0';
+			CTL_stop <= '1';
 			error_out <= '0';
 			
 		when S_ERROR =>
 			sda_out <= '1';
-			CTL_stop <= '1';
+			CTL_stop <= '0';
 			error_out <= '1';
 			
 		end case;

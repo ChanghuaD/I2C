@@ -93,32 +93,34 @@ begin
 	
 	begin
 	
+		
+		
 		case state is
 		
 		when INIT =>
 			sda_out <= '1';
-			CTL_start <= '1';
+			CTL_start <= '0';
 			error_out <= '0';
 			
 		when H =>
 			sda_out <= '1';
-			CTL_start <= '1';
+			CTL_start <= '0';
 			error_out <= '0';
 			
 		when L =>
 			sda_out <= '0';
-			CTL_start <= '1';
+			CTL_start <= '0';
 			error_out <= '0';
 			
 		when SET_CTL =>
 		
 			sda_out <= '1';
-			CTL_start <= '0';
+			CTL_start <= '1';
 			error_out <= '0';
 		
 		when S_ERROR =>
 			sda_out <= '1';
-			CTL_start <= '1';
+			CTL_start <= '0';
 			error_out <= '1';
 
 		end case;

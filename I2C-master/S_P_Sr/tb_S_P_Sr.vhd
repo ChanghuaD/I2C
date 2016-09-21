@@ -68,7 +68,7 @@ architecture behavioral of tb_S_P_Sr is
 			  SCL_start_point : out  STD_LOGIC;
 			  SCL_falling_point : out  STD_LOGIC;
 			  SCL_write_point : out  STD_LOGIC;
-			  SCL_error_point : out  STD_LOGIC
+			  SCL_error_indication : out  STD_LOGIC
 			  );
 	end component SCL_detect;
 	
@@ -225,7 +225,7 @@ begin
 			SCL_start_point => start_point,
 			SCL_falling_point => falling_point,
 			SCL_write_point => writing_point,
-			SCL_error_point => error_point);
+			SCL_error_indication => error_point);
 			
 	
 	-- 5. 

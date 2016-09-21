@@ -25,7 +25,7 @@ entity restart_generator is
 		 command_restart: in std_logic;		--! command restart input
 		 sda_in: in std_logic;				--! SDA input
 		 error_out: out std_logic;			--! error output
-		 CTL_restart: out std_logic;		--! CTL_restart bit output
+		 CTL_restart: out std_logic;		--! CTL_restart bit Clear command output, 
 		 sda_out: out std_logic				--! SDA output
 		 );	
 
@@ -100,32 +100,32 @@ begin
 		
 		when Init =>
 			sda_out <= '1';
-			CTL_restart <= '1';
+			CTL_restart <= '0';
 			error_out <= '0';
 			
 		when L1 =>
 			sda_out <= '0';
-			CTL_restart <= '1';
+			CTL_restart <= '0';
 			error_out <= '0';
 			
 		when H =>
 			sda_out <= '1';
-			CTL_restart <= '1';
+			CTL_restart <= '0';
 			error_out <= '0';
 		
 		when L2 =>
 			sda_out <= '0';
-			CTL_restart <= '1';
+			CTL_restart <= '0';
 			error_out <= '0';
 		
 		when SET_CTL =>
 			sda_out <= '1';
-			CTL_restart <= '0';
+			CTL_restart <= '1';
 			error_out <= '0';
 		
 		when S_ERROR =>
 			sda_out <= '1';
-			CTL_restart <= '1';
+			CTL_restart <= '0';
 			error_out <= '1';
 			
 			
