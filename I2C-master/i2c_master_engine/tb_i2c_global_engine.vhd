@@ -2,6 +2,23 @@
 --!@brief Simulate a avalon master(Microcontroller) which control the register via avalon interface
 --!@details 
 
+------------------------------------------------------
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-- Result of testbench 
+-- 1. we have to initiate the i2c_global_engine synchronous reset input at '0', in order to initiate the register's value and evite the 'U' or 'X' value in the register
+-- 2. for IRQ_TX_EMPTY 
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -128,6 +145,8 @@ begin
 	-- sync_rst
 	P_sync_rst: process is 
 	begin
+		sync_rst <= '0';
+		wait for clk_period;
 		sync_rst <= '1';
 		wait;
 	end process P_sync_rst;
@@ -137,40 +156,152 @@ begin
 	begin
 		
 		
-		AVALON_address <= "0000";
+		AVALON_address <= "0000";	-- 
 		AVALON_read <= '0';
 		AVALON_write <= '0';
 		AVALON_writedata <= "00000000";
 		wait for 11 ns;
-		AVALON_address <= "0010";
+		AVALON_address <= "0010";			-- write TX register "0101010101"
 		AVALON_write <= '1';
 		AVALON_writedata <= "01010101";
-		--wait for clk_period;
-		--AVALON_address <= "0010";
-		--AVALON_write <= '1';
-		--AVALON_read <= '0';
 		wait for clk_period;
-		AVALON_address <= "0010";
+		AVALON_address <= "0000";			-- Initiation
+		AVALON_write <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "0010";			-- Read TX register 
 		AVALON_write <= '0';
 		AVALON_read <= '1';
 		AVALON_writedata <= "00000000";
 		wait for clk_period;
-		AVALON_address <= "0101";
+		AVALON_address <= "0101";			-- Write slave address 7-bit "0000111"
 		AVALON_write <= '1';
 		AVALON_read <= '0';
 		AVALON_writedata <= "00000111";
 		wait for clk_period;
-		AVALON_address <= "0000";
+		AVALON_address <= "1010";			-- Write irq status mask "01111111"
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "01111111";
+		wait for clk_period;
+		AVALON_address <= "0111";			-- Write irq ctl mask "01111111"
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00001110";
+		wait for clk_period;
+		AVALON_address <= "0000";			-- Write CTL, CTL_role = '1',CTL_RW = '0', CTL_START = '1', CTL_RESET = '1'
 		AVALON_write <= '1';
 		AVALON_read <= '0';
 		AVALON_writedata <= "01000011";
 		wait for clk_period;
 		AVALON_write <= '0';
 		AVALON_read <= '0';
+		
+		wait until (AVALON_irq = '1');		-- irq_ctl_Start
+		wait for 1 ns;
+		AVALON_address <= "1001";			-- Read IRQ_CTL 
+		AVALON_write <= '0';
+		AVALON_read <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "1010";			-- Read IRQ_ST 
+		AVALON_write <= '0';
+		AVALON_read <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "0000";			-- Write CTL, CTL_role = '1', CTL_RESET = '1', clear CTL_START
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "01000001";
+		wait for clk_period;
+		AVALON_address <= "1000";			-- Write Clear IRQ_CTL_START 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000010";
+	
+		--- ACK after slave_address and RW
+		wait until (AVALON_irq = '1');		-- IRQ_ST_ACK_REC
+		wait for 1 ns;
+		AVALON_address <= "1010";			-- Read IRQ_ST 
+		AVALON_write <= '0';
+		AVALON_read <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "1001";			-- Read IRQ_CTL 
+		AVALON_write <= '0';
+		AVALON_read <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "0001";			-- Read ST 
+		AVALON_write <= '0';
+		AVALON_read <= '1';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_ACK_REC
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000001";
+		
+		
+		
+		
+		wait until (AVALON_irq = '1');		-- IRQ_ST_TX_EMPTY 
+		wait for 1 ns;
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_TX_EMPTY, IRQ_ST_ACK_REC = '0' and IRQ_ST_TX_EMPTY = '1' 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00010000";
+		
+		
+		wait until (AVALON_irq = '1');		-- IRQ_ST_ACK_REC 
+		wait for 1 ns;
+		AVALON_address <= "0010";			-- write TX register "11110000"
+		AVALON_write <= '1';
+		AVALON_writedata <= "11110000";
+		wait for clk_period;
+		AVALON_address <= "0001";			-- CLEAR ST_TX_EMPTY
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00010000";
+		wait for clk_period;
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_ACK_REC, IRQ_ST_ACK_REC = '1' and IRQ_ST_TX_EMPTY = '0' 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000001";
+		
+		wait until (AVALON_irq = '1');		-- IRQ_ST_TX_EMPTY 
+		wait for 1 ns;
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_TX_EMPTY, IRQ_ST_ACK_REC = '0' and IRQ_ST_TX_EMPTY = '1' 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00010000";
+		
+		wait until (AVALON_irq = '1');		-- IRQ_ST_ACK_REC 
+		wait for 1 ns;
+		AVALON_address <= "0001";			-- CLEAR ST_TX_EMPTY
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00010000";
+		wait for clk_period;
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_ACK_REC, IRQ_ST_ACK_REC = '1' and IRQ_ST_TX_EMPTY = '0' 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000001";
+		wait for clk_period;
+		AVALON_address <= "0000";			-- Write CTL, CTL_role = '1',CTL_RW = '0', CTL_START = '1', CTL_RESET = '1'
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "01000101";
+		
+		
 		wait;
+		
+		
 		
 	
 	end process P_avalon;
+
+	
 	
 	
 	

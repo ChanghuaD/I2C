@@ -270,8 +270,8 @@ architecture Behavioral of i2c_register is
 	signal interrupt_st_clear_command: std_logic;	-- Command the interrupt status clear register
 	signal interrupt_st_command: std_logic;
 	
-	signal signal_CTL_data: std_logic_vector(7 downto 0);
-	signal signal_ST_data: std_logic_vector(7 downto 0);
+	signal signal_CTL_data: std_logic_vector(7 downto 0) ;
+	signal signal_ST_data: std_logic_vector(7 downto 0) ;
 	
 	--- Signals correspond to output
 	
@@ -286,14 +286,14 @@ architecture Behavioral of i2c_register is
 	signal	 signal_CTL_RESERVED:  std_logic := '0';			--! CTL7
 		
 		 ---- STATUS 0 to 7
-	signal	 signal_ST_ACK_REC:  std_logic;			--! STATUS0
-	signal	 signal_ST_START_DETC:  std_logic;			--! STATUS1
-	signal	 signal_ST_STOP_DETC:  std_logic;			--! STATUS2
-	signal	 signal_ST_ERROR_DETC: std_logic;			--! STATUS3
-	signal	 signal_ST_TX_EMPTY:  std_logic;			--! STATUS4
-	signal	 signal_ST_RX_FULL:  std_logic;			--! STATUS5
-	signal	 signal_ST_RW:  std_logic;					--! STATUS6
-	signal	 signal_ST_BUSY:  std_logic;				--! STATUS7
+	signal	 signal_ST_ACK_REC:  std_logic := '0';			--! STATUS0
+	signal	 signal_ST_START_DETC:  std_logic := '0';			--! STATUS1
+	signal	 signal_ST_STOP_DETC:  std_logic := '0';			--! STATUS2
+	signal	 signal_ST_ERROR_DETC: std_logic := '0';			--! STATUS3
+	signal	 signal_ST_TX_EMPTY:  std_logic := '0';			--! STATUS4
+	signal	 signal_ST_RX_FULL:  std_logic := '0';			--! STATUS5
+	signal	 signal_ST_RW:  std_logic := '0';					--! STATUS6
+	signal	 signal_ST_BUSY:  std_logic := '0';				--! STATUS7
 		
 		 ---- TX 8-bit
 	signal	 signal_TX_DATA:  std_logic_vector (7 downto 0);		--! TX 8-bit
@@ -674,7 +674,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(0),
 				 mask_in 		=> signal_IRQ_CTL_MASK(0),
-				 set_in		=> CTL0,  		-- CTL0 = '1' --> IRQ_CTL0 = '1'	
+				 set_in		=> '0',  		-- CTL0 = '1' --> IRQ_CTL0 = '1'	
 					  
 				 data_out 		=> signal_IRQ_CTL0
 				 );
@@ -688,7 +688,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(1),				 
 				 mask_in 		=> signal_IRQ_CTL_MASK(1),
-				 set_in		=> CTL1,  			
+				 set_in		=> I2C_CTL_START_C,  			
 					  
 				 data_out 		=> signal_IRQ_CTL1
 				 );
@@ -702,7 +702,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(2),				 
 				 mask_in 		=> signal_IRQ_CTL_MASK(2),
-				 set_in		=> CTL2,  			
+				 set_in		=> I2C_CTL_STOP_C,  			
 					  
 				 data_out 		=> signal_IRQ_CTL2
 				 );
@@ -716,7 +716,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(3),				 
 				 mask_in 		=> signal_IRQ_CTL_MASK(3),
-				 set_in		=> CTL3,  			
+				 set_in		=> I2C_CTL_RESTART_C,  			
 					  
 				 data_out 		=> signal_IRQ_CTL3
 				 );
@@ -731,7 +731,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(4),				 
 				 mask_in 		=> signal_IRQ_CTL_MASK(4),
-				 set_in		=> CTL4,  			
+				 set_in		=> '0',  			
 					  
 				 data_out 		=> signal_IRQ_CTL4
 				 );
@@ -745,7 +745,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(5),
 				 mask_in 		=> signal_IRQ_CTL_MASK(5),
-				 set_in		=> CTL5,  			
+				 set_in		=> '0',  			
 					  
 				 data_out 		=> signal_IRQ_CTL5
 				 );
@@ -760,7 +760,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(6),
 				 mask_in 		=> signal_IRQ_CTL_MASK(6),
-				 set_in		=> CTL6,  			
+				 set_in		=> '0',  			
 					  
 				 data_out 		=> signal_IRQ_CTL6
 				 );
@@ -775,7 +775,7 @@ begin
 				 sync_rst 	    => sync_rst,
 				 clear_in 		=> signal_IRQ_CTL_CLEAR(7),
 				 mask_in 		=> signal_IRQ_CTL_MASK(7),
-				 set_in		=> CTL7,  			-- initialized at '0'
+				 set_in		=> '0',  			-- initialized at '0'
 					  
 				 data_out 		=> signal_IRQ_CTL7
 				 );
@@ -923,6 +923,19 @@ begin
 				 
 	------------------------------- Process --------------------------------------------------
 	
+	-- 0.
+	P_CTL_ST_IRQ: process(clk) is
+	begin
+		if(rising_edge(clk)) then
+		signal_CTL_data <= (CTL7 & CTL6 & CTL5 & CTL4 & CTL3 & CTL2 & CTL1 & CTL0);
+		signal_ST_data <= (ST7 & ST6 & ST5 & ST4 & ST3 & ST2 & ST1 & ST0);
+		signal_IRQ_CTL <= (signal_IRQ_CTL7 & signal_IRQ_CTL6 & signal_IRQ_CTL5 & signal_IRQ_CTL4 & signal_IRQ_CTL3 & signal_IRQ_CTL2 & signal_IRQ_CTL1 & signal_IRQ_CTL0);
+		signal_IRQ_ST <= (signal_IRQ_ST7 & signal_IRQ_ST6 & signal_IRQ_ST5 & signal_IRQ_ST4 & signal_IRQ_ST3 & signal_IRQ_ST2 & signal_IRQ_ST1 & signal_IRQ_ST0);
+		end if;
+	end process P_CTL_ST_IRQ;
+	
+	
+	
 	-- 1.
 	-- Command Decoder
 	-- activate the word correspond to the avalon address
@@ -937,6 +950,7 @@ begin
 			st_command <= '0';
 			tx_command <= '0';
 			slv_addr_command <= '0';
+			own_addr_command <= '0';
 			baudrate_command <= '0';
 			interrupt_ctl_mask_command <= '0';
 			interrupt_ctl_clear_command <= '0';
@@ -959,7 +973,7 @@ begin
 					tx_command <= '1';
 					
 				when 3 =>
-					-- nothing
+					-- Microcontroller should not modify this RX register via avalon write command.
 				
 				when 4 =>
 					baudrate_command <= '1';
@@ -968,7 +982,7 @@ begin
 					slv_addr_command <= '1';
 					
 				when 6 =>
-					-- nothing
+					own_addr_command <= '1';
 					
 				when 7 =>
 					interrupt_ctl_mask_command <= '1';
@@ -1010,10 +1024,7 @@ begin
 	
 		
 		
-		signal_CTL_data <= (CTL7 & CTL6 & CTL5 & CTL4 & CTL3 & CTL2 & CTL1 & CTL0);
-		signal_ST_data <= (ST7 & ST6 & ST5 & ST4 & ST3 & ST2 & ST1 & ST0);
-		signal_IRQ_CTL <= (signal_IRQ_CTL7 & signal_IRQ_CTL6 & signal_IRQ_CTL5 & signal_IRQ_CTL4 & signal_IRQ_CTL3 & signal_IRQ_CTL2 & signal_IRQ_CTL1 & signal_IRQ_CTL0);
-		signal_IRQ_ST <= (signal_IRQ_ST7 & signal_IRQ_ST6 & signal_IRQ_ST5 & signal_IRQ_ST4 & signal_IRQ_ST3 & signal_IRQ_ST2 & signal_IRQ_ST1 & signal_IRQ_ST0);
+		
 		
 			if(AVALON_read = '1') then
 				

@@ -36,7 +36,7 @@ entity i2c_master_engine is
 		 CTL_RESTART: in std_logic;		--! CTL_RESTART bit input
 		 CTL_STOP: in std_logic; 		--! CTL_STOP bit input
 		 CTL_START: in std_logic;		--! CTL_START bit input
-		 CTL_RESET: in std_logic; 		--! CTL_RESET bit input
+		 CTL_RESET: in std_logic; 		--! CTL_RESET bit input, '0' active
 		 ST_RX_FULL: in std_logic; 		--! ST_RX_FULL bit input
 		 ST_TX_EMPTY: in std_logic; 	--! ST_TX_EMPTY bit input
 		 TX_DATA: in std_logic_vector (7 downto 0);  	--! TX_DATA byte input
@@ -495,7 +495,7 @@ begin
 		if(rising_edge(clk)) then
 			if(clk_ena = '1') then
 			
-				if(sync_rst = '1') then
+				if((sync_rst = '1') AND (CTL_RESET = '1')) then
 				
 					case(state) is
 					
