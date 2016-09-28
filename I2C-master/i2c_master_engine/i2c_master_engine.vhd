@@ -26,10 +26,17 @@ use ieee.std_logic_1164.all;
 
 --! react from the register in the global i2c_engine and output the register changes, SCL and SDA line.
 entity i2c_master_engine is
+
+	generic( max_count_SCL_tick_generator: positive := 8;		--! The number of clk_ena per cycle of SCL_tick_generator
+			 max_state_SCL_out_generator: positive := 10;		--! The number of scl_tick per cycle of SCL_OUT signal, this max_state_SCL_out_generator must be at least 10.
+			 critical_state_SCL_out_generator: positive := 5		--! The number of scl_tick per cycle in which the SCL is Low state, normally, critical_state_SCL_out_generator = (max_state_SCL_out_generator/2). And the critical_state_SCL_out_generator must be at least 5.
+			);
 	
 	port(clk: in std_logic;				--! clock input
 		 clk_ena: in std_logic;			--! clock enable input
 		 sync_rst: in std_logic; 		--! synchronous reset input, '0' active
+		 
+		
 		 CTL_ROLE: in std_logic;		--! CTL_ROLE bit input, to activate the master engine
 		 CTL_ACK: in std_logic;			--! CTL_ACK bit input
 		 CTL_RW: in std_logic; 			--! CTL_RW bit input
@@ -76,7 +83,7 @@ architecture behavior of i2c_master_engine is
 	--! SCL ticks component, to generate SCL tick
 	component scl_tick_generator is
 	
-	generic( max_count: positive := 8
+	generic( max_count: positive := 8								-- 
 			);
 	
 	port(clk_50MHz: in std_logic;	--! clock input
@@ -323,7 +330,7 @@ begin
 	
 	-- 1.
 	M_scl_tick: scl_tick_generator
-		generic map(max_count => 8)
+		generic map(max_count => max_count_SCL_tick_generator)
 
 		port map(clk_50MHz => clk,	--! map to clock input
 				 sync_rst => sync_rst,		--! map to synchronous reset input
@@ -333,8 +340,8 @@ begin
 	
 	-- 2.
 	M_scl_out_generator: scl_out_generator	
-		generic map(max_state => 10,		--! maximum number of states, that means the number of ticks per SCL cycle, it should be at least 10.
-					critical_state => 5)
+		generic map(max_state => max_state_SCL_out_generator,		--! maximum number of states, that means the number of ticks per SCL cycle, it should be at least 10.
+					critical_state => critical_state_SCL_out_generator)
 					
 		port map(clk => clk,				--! map to clock input
 				 rst => sync_rst,			--! map to '0' active synchronous reset input

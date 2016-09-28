@@ -2,6 +2,8 @@
 --!@brief the global i2c engine including the registers, i2c master engine and i2c slave engine.
 --! 20/09/2016
 
+
+
 --! Use IEEE library
 library ieee;
 use ieee.std_logic_1164.all;
@@ -12,7 +14,7 @@ entity i2c_global_engine is
 	generic (N: positive := 3);
 
 	port(AVALON_clk: in std_logic;						-- clk input
-		 sync_rst: in std_logic; 				-- synchronous reset input	
+		 sync_rst: in std_logic; 				-- synchronous reset input, must be '0' at first in order to initialize the all registers at '0'	
 		
 		 -- AVALON INPUT PORTS
 		 -- AVALON MM SIGNALS
@@ -47,7 +49,7 @@ entity i2c_global_engine is
 end entity i2c_global_engine;
 
 
-
+--! The global engine must be reset at the start, that means the sync_rst input should be '0' at first in order to initialize the register. If not, there will be a problem of initialization.
 architecture Behavioral of i2c_global_engine is
 
 	-------- Components --------------------
@@ -157,9 +159,17 @@ architecture Behavioral of i2c_global_engine is
 	-- i2c master engine
 	component i2c_master_engine is
 	
+	generic( max_count_SCL_tick_generator: positive := 8;		--! The number of clk_ena per cycle of SCL_tick_generator
+			 max_state_SCL_out_generator: positive := 10;		--! The number of scl_tick per cycle of SCL_OUT signal, this max_state_SCL_out_generator must be at least 10.
+			 critical_state_SCL_out_generator: positive := 5		--! The number of scl_tick per cycle in which the SCL is Low state, normally, critical_state_SCL_out_generator = (max_state_SCL_out_generator/2). And the critical_state_SCL_out_generator must be at least 5.
+			);
+	
 	port(clk: in std_logic;				--! clock input
 		 clk_ena: in std_logic;			--! clock enable input
 		 sync_rst: in std_logic; 		--! synchronous reset input, '0' active
+		 
+		 
+		 
 		 CTL_ROLE: in std_logic;		--! CTL_ROLE bit input, to activate the master engine
 		 CTL_ACK: in std_logic;			--! CTL_ACK bit input
 		 CTL_RW: in std_logic; 			--! CTL_RW bit input
@@ -290,6 +300,10 @@ architecture Behavioral of i2c_global_engine is
 	-------------------- SIGNALS -----------------------------------------
 	-- CLOCK ENABLE SIGNAL
 	signal clk_ena: std_logic;
+	
+--	signal max_count_SCL_tick_generator: positive := 8;
+--	signal max_state_SCL_out_generator: positive := 10;
+--	signal critical_state_SCL_out_generator: positive :=5;
 	
 	-------- Signals for Registers input ports ------------
 	-- I2C Master use only
@@ -498,9 +512,15 @@ begin
 	-- i2c master engine
 	M_i2c_master_engine: i2c_master_engine 
 	
+		generic map( max_count_SCL_tick_generator => 8,		--! The number of clk_ena per cycle of SCL_tick_generator
+			 max_state_SCL_out_generator => 10,	--! The number of scl_tick per cycle of SCL_OUT signal, this max_state_SCL_out_generator must be at least 10.
+			 critical_state_SCL_out_generator => 5		--! The number of scl_tick per cycle in which the SCL is Low state, normally, critical_state_SCL_out_generator = (max_state_SCL_out_generator/2). And the critical_state_SCL_out_generator must be at least 5.
+			)
+	
 		port map(clk => AVALON_clk,				--! clock input
 			 clk_ena => clk_ena,		--! clock enable input
 			 sync_rst => sync_rst, 		--! synchronous reset input, '0' active
+			 
 			 CTL_ROLE => signal_CTL_ROLE,		--! CTL_ROLE bit input, to activate the master engine
 			 CTL_ACK => signal_CTL_ACK,			--! CTL_ACK bit input
 			 CTL_RW => signal_CTL_RW, 			--! CTL_RW bit input
@@ -677,6 +697,22 @@ begin
 	begin
 		SDA_OUT <= master_SDA_OUT AND slave_SDA_OUT;
 	end process P_SDA_OUT;
+	
+	
+	-- 2.
+	-- Baud Rate
+	P_BAUDRATE: process (signal_BAUDRATE) is
+	begin
+		
+		-- max_count_SCL_tick_generator
+		-- max_state_SCL_out_generator
+		-- critical_state_SCL_out_generator
+		
+	--	max_count_SCL_tick_generator <= 8;
+	--	max_state_SCL_out_generator <= 10;
+	--	critical_state_SCL_out_generator <=5;
+		
+	end process P_BAUDRATE;
 	
 end architecture Behavioral;
 

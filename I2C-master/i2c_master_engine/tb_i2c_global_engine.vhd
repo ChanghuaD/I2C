@@ -6,7 +6,7 @@
 -- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -- Result of testbench 
 -- 1. we have to initiate the i2c_global_engine synchronous reset input at '0', in order to initiate the register's value and evite the 'U' or 'X' value in the register
--- 2. for IRQ_TX_EMPTY 
+-- 2. for IRQ_TX_EMPTY, this 
 
 
 
@@ -293,6 +293,22 @@ begin
 		AVALON_read <= '0';
 		AVALON_writedata <= "01000101";
 		
+		wait until (AVALON_irq = '1');		-- IRQ_CTL_STOP
+		AVALON_address <= "1011";			-- CLEAR IRQ_ST_ACK_REC, IRQ_ST_ACK_REC = '0' and IRQ_ST_TX_EMPTY = '0' 
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000000";
+		wait for clk_period;
+		AVALON_address <= "1000";			-- CLEAR IRQ_CTL_STOP
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "00000100";
+		wait for clk_period;
+	--	wait for clk_period;
+		AVALON_address <= "0000";
+		AVALON_write <= '1';
+		AVALON_read <= '0';
+		AVALON_writedata <= "01000001";
 		
 		wait;
 		

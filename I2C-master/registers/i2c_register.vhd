@@ -964,39 +964,161 @@ begin
 				case (to_integer(AVALON_address)) is
 				
 				when 0 =>
+				--	ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					ctl_command <= '1';
 				
 				when 1 => 
+					ctl_command <= '0';
+					--st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					st_command <= '1';
 				
 				when 2 =>
+					ctl_command <= '0';
+					st_command <= '0';
+				--	tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					tx_command <= '1';
 					
 				when 3 =>
 					-- Microcontroller should not modify this RX register via avalon write command.
 				
 				when 4 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+				--	baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					baudrate_command <= '1';
 				
 				when 5 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+				--	slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					slv_addr_command <= '1';
 					
 				when 6 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					--own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					own_addr_command <= '1';
 					
 				when 7 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+				--	interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					interrupt_ctl_mask_command <= '1';
 					
 				when 8 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+				--	interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
+				
 					interrupt_ctl_clear_command <= '1';
 					
 				when 9 =>
 					-- Microcontroller can't modify directly the irq_ctl register
 					
 				when 10 =>
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+				--	interrupt_st_mask_command <= '0';
+					interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
 					interrupt_st_mask_command <= '1';
 				
 				when 11 => 
+					ctl_command <= '0';
+					st_command <= '0';
+					tx_command <= '0';
+					slv_addr_command <= '0';
+					own_addr_command <= '0';
+					baudrate_command <= '0';
+					interrupt_ctl_mask_command <= '0';
+					interrupt_ctl_clear_command <= '0';
+					interrupt_ctl_command <= '0';
+					interrupt_st_mask_command <= '0';
+				--	interrupt_st_clear_command <= '0';
+					interrupt_st_command <= '0';
+					
 					interrupt_st_clear_command <= '1';
 					
 				when 12 => 
